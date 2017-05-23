@@ -1,0 +1,41 @@
+html, body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+}
+.path {
+    fill: none;
+    stroke-width: 1px;
+    stroke: black;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+}
+.draw-info{
+    position: relative;
+    top: 250px;
+    font-size: 80px;
+    font-style: italic;
+    opacity: 0.3;
+}
+.drawArea{
+    max-height: 500px;
+    text-align: center;
+}
+a{
+    text-decoration: none;
+}
+input{
+    text-align: center;
+}
+h1 {
+    font-weight: 100;
+    font-size: 45px;
+    color: #25737c;
+}
+h2{
+    text-align: left;
+}
+.time-left{
+    text-align: right;
+    display: block;
+    padding:20px;
+}

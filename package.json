@@ -1,0 +1,61 @@
+{
+  "name": "ractio",
+  "version": "1.0.0",
+  "description": "A sample radio player built with React.js - the clean commits provide a step by step setup guide",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server --content-base public --open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paul-em/ractio.git"
+  },
+  "keywords": [
+    "radio",
+    "fm4",
+    "react",
+    "material"
+  ],
+  "author": "Paul Em",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/paul-em/ractio/issues"
+  },
+  "homepage": "https://github.com/paul-em/ractio#readme",
+  "dependencies": {
+    "immutable": "^3.8.1",
+    "immutable-props": "^1.1.0",
+    "material-ui": "^0.17.4",
+    "prop-types": "^15.5.10",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "react-router-dom": "^4.1.1",
+    "react-tap-event-plugin": "^2.0.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-eslint": "^7.2.2",
+    "babel-loader": "^6.4.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-1": "^6.24.1",
+    "css-loader": "^0.28.0",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb-base": "^11.1.3",
+    "eslint-import-resolver-webpack": "^0.8.1",
+    "eslint-loader": "^1.7.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-react": "^6.10.3",
+    "style-loader": "^0.16.1",
+    "webpack": "^2.4.1",
+    "webpack-dev-server": "^2.4.2"
+  },
+  "babel": {
+    "presets": [
+      "es2015",
+      "stage-1",
+      "react"
+    ]
+  }
+}
