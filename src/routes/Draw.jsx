@@ -2,6 +2,7 @@ import React from 'react';
 import Paper from 'material-ui/Paper';
 
 import DrawArea from './../components/DrawArea.jsx';
+import Countdown from './../components/Countdown.jsx';
 import firebase from './../firebase';
 
 const styles = {
@@ -28,6 +29,7 @@ export default class Info extends React.Component {
       term: {},
       terms: [],
       error: '',
+      timeRemaining: 20,
     };
   }
 
@@ -64,7 +66,7 @@ export default class Info extends React.Component {
     return <div>
       <h1>Draw-Game</h1>
       <h2>{ this.state.user1 }: XX points | { this.state.user2 }: XX points</h2>
-      <span className="time-left">time: 00:00</span>
+      <Countdown timeRemaining={this.state.timeRemaining}/>
       <Paper style={styles.container}>
         <DrawArea/>
       </Paper>
