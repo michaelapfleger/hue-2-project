@@ -84,23 +84,6 @@ export default class App extends React.Component {
     };
   }
 
-  componentWillMount() {
-    const mql = window.matchMedia('(min-width: 840px)');
-    mql.addListener(() => {
-      this.mqlChange(mql.matches);
-    });
-    this.mqlChange(mql.matches);
-  }
-
-  mqlChange(matches) {
-    this.setState({
-      drawer: {
-        open: matches,
-        docked: matches,
-      },
-    });
-  }
-
   toggleDrawer() {
     this.setState({
       drawer: {

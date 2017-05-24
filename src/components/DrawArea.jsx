@@ -13,7 +13,7 @@ export default class DrawArea extends React.Component {
     this.state = {
       isDrawing: false,
       lines: new Immutable.List(),
-      color: '#ffffff',
+      color: '#25737c',
     };
 
     this.handleMouseDown = this.handleMouseDown.bind(this);
@@ -69,7 +69,11 @@ export default class DrawArea extends React.Component {
     this.setState({ lines: new Immutable.List() });
   }
   changeColor() {
-    this.setState({ color: '#00bcd4' });
+    if (this.state.color === '#DE0670') {
+      this.setState({ color: '#25737c' });
+    } else {
+      this.setState({ color: '#DE0670' });
+    }
   }
 
   render() {
@@ -99,7 +103,7 @@ export default class DrawArea extends React.Component {
               tooltipPosition="bottom-center"
               onTouchTap={() => this.changeColor()}
           >
-            <Yellow />
+            <Yellow/>
           </IconButton>
         </div>
     );

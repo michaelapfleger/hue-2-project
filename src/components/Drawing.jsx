@@ -21,13 +21,14 @@ export default class Dawing extends React.Component {
 
   static propTypes = {
     lines: PropTypes.instanceOf(Immutable.Iterable),
+    color: PropTypes.string,
   };
 
   render() {
     return (
       <svg className="drawing" style={{ ...styles.drawArea }}>
         {this.props.lines.map((line, index) => (
-          <DrawLine key={index} line={line} color={this.state.color}/>
+          <DrawLine key={index} line={line} color={this.props.color}/>
         ))}
       </svg>
     );

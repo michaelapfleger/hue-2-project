@@ -5,7 +5,6 @@ html, body {
 .path {
     fill: none;
     stroke-width: 1px;
-    stroke: black;
     stroke-linejoin: round;
     stroke-linecap: round;
 }
@@ -23,7 +22,7 @@ html, body {
 a{
     text-decoration: none;
 }
-input{
+input[type="text"]{
     text-align: center;
 }
 h1 {

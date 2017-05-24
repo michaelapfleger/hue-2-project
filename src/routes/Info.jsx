@@ -23,10 +23,11 @@ export default class Info extends React.Component {
       <Paper style={styles.container}>
         <p>
           Developer: Michaela Pfleger & Tamara Czakert<br/>
-          Contact: info@paulem.eu<br/>
+          Contact: michaela.pfleger@students.fh-hagenberg.at | <br/>
+          tamara.czakert@students.fh-hagenberg.at<br/>
           Version: {this.state.version}
         </p>
-        <h2>Explanation</h2>
+        <b>Explanation</b>
         <p>
           Online two-player game for drawing unsolvable terms.
         </p>

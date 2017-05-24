@@ -12,7 +12,7 @@ export default class DrawLine extends React.Component {
 
   static propTypes = {
     line: PropTypes.instanceOf(Immutable.Iterable),
-    color: PropTypes.object,
+    color: PropTypes.string,
   };
 
   componentWillReceiveProps() {
@@ -20,12 +20,11 @@ export default class DrawLine extends React.Component {
             .map(p => `${p.get('x')} ${p.get('y')}`)
             .join(' L ')}`;
     this.setState({ pathData });
-    console.log('[color]', this.props.color);
   }
 
   render() {
     return (
-        <path className="path" d={ this.state.pathData } fill={this.props.color}/>
+        <path className="path" d={ this.state.pathData } stroke={this.props.color}/>
     );
   }
 }

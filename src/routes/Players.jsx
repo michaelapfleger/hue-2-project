@@ -10,6 +10,7 @@ const styles = {
   },
   radioButton: {
     padding: 10,
+    textAlign: 'left',
   },
 };
 
