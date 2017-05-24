@@ -1,7 +1,7 @@
 {
-  "name": "ractio",
+  "name": "MT",
   "version": "1.0.0",
-  "description": "A sample radio player built with React.js - the clean commits provide a step by step setup guide",
+  "description": "An awesome activity kind of party game",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,20 +9,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/paul-em/ractio.git"
+    "url": "git+https://github.com/michaelapfleger/hue-2-project.git"
   },
   "keywords": [
-    "radio",
-    "fm4",
-    "react",
-    "material"
+    "activity",
+    "party",
+    "game",
+    "webrtc"
   ],
-  "author": "Paul Em",
+  "author": "Tamara Czakert, Michaela Pfleger",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/paul-em/ractio/issues"
+    "url": "https://github.com/michaelapfleger/hue-2-project/issues"
   },
-  "homepage": "https://github.com/paul-em/ractio#readme",
+  "homepage": "https://github.com/michaelapfleger/hue-2-project#readme",
   "dependencies": {
     "immutable": "^3.8.1",
     "immutable-props": "^1.1.0",
