@@ -2,6 +2,7 @@ import React from 'react';
 import Paper from 'material-ui/Paper';
 
 import DrawArea from './../components/DrawArea.jsx';
+import firebase from './../firebase';
 
 const styles = {
   container: {
@@ -24,8 +25,39 @@ export default class Info extends React.Component {
     this.state = {
       user1: 'Tami',
       user2: 'Michi',
-      term: 'unicorn',
+      term: {},
+      terms: [],
+      error: '',
     };
+  }
+
+  getNewTerm() {
+    const tempTerms = [];
+    firebase.database().ref().once('value')
+        .then((snapshot) => {
+          snapshot.forEach((childSnapshot) => {
+            const term = childSnapshot.key;
+            const points = childSnapshot.val();
+
+            tempTerms.push({ term, points });
+            this.setState({ terms: tempTerms });
+          });
+        })
+        .then(() => {
+          this.getOneTerm();
+        })
+        .catch((error) => {
+          this.setState({ error: error.message });
+        });
+  }
+
+  getOneTerm() {
+    const rand = Math.floor((Math.random() * this.state.terms.length));
+    this.setState({ term: this.state.terms[rand] });
+  }
+
+  componentDidMount() {
+    this.getNewTerm();
   }
 
   render() {
@@ -36,7 +68,8 @@ export default class Info extends React.Component {
       <Paper style={styles.container}>
         <DrawArea/>
       </Paper>
-      <p style={{ ...styles.term }}>{this.state.term}</p>
+      <p style={{ ...styles.term }}>{this.state.term.term}</p>
+      <p className="error">{this.state.error}</p>
     </div>;
   }
 }

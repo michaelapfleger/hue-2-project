@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --content-base public --open"
+    "start": "webpack-dev-server --content-base public --open --history-api-fallback"
   },
   "repository": {
     "type": "git",
@@ -24,9 +24,12 @@
   },
   "homepage": "https://github.com/paul-em/ractio#readme",
   "dependencies": {
+    "express": "^4.15.3",
+    "firebase": "^4.0.0",
     "immutable": "^3.8.1",
     "immutable-props": "^1.1.0",
     "material-ui": "^0.17.4",
+    "morgan": "^1.8.2",
     "prop-types": "^15.5.10",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
