@@ -24,8 +24,8 @@ export default class Info extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: 'test2@user.com',
-      password: 'geheim123',
+      email: '',
+      password: '',
       loggedIn: false,
       error: '',
       info: '',

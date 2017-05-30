@@ -16,6 +16,8 @@ import InfoIcon from 'material-ui/svg-icons/action/info';
 import Home from './routes/Home.jsx';
 import Players from './routes/Players.jsx';
 import Draw from './routes/Draw.jsx';
+import Mime from './routes/Mime.jsx';
+import Explain from './routes/Explain.jsx';
 import Info from './routes/Info.jsx';
 
 const styles = {
@@ -60,6 +62,18 @@ const routes = [
     link: '/draw',
     title: 'Draw',
     component: Draw,
+    icon: <DrawIcon/>,
+  },
+  {
+    link: '/mime',
+    title: 'Mime',
+    component: Mime,
+    icon: <DrawIcon/>,
+  },
+  {
+    link: '/explain',
+    title: 'Explain',
+    component: Explain,
     icon: <DrawIcon/>,
   },
   {

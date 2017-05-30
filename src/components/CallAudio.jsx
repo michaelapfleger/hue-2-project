@@ -1,7 +1,6 @@
 import React from 'react';
-
 import FlatButton from 'material-ui/FlatButton';
-import Dialog from 'material-ui/Dialog';
+import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card';
 import { send, on, off } from '../ws';
 
 const CALL_STATE_NONE = 'none';
@@ -31,8 +30,7 @@ const styles = {
   },
 };
 
-export default class Call extends React.Component {
-
+export default class CallVideo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -94,10 +92,6 @@ export default class Call extends React.Component {
         callState: CALL_STATE_NONE,
         remoteName: null,
       });
-    });
-
-    on('leave', () => {
-      this.hangup();
     });
   }
 
@@ -170,25 +164,27 @@ export default class Call extends React.Component {
   }
 
   confirm() {
-    navigator.mediaDevices.getDisplayMedia({
-      video: true,
+    navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: false,
     }).then((stream) => {
       send('call', this.state.remoteName);
       this.setState({
         callState: CALL_STATE_DIALING,
       });
       this.stream = stream;
-    }).catch(e => console.error('screen', e));
+    }).catch(e => console.error('error accessing cam and mic', e));
   }
 
   accept() {
-    navigator.mediaDevices.getDisplayMedia({
-      video: true,
+    navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: false,
     }).then((stream) => {
       this.stream = stream;
       this.setupConnection();
       send('accept', this.state.remoteName);
-    }).catch(e => console.error('error accessing screen', e));
+    }).catch(e => console.error('error accessing cam and mic', e));
   }
 
   hangup() {
@@ -242,11 +238,15 @@ export default class Call extends React.Component {
   }
 
   render() {
-    return <Dialog
-        title="Call"
-        open={this.state.callState !== CALL_STATE_NONE}
-        actions={this.getCallActionButtons()}>
-      {this.getCallContent()}
-    </Dialog>;
+    return <Card>
+      <CardTitle title="Call" subtitle="audio"/>
+      <CardText>
+        <img src="./audio.png" width="400"/>
+        {this.getCallContent()}
+      </CardText>
+      <CardActions>
+        {this.getCallActionButtons()}
+      </CardActions>
+    </Card>;
   }
 }

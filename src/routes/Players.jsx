@@ -4,6 +4,7 @@ import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 
 import users from '../users';
+import DataChannel from '../components/DataChannel.jsx';
 
 
 const styles = {
@@ -33,6 +34,7 @@ export default class Players extends React.Component {
   render() {
     return <div>
       <h1>{this.constructor.name}</h1>
+      <DataChannel ref={call => (this.DataChannel = call)}/>
       <Paper style={styles.container}>
         <TextField
             hintText={this.state.username}

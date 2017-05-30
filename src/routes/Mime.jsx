@@ -1,9 +1,13 @@
 import React from 'react';
 import Paper from 'material-ui/Paper';
+import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
 
-import DrawArea from './../components/DrawArea.jsx';
 import Countdown from './../components/Countdown.jsx';
 import firebase from './../firebase';
+
+import Call from '../components/CallVideo.jsx';
+import { send } from '../ws';
 
 const styles = {
   container: {
@@ -20,17 +24,43 @@ const styles = {
   },
 };
 
-export default class Draw extends React.Component {
+export default class Mime extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user1: 'Tami',
+      user1: 'tami',
       user2: 'Michi',
       term: {},
       terms: [],
       error: '',
       timeRemaining: 20,
+      nameInput: '',
+      name: '',
     };
+  }
+
+  componentDidUpdate() {
+    this.getNewTerm();
+  }
+
+  nameInput(input) {
+    this.setState({
+      nameInput: input.replace(/[^\w\s]/gi, '').toLowerCase(),
+    });
+  }
+
+  setName(evt) {
+    if (evt) {
+      evt.preventDefault();
+    }
+    send('join', 'all', this.state.nameInput);
+    this.setState({
+      name: this.state.nameInput,
+    });
+  }
+
+  startCall(name) {
+    this.Call.startCall(name);
   }
 
   getNewTerm() {
@@ -58,20 +88,37 @@ export default class Draw extends React.Component {
     this.setState({ term: this.state.terms[rand] });
   }
 
-  componentDidMount() {
-    this.getNewTerm();
-  }
-
   render() {
     return <div>
-      <h1>Draw-Game</h1>
+      <h1>Mime-Game</h1>
       <h2>{ this.state.user1 }: XX points | { this.state.user2 }: XX points</h2>
       <Countdown timeRemaining={this.state.timeRemaining}/>
+
       <Paper style={styles.container}>
-        <DrawArea/>
+        <form onSubmit={evt => this.setName(evt)}>
+          <TextField floatingLabelText="Enter a username"
+                     fullWidth={true}
+                     value={this.state.nameInput}
+                     onChange={(e, v) => this.nameInput(v)}/>
+          <RaisedButton label="Start Chat"
+                        primary={true}
+                        disabled={!this.state.nameInput}
+                        onTouchTap={() => this.setName()}/>
+        </form>
       </Paper>
+
+      <a href="#"
+         style={styles.name}
+         onClick={() => this.startCall(this.state.user1)}>
+        {this.state.user1}
+      </a>
+
+      <Call ref={call => (this.Call = call)}/>
+
       <p style={{ ...styles.term }}>{this.state.term.term}</p>
       <p className="error">{this.state.error}</p>
+
+
     </div>;
   }
 }

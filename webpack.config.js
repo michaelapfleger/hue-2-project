@@ -11,7 +11,7 @@ module.exports = {
     path: PUBLIC_DIR,
     filename: 'bundle.js',
   },
-  devtool: 'eval-source-map', // switch to cheap-module-eval-source-map or eval if it gets too slow
+  devtool: 'source-map', // switch to cheap-module-eval-source-map or eval if it gets too slow
   module: {
     rules: [
       {

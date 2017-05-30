@@ -22,9 +22,7 @@ html, body {
 a{
     text-decoration: none;
 }
-input[type="text"]{
-    text-align: center;
-}
+
 h1 {
     font-weight: 100;
     font-size: 45px;
