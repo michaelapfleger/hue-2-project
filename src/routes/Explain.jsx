@@ -39,7 +39,7 @@ export default class Explain extends React.Component {
     };
   }
 
-  componentDidUpdate() {
+  componentDidMount() {
     this.getNewTerm();
   }
 

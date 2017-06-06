@@ -23,10 +23,12 @@ const styles = {
     transform: 'scaleX(-1)',
     bottom: 0,
     left: 0,
+    display: 'none',
   },
   remoteVideo: {
     width: '100%',
     minHeight: 500,
+    display: 'none',
   },
 };
 
@@ -207,6 +209,11 @@ export default class CallVideo extends React.Component {
       return [
         <FlatButton key="deny" label="Deny" onTouchTap={() => this.hangup()}/>,
         <FlatButton key="accept" label="Accept" onTouchTap={() => this.accept()}/>,
+      ];
+    }
+    if (this.state.callState === CALL_STATE_NONE) {
+      return [
+        <FlatButton key="none" label="none" disabled={true}/>,
       ];
     }
     return [

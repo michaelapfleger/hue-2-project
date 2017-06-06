@@ -209,6 +209,11 @@ export default class CallVideo extends React.Component {
         <FlatButton key="accept" label="Accept" onTouchTap={() => this.accept()}/>,
       ];
     }
+    if (this.state.callState === CALL_STATE_NONE) {
+      return [
+        <FlatButton key="none" label="none" disabled={true}/>,
+      ];
+    }
     return [
       <FlatButton key="hangup" label="Hangup" onTouchTap={() => this.hangup()}/>,
     ];

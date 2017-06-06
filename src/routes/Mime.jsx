@@ -39,7 +39,7 @@ export default class Mime extends React.Component {
     };
   }
 
-  componentDidUpdate() {
+  componentDidMount() {
     this.getNewTerm();
   }
 
