@@ -1,5 +1,5 @@
 export default function reducer(state = {
-  user: null,
+  user: {},
   over: false,
 }, action) {
   switch (action.type) {
@@ -13,6 +13,22 @@ export default function reducer(state = {
       return {
         ...state,
         over: false,
+      };
+    }
+    case 'SET_USER': {
+      return {
+        ...state,
+        user: {
+          ...action.payload,
+        },
+      };
+    }
+    case 'ADD_POINTS': {
+      return {
+        ...state,
+        user: {
+          ...action.payload,
+        },
       };
     }
     default: {
