@@ -31,8 +31,8 @@ export default class Players extends React.Component {
   }
 
   componentDidMount() {
-    //const user = firebase.auth().currentUser;
-    //this.setState({ username: user.displayName });
+    // const user = firebase.auth().currentUser;
+    // this.setState({ username: user.displayName });
     this.getUsers();
   }
 

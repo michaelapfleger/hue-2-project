@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Timer from 'material-ui/svg-icons/image/timer';
 import { connect } from 'react-redux';
 import Sound from 'react-sound';
-import setTimeOver from '../actions';
+import { setTimeOver } from '../actions';
 
 
 @connect(store => ({

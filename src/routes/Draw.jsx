@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import { connect } from 'react-redux';
+import { setTimeStart } from '../actions';
 
 import DrawArea from './../components/DrawArea.jsx';
 import Countdown from './../components/Countdown.jsx';
@@ -84,6 +85,7 @@ export default class Draw extends React.Component {
   }
   start() {
     this.setState({ start: true });
+    this.props.dispatch(setTimeStart());
   }
 
   componentDidMount() {

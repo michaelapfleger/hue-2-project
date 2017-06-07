@@ -9,6 +9,12 @@ export default function reducer(state = {
         over: true,
       };
     }
+    case 'TIME_START': {
+      return {
+        ...state,
+        over: false,
+      };
+    }
     default: {
       return state;
     }
