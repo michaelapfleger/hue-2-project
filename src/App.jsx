@@ -12,6 +12,8 @@ import HomeIcon from 'material-ui/svg-icons/action/home';
 import PlayerIcon from 'material-ui/svg-icons/action/face';
 import DrawIcon from 'material-ui/svg-icons/image/color-lens';
 import InfoIcon from 'material-ui/svg-icons/action/info';
+import MimeIcon from 'material-ui/svg-icons/action/pan-tool';
+import ExplainIcon from 'material-ui/svg-icons/action/record-voice-over';
 
 import Home from './routes/Home.jsx';
 import Players from './routes/Players.jsx';
@@ -68,13 +70,13 @@ const routes = [
     link: '/mime',
     title: 'Mime',
     component: Mime,
-    icon: <DrawIcon/>,
+    icon: <MimeIcon/>,
   },
   {
     link: '/explain',
     title: 'Explain',
     component: Explain,
-    icon: <DrawIcon/>,
+    icon: <ExplainIcon/>,
   },
   {
     link: '/info',
