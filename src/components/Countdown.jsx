@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Timer from 'material-ui/svg-icons/image/timer';
 import { connect } from 'react-redux';
+import Sound from 'react-sound';
 import setTimeOver from '../actions';
 
 
@@ -13,6 +14,7 @@ export default class Countdown extends React.Component {
     super(props);
     this.state = {
       timeRemaining: 0,
+      status: Sound.status.PAUSED,
     };
   }
   static propTypes = {
@@ -27,6 +29,9 @@ export default class Countdown extends React.Component {
 
   tick() {
     this.setState({ timeRemaining: this.state.timeRemaining - 1 });
+    if (this.state.timeRemaining === 5) {
+      this.setState({ status: Sound.status.PLAYING });
+    }
     if (this.state.timeRemaining <= 0) {
       clearInterval(this.interval);
       this.props.dispatch(setTimeOver());
@@ -37,7 +42,17 @@ export default class Countdown extends React.Component {
   }
   render() {
     return (
-        <span className="time-left"><Timer/> { this.state.timeRemaining}</span>
+        <span className="time-left"><Timer/> { this.state.timeRemaining}
+          <Sound
+              url="https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/counter.mp3"
+              playStatus={this.state.status}
+              playFromPosition={0}
+              volume={100}
+              onLoading={({ bytesLoaded, bytesTotal }) => console.log(`${(bytesLoaded / bytesTotal) * 100}% loaded`)}
+              onPlaying={({ position }) => console.log(position) }
+              onFinishedPlaying={() => this.setState({ status: Sound.status.STOPPED })}
+          />
+        </span>
     );
   }
 }
