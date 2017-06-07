@@ -1,5 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Paper from 'material-ui/Paper';
+import RaisedButton from 'material-ui/RaisedButton';
+import { connect } from 'react-redux';
 
 import DrawArea from './../components/DrawArea.jsx';
 import Countdown from './../components/Countdown.jsx';
@@ -10,6 +13,9 @@ const styles = {
     padding: 10,
     lineHeight: '1.4em',
   },
+  button: {
+    margin: 12,
+  },
   term: {
     fontSize: 25,
     padding: 10,
@@ -18,8 +24,21 @@ const styles = {
     borderBottom: '1px solid #25737c',
     margin: '40px 250px',
   },
+  exampleImageInput: {
+    cursor: 'pointer',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0,
+    width: '100%',
+    opacity: 0,
+  },
 };
 
+@connect(store => ({
+  over: store.over,
+}))
 export default class Draw extends React.Component {
   constructor(props) {
     super(props);
@@ -30,8 +49,14 @@ export default class Draw extends React.Component {
       terms: [],
       error: '',
       timeRemaining: 20,
+      start: false,
     };
   }
+  static propTypes = {
+    over: PropTypes.bool,
+    dispatch: PropTypes.func,
+  };
+
 
   getNewTerm() {
     const tempTerms = [];
@@ -57,21 +82,46 @@ export default class Draw extends React.Component {
     const rand = Math.floor((Math.random() * this.state.terms.length));
     this.setState({ term: this.state.terms[rand] });
   }
+  start() {
+    this.setState({ start: true });
+  }
 
   componentDidMount() {
     this.getNewTerm();
   }
 
   render() {
+    if (this.state.start) {
+      if (this.props.over) {
+        return (<div>
+            <h1>Draw-Game</h1>
+            <h2>{ this.state.user1 }: XX points | { this.state.user2 }: XX points</h2>
+            <Countdown timeRemaining={this.state.timeRemaining}/>
+              <h3>Sorry, time is up!</h3>
+          </div>
+        );
+      }
+      return <div>
+        <h1>Draw-Game</h1>
+        <h2>{ this.state.user1 }: XX points | { this.state.user2 }: XX points</h2>
+        <Countdown timeRemaining={this.state.timeRemaining}/>
+        <Paper style={styles.container}>
+          <DrawArea/>
+        </Paper>
+        <p style={{ ...styles.term }}>{this.state.term.term}</p>
+        <p className="error">{this.state.error}</p>
+      </div>;
+    }
     return <div>
       <h1>Draw-Game</h1>
       <h2>{ this.state.user1 }: XX points | { this.state.user2 }: XX points</h2>
-      <Countdown timeRemaining={this.state.timeRemaining}/>
-      <Paper style={styles.container}>
-        <DrawArea/>
-      </Paper>
-      <p style={{ ...styles.term }}>{this.state.term.term}</p>
-      <p className="error">{this.state.error}</p>
+      <RaisedButton
+          label="Start"
+          labelPosition="before"
+          style={styles.button}
+          containerElement="label">
+        <input type="submit" style={styles.exampleImageInput} onClick={ () => this.start() }/>
+        </RaisedButton>
     </div>;
   }
 }

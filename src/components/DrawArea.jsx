@@ -3,7 +3,8 @@ import Immutable from 'immutable';
 import IconButton from 'material-ui/IconButton';
 import ActionClear from 'material-ui/svg-icons/action/delete-forever';
 import Yellow from 'material-ui/svg-icons/image/colorize';
-
+import { on, off, send } from '../ws';
+// import Line from './Line.jsx';
 import Drawing from './Drawing.jsx';
 
 
@@ -14,8 +15,10 @@ export default class DrawArea extends React.Component {
       isDrawing: false,
       lines: new Immutable.List(),
       color: '#25737c',
+      messages: [],
     };
 
+    this.sendMessage = this.sendMessage.bind(this);
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
@@ -44,8 +47,8 @@ export default class DrawArea extends React.Component {
     this.setState(prevState => ({
       lines: prevState.lines.updateIn([prevState.lines.size - 1], line => line.push(point)),
     }));
+    this.sendMessage(this.state.lines);
   }
-
   handleMouseUp() {
     this.setState({ isDrawing: false });
   }
@@ -60,11 +63,27 @@ export default class DrawArea extends React.Component {
 
   componentDidMount() {
     document.addEventListener('mouseup', this.handleMouseUp);
+    const id = Math.round(Math.random() * 100000000000).toString(36);
+    on('chat', (from, payload) => {
+      this.setState({
+        lines: new Immutable.List([payload.lines]),
+      });
+      send('join', 'all', id);
+    });
   }
   componentWillUnmount() {
     document.removeEventListener('mouseup', this.handleMouseUp);
+    off('chat');
   }
 
+  sendMessage(lines) {
+    send('chat', 'all', lines);
+
+    // const id = Math.round(Math.random() * 100000000000).toString(36);
+    this.setState({
+      lines,
+    });
+  }
   clearCanvas() {
     this.setState({ lines: new Immutable.List() });
   }
@@ -90,6 +109,7 @@ export default class DrawArea extends React.Component {
           <Drawing lines={this.state.lines} color={this.state.color} />
 
         </div>
+
         <IconButton
             tooltip="clear all"
             tooltipPosition="bottom-center"

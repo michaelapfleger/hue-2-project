@@ -1,7 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Timer from 'material-ui/svg-icons/image/timer';
+import { connect } from 'react-redux';
+import setTimeOver from '../actions';
 
-class Countdown extends React.Component {
+
+@connect(store => ({
+  over: store.over,
+}))
+export default class Countdown extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -10,6 +17,8 @@ class Countdown extends React.Component {
   }
   static propTypes = {
     timeRemaining: PropTypes.number,
+    over: PropTypes.bool,
+    dispatch: PropTypes.func,
   };
   componentDidMount() {
     this.setState({ timeRemaining: this.props.timeRemaining });
@@ -20,8 +29,7 @@ class Countdown extends React.Component {
     this.setState({ timeRemaining: this.state.timeRemaining - 1 });
     if (this.state.timeRemaining <= 0) {
       clearInterval(this.interval);
-
-      // Screensharing beenden
+      this.props.dispatch(setTimeOver());
     }
   }
   componentWillUnmount() {
@@ -29,9 +37,8 @@ class Countdown extends React.Component {
   }
   render() {
     return (
-        <span className="time-left">remaining time: { this.state.timeRemaining}</span>
+        <span className="time-left"><Timer/> { this.state.timeRemaining}</span>
     );
   }
 }
 
-export default Countdown;
