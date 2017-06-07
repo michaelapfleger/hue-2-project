@@ -1,6 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
-
+import { connect } from 'react-redux';
 import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
 import MenuItem from 'material-ui/MenuItem';
@@ -86,6 +87,9 @@ const routes = [
   },
 ];
 
+@connect(store => ({
+  user: store.user,
+}))
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -99,6 +103,11 @@ export default class App extends React.Component {
       },
     };
   }
+
+  static propTypes = {
+    user: PropTypes.object,
+    dispatch: PropTypes.func,
+  };
 
   toggleDrawer() {
     this.setState({
