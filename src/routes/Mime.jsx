@@ -65,15 +65,15 @@ export default class Mime extends React.Component {
 
   getNewTerm() {
     const tempTerms = [];
-    firebase.database().ref().once('value')
+    firebase.database().ref('mime').once('value')
         .then((snapshot) => {
           snapshot.forEach((childSnapshot) => {
             const term = childSnapshot.key;
             const points = childSnapshot.val();
 
             tempTerms.push({ term, points });
-            this.setState({ terms: tempTerms });
           });
+          this.setState({ terms: tempTerms });
         })
         .then(() => {
           this.getOneTerm();

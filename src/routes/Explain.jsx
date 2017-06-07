@@ -65,7 +65,7 @@ export default class Explain extends React.Component {
 
   getNewTerm() {
     const tempTerms = [];
-    firebase.database().ref().once('value')
+    firebase.database().ref('explain').once('value')
         .then((snapshot) => {
           snapshot.forEach((childSnapshot) => {
             const term = childSnapshot.key;

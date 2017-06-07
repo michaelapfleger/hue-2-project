@@ -35,7 +35,7 @@ export default class Draw extends React.Component {
 
   getNewTerm() {
     const tempTerms = [];
-    firebase.database().ref().once('value')
+    firebase.database().ref('draw').once('value')
         .then((snapshot) => {
           snapshot.forEach((childSnapshot) => {
             const term = childSnapshot.key;
