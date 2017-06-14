@@ -49,7 +49,7 @@ export default class Draw extends React.Component {
       term: {},
       terms: [],
       error: '',
-      timeRemaining: 20,
+      timeRemaining: 50,
       start: false,
     };
   }

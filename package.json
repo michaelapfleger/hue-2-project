@@ -42,6 +42,7 @@
     "react-tap-event-plugin": "^2.0.1",
     "redux": "^3.6.0",
     "redux-logger": "^3.0.6",
+    "transit-immutable-js": "^0.7.0",
     "ws": "^3.0.0"
   },
   "devDependencies": {

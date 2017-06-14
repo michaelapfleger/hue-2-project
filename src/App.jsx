@@ -19,6 +19,7 @@ import ExplainIcon from 'material-ui/svg-icons/action/record-voice-over';
 import Home from './routes/Home.jsx';
 import Players from './routes/Players.jsx';
 import Draw from './routes/Draw.jsx';
+import DrawMichi from './routes/DrawMichi.jsx';
 import Mime from './routes/Mime.jsx';
 import Explain from './routes/Explain.jsx';
 import Info from './routes/Info.jsx';
@@ -65,6 +66,12 @@ const routes = [
     link: '/draw',
     title: 'Draw',
     component: Draw,
+    icon: <DrawIcon/>,
+  },
+  {
+    link: '/drawmichi',
+    title: 'DrawMichi',
+    component: DrawMichi,
     icon: <DrawIcon/>,
   },
   {

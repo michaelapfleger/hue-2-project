@@ -8,7 +8,7 @@ export default class Line extends React.Component {
 
   render() {
     return (
-        <p key={this.props.message.size}>helo </p>
+        <p key={this.props.message}>{this.props.message}</p>
     );
   }
 }
