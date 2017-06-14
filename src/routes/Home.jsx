@@ -1,8 +1,13 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
 import firebase from './../firebase';
+
+import { setUser } from './../actions';
 
 const styles = {
   button: {
@@ -20,12 +25,15 @@ const styles = {
   },
 };
 
+
+@connect(store => ({
+  user: store.user,
+}))
+
 export default class Info extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
-      password: '',
       loggedIn: false,
       error: '',
       info: '',
@@ -33,6 +41,27 @@ export default class Info extends React.Component {
 
     this.handleEmailChange = this.handleEmailChange.bind(this);
     this.handlePWChange = this.handlePWChange.bind(this);
+  }
+
+  static propTypes = {
+    user: PropTypes.object,
+    dispatch: PropTypes.func,
+  };
+
+  componentDidMount() {
+    const user = firebase.auth().currentUser;
+    console.log('did mount', user);
+
+    if (user != null) {
+      const currentUser = {
+        email: user.email,
+        username: user.displayName,
+        uid: user.uid,
+        opponent: '',
+      };
+      this.setState({ loggedIn: true });
+      this.props.dispatch(setUser(currentUser));
+    }
   }
 
   handleEmailChange(e) {
@@ -57,7 +86,16 @@ export default class Info extends React.Component {
   loginUser() {
     firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
         .then(() => {
+          const test = firebase.auth().currentUser;
+
+          const currentUser = {
+            email: this.state.email,
+            username: test.displayName,
+            uid: test.uid,
+            opponent: '',
+          };
           this.setState({ loggedIn: true });
+          this.props.dispatch(setUser(currentUser));
         })
         .catch((error) => {
           this.setState({ error: error.message });
@@ -67,6 +105,13 @@ export default class Info extends React.Component {
   logoutUser() {
     firebase.auth().signOut().then(() => {
       this.setState({ loggedIn: false });
+      const currentUser = {
+        email: '',
+        uid: '',
+        username: '',
+        opponent: '',
+      };
+      this.props.dispatch(setUser(currentUser));
     }).catch((error) => {
       this.setState({ error: error.message });
     });

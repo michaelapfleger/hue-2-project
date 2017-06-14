@@ -20,3 +20,10 @@ export function setUser(user) {
     payload: user,
   };
 }
+export function setOpponent(user) {
+  console.log('setopp', user);
+  return {
+    type: 'SET_OPPONENT',
+    payload: user,
+  };
+}
