@@ -23,6 +23,7 @@ import Mime from './routes/Mime.jsx';
 import Explain from './routes/Explain.jsx';
 import Info from './routes/Info.jsx';
 
+
 const styles = {
   content: {
     paddingTop: 40,
@@ -89,6 +90,7 @@ const routes = [
 
 @connect(store => ({
   user: store.user,
+  opponent: store.opponent,
 }))
 export default class App extends React.Component {
   constructor(props) {
@@ -103,6 +105,7 @@ export default class App extends React.Component {
 
   static propTypes = {
     user: PropTypes.object,
+    opponent: PropTypes.object,
     dispatch: PropTypes.func,
   };
 
@@ -121,12 +124,12 @@ export default class App extends React.Component {
 
   render() {
     const paddingLeft = (this.state.drawer.docked ? 256 : 0) + 16;
-    const name = (this.props.user.username ? this.props.user.username : this.props.user.email);
+    // const name = (this.props.user.username ? this.props.user.username : this.props.user.email);
 
     return <MuiThemeProvider muiTheme={muiTheme}>
       <Router>
       <div>
-        <AppBar title={name}
+        <AppBar title={this.props.user.username}
                 onLeftIconButtonTouchTap={() => this.toggleDrawer()}
                 style={{ paddingLeft }}
                 />

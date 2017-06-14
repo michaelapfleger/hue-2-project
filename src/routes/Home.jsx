@@ -74,8 +74,18 @@ export default class Info extends React.Component {
 
   createUser() {
     firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
-        .then(() => {
+        .then((user) => {
           this.setState({ info: 'Your user is created. Please log in now' });
+          user.updateProfile({
+            displayName: user.email,
+          }).then();
+
+          console.log('new uid', user.uid);
+          firebase.database().ref(`users/${user.uid}`).set({
+            online: 0,
+            uid: user.uid,
+            username: user.email,
+          });
         })
         .catch(
         (error) => {

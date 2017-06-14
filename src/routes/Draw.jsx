@@ -101,7 +101,9 @@ export default class Draw extends React.Component {
       if (this.props.over) {
         return (<div>
             <h1>Draw-Game</h1>
-            <h2>{ this.props.user.username }: XX points | { this.props.opponent.username }: XX points</h2>
+            <h2>
+              { this.props.user.username }: XX points | { this.props.opponent.username }: XX points
+            </h2>
             <Countdown timeRemaining={this.state.timeRemaining}/>
               <h3>Sorry, time is up!</h3>
           </div>
@@ -109,7 +111,9 @@ export default class Draw extends React.Component {
       }
       return <div>
         <h1>Draw-Game</h1>
-        <h2>{ this.props.user.username }: XX points | { this.props.opponent.username }: XX points</h2>
+        <h2>
+          { this.props.user.username }: XX points | { this.props.opponent.username }: XX points
+        </h2>
         <Countdown timeRemaining={this.state.timeRemaining}/>
         <Paper style={styles.container}>
           <DrawArea/>
@@ -120,7 +124,9 @@ export default class Draw extends React.Component {
     }
     return <div>
       <h1>Draw-Game</h1>
-      <h2>{ this.props.user.username }: XX points | { this.props.opponent.username }: XX points</h2>
+      <h2>
+        { this.props.user.username }: XX points | { this.props.opponent.username }: XX points
+      </h2>
       <RaisedButton
           label="Start"
           labelPosition="before"

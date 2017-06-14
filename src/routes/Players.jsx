@@ -58,8 +58,9 @@ export default class Players extends React.Component {
     })
         .then(() => {
           const currentUser = {
-            email: user.email,
-            username: value,
+            username: user.displayName,
+            uid: user.uid,
+            opponent: this.props.opponent.uid,
           };
           this.props.dispatch(setUser(currentUser));
         })
@@ -112,7 +113,7 @@ export default class Players extends React.Component {
       <DataChannel ref={call => (this.DataChannel = call)}/>
       <Paper style={styles.container}>
         <TextField
-            value={this.props.user.username}
+            defaultValue={this.props.user.username}
             floatingLabelText="Change your Username"
             onBlur={ this.handleNameChange }
             errorText={ this.state.error }
