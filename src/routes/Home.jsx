@@ -57,7 +57,6 @@ export default class Info extends React.Component {
         email: user.email,
         username: user.displayName,
         uid: user.uid,
-        opponent: '',
       };
       this.setState({ loggedIn: true });
       this.props.dispatch(setUser(currentUser));
@@ -102,7 +101,6 @@ export default class Info extends React.Component {
             email: this.state.email,
             username: test.displayName,
             uid: test.uid,
-            opponent: '',
           };
           this.setState({ loggedIn: true });
           this.props.dispatch(setUser(currentUser));
@@ -119,7 +117,6 @@ export default class Info extends React.Component {
         email: '',
         uid: '',
         username: '',
-        opponent: '',
       };
       this.props.dispatch(setUser(currentUser));
     }).catch((error) => {

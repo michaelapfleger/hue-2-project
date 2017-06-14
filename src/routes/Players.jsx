@@ -60,9 +60,14 @@ export default class Players extends React.Component {
           const currentUser = {
             username: user.displayName,
             uid: user.uid,
-            opponent: this.props.opponent.uid,
           };
           this.props.dispatch(setUser(currentUser));
+
+          firebase.database().ref(`users/${user.uid}`).set({
+            online: 0,
+            uid: user.uid,
+            username: user.displayName,
+          });
         })
         .catch(
         (error) => {
@@ -72,15 +77,20 @@ export default class Players extends React.Component {
 
   getUsers() {
     const tempUsers = [];
+    let name = '';
+    let userID = '';
     console.log('users');
     firebase.database().ref('users').once('value')
         .then((snapshot) => {
           snapshot.forEach((childSnapshot) => {
-            const userID = childSnapshot.key;
-            const online = childSnapshot.val();
+            if (childSnapshot.val().online === 0) {
+              name = childSnapshot.val().username;
+            }
 
-            tempUsers.push({ userID, online });
-            console.log('ID', userID);
+            userID = childSnapshot.key;
+            if (childSnapshot.val().uid !== this.props.user.uid) {
+              tempUsers.push({ userID, name });
+            }
           });
           this.setState({ users: tempUsers });
         })
@@ -90,7 +100,6 @@ export default class Players extends React.Component {
   }
 
   setOpponent(event, value) {
-    console.log('change', value);
     let currentOpponent = {};
 
     firebase.database().ref(`/users/${value}`).once('value')
@@ -98,13 +107,10 @@ export default class Players extends React.Component {
           currentOpponent = {
             username: snapshot.val().username,
             uid: snapshot.val().uid,
-            opponent: this.props.user.uid,
           };
-
+          console.log('test', this.props.user);
           this.props.dispatch(setOpponent(currentOpponent));
         });
-
-    console.log('set', this.props.opponent.username);
   }
 
   render() {
@@ -120,7 +126,7 @@ export default class Players extends React.Component {
         /><br />
         <RadioButtonGroup name="users" onChange={this.setOpponent}>
           {this.state.users.map(user => <RadioButton value={user.userID}
-                                                label={user.userID}
+                                                label={user.name}
                                                 key={user.userID}
                                                 style={styles.radioButton}
                                                 />) }
