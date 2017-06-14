@@ -98,9 +98,6 @@ export default class App extends React.Component {
         open: false,
         docked: false,
       },
-      user: {
-        name: 'Tamara Czakert',
-      },
     };
   }
 
@@ -124,13 +121,12 @@ export default class App extends React.Component {
 
   render() {
     const paddingLeft = (this.state.drawer.docked ? 256 : 0) + 16;
-
-    console.log('[theme]', this.state.theme);
+    const name = (this.props.user.username ? this.props.user.username : this.props.user.email);
 
     return <MuiThemeProvider muiTheme={muiTheme}>
       <Router>
       <div>
-        <AppBar title={this.state.user.name}
+        <AppBar title={name}
                 onLeftIconButtonTouchTap={() => this.toggleDrawer()}
                 style={{ paddingLeft }}
                 />

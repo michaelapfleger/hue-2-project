@@ -1,4 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
@@ -6,6 +9,7 @@ import TextField from 'material-ui/TextField';
 import DataChannel from '../components/DataChannel.jsx';
 import firebase from './../firebase';
 
+import { setUser, setOpponent } from './../actions';
 
 const styles = {
   container: {
@@ -17,34 +21,47 @@ const styles = {
   },
 };
 
-
+@connect(store => ({
+  user: store.user,
+  opponent: store.opponent,
+}))
 export default class Players extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
       error: '',
       users: [],
     };
     this.handleNameChange = this.handleNameChange.bind(this);
+    this.setOpponent = this.setOpponent.bind(this);
   }
 
+  static propTypes = {
+    user: PropTypes.object,
+    opponent: PropTypes.object,
+    dispatch: PropTypes.func,
+  };
+
   componentDidMount() {
-    // const user = firebase.auth().currentUser;
-    // this.setState({ username: user.displayName });
     this.getUsers();
   }
 
   handleNameChange(e) {
     this.setState({ username: e.target.value });
     const user = firebase.auth().currentUser;
+    const value = e.target.value;
+    console.log('success', user);
 
     user.updateProfile({
-      displayName: e.target.value,
+      displayName: value,
     })
         .then(() => {
-          console.log('success');
+          const currentUser = {
+            email: user.email,
+            username: value,
+          };
+          this.props.dispatch(setUser(currentUser));
         })
         .catch(
         (error) => {
@@ -71,22 +88,41 @@ export default class Players extends React.Component {
         });
   }
 
+  setOpponent(event, value) {
+    console.log('change', value);
+    let currentOpponent = {};
+
+    firebase.database().ref(`/users/${value}`).once('value')
+        .then((snapshot) => {
+          currentOpponent = {
+            username: snapshot.val().username,
+            uid: snapshot.val().uid,
+            opponent: this.props.user.uid,
+          };
+
+          this.props.dispatch(setOpponent(currentOpponent));
+        });
+
+    console.log('set', this.props.opponent.username);
+  }
+
   render() {
     return <div>
       <h1>{this.constructor.name}</h1>
       <DataChannel ref={call => (this.DataChannel = call)}/>
       <Paper style={styles.container}>
         <TextField
-            value={this.state.username}
+            value={this.props.user.username}
             floatingLabelText="Change your Username"
             onBlur={ this.handleNameChange }
             errorText={ this.state.error }
         /><br />
-        <RadioButtonGroup name="users">
+        <RadioButtonGroup name="users" onChange={this.setOpponent}>
           {this.state.users.map(user => <RadioButton value={user.userID}
                                                 label={user.userID}
                                                 key={user.userID}
-                                                style={styles.radioButton}/>) }
+                                                style={styles.radioButton}
+                                                />) }
         </RadioButtonGroup>
       </Paper>
     </div>;

@@ -1,5 +1,6 @@
 export default function reducer(state = {
   user: {},
+  opponent: {},
   over: false,
 }, action) {
   switch (action.type) {
@@ -19,6 +20,14 @@ export default function reducer(state = {
       return {
         ...state,
         user: {
+          ...action.payload,
+        },
+      };
+    }
+    case 'SET_OPPONENT': {
+      return {
+        ...state,
+        opponent: {
           ...action.payload,
         },
       };

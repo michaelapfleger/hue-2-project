@@ -39,6 +39,8 @@ const styles = {
 
 @connect(store => ({
   over: store.over,
+  user: store.user,
+  opponent: store.opponent,
 }))
 export default class Draw extends React.Component {
   constructor(props) {
@@ -55,6 +57,8 @@ export default class Draw extends React.Component {
   }
   static propTypes = {
     over: PropTypes.bool,
+    user: PropTypes.object,
+    opponent: PropTypes.object,
     dispatch: PropTypes.func,
   };
 
@@ -97,7 +101,7 @@ export default class Draw extends React.Component {
       if (this.props.over) {
         return (<div>
             <h1>Draw-Game</h1>
-            <h2>{ this.state.user1 }: XX points | { this.state.user2 }: XX points</h2>
+            <h2>{ this.props.user.username }: XX points | { this.props.opponent.username }: XX points</h2>
             <Countdown timeRemaining={this.state.timeRemaining}/>
               <h3>Sorry, time is up!</h3>
           </div>
@@ -105,7 +109,7 @@ export default class Draw extends React.Component {
       }
       return <div>
         <h1>Draw-Game</h1>
-        <h2>{ this.state.user1 }: XX points | { this.state.user2 }: XX points</h2>
+        <h2>{ this.props.user.username }: XX points | { this.props.opponent.username }: XX points</h2>
         <Countdown timeRemaining={this.state.timeRemaining}/>
         <Paper style={styles.container}>
           <DrawArea/>
@@ -116,7 +120,7 @@ export default class Draw extends React.Component {
     }
     return <div>
       <h1>Draw-Game</h1>
-      <h2>{ this.state.user1 }: XX points | { this.state.user2 }: XX points</h2>
+      <h2>{ this.props.user.username }: XX points | { this.props.opponent.username }: XX points</h2>
       <RaisedButton
           label="Start"
           labelPosition="before"
