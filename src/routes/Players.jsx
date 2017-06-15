@@ -8,7 +8,6 @@ import TextField from 'material-ui/TextField';
 
 import DataChannel from '../components/DataChannel.jsx';
 import firebase from './../firebase';
-
 import { setUser, setOpponent } from './../actions';
 
 const styles = {
