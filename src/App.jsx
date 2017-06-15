@@ -127,6 +127,12 @@ export default class App extends React.Component {
     this.toggleDrawer();
   }
 
+  componentDidMount() {
+    if (this.props.user) {
+      this.setState({ loggedIn: true });
+    }
+  }
+
   render() {
     const paddingLeft = (this.state.drawer.docked ? 256 : 0) + 16;
     // const name = (this.props.user.username ? this.props.user.username : this.props.user.email);

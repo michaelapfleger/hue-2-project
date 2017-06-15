@@ -8,6 +8,7 @@ import { setTimeOver } from '../actions';
 
 @connect(store => ({
   over: store.over,
+  user: store.user,
 }))
 export default class Countdown extends React.Component {
   constructor(props) {
@@ -20,6 +21,7 @@ export default class Countdown extends React.Component {
   static propTypes = {
     timeRemaining: PropTypes.number,
     over: PropTypes.bool,
+    user: PropTypes.object,
     dispatch: PropTypes.func,
   };
   componentDidMount() {
