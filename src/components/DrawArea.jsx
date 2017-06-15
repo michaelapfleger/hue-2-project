@@ -66,11 +66,6 @@ export default class DrawArea extends React.Component {
     const id = Math.round(Math.random() * 100000000000).toString(36);
     send('join', 'all', id);
     on('chat', (from, payload) => {
-      console.log('payload', fromJS(payload));
-      // hier muss ichs ins richtige format bringen
-      // neue immutable list?
-      console.log('new immutable list', new Immutable.List(fromJS(payload)));
-
       this.setState({
         lines: new Immutable.List(fromJS(payload)),
       }, () => {
@@ -84,12 +79,9 @@ export default class DrawArea extends React.Component {
   }
 
   sendMessage(lines) {
-    // es funktioniert nicht, weil in this.state.lines im ._tail
-    // nicht das array gespeichert wird sondern wieder die imm.list
     console.log('send Message before', this.state.lines);
     send('chat', 'all', lines);
 
-    // const id = Math.round(Math.random() * 100000000000).toString(36);
     this.setState({
       lines,
     });
