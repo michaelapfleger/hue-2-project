@@ -53,37 +53,41 @@ const routes = [
     link: '/',
     exact: true,
     title: 'Home',
-    component: Home,
+    component: <Home/>,
     icon: <HomeIcon/>,
   },
   {
     link: '/players',
     title: 'Players',
-    component: Players,
+    component: <Players/>,
     icon: <PlayerIcon/>,
+    loginRequired: true,
   },
   {
     link: '/draw',
     title: 'Draw',
-    component: Draw,
+    component: <Draw/>,
     icon: <DrawIcon/>,
+    loginRequired: true,
   },
   {
     link: '/mime',
     title: 'Mime',
-    component: Mime,
+    component: <Mime/>,
     icon: <MimeIcon/>,
+    loginRequired: true,
   },
   {
     link: '/explain',
     title: 'Explain',
-    component: Explain,
+    component: <Explain/>,
     icon: <ExplainIcon/>,
+    loginRequired: true,
   },
   {
     link: '/info',
     title: 'Info',
-    component: Info,
+    component: <Info/>,
     icon: <InfoIcon/>,
   },
 ];
@@ -142,9 +146,9 @@ export default class App extends React.Component {
               <Link to={route.link} key={route.link} style={styles.menuLink}>
                 <MenuItem primaryText={route.title}
                           leftIcon={route.icon}
-                          onTouchTap={() => this.closeDrawer()}>
-                </MenuItem>
-
+                          onTouchTap={() => this.closeDrawer()}
+                          disabled={route.loginRequired && !this.state.loggedIn}
+                />
               </Link>)}
         </Drawer>
         <div style={{ ...styles.content }}>
@@ -153,8 +157,8 @@ export default class App extends React.Component {
                      key={route.link}
                      path={route.link}
                      render={ () => (
-                       this.state.loggedIn ? ({ route.component }) : <Redirect to="/"/>
-                       )}
+                       !this.state.loggedIn && route.loginRequired ? <Redirect to="/"/> : route.component
+                     )}
                      />
           ))}
         </div>
@@ -163,9 +167,3 @@ export default class App extends React.Component {
     </MuiThemeProvider>;
   }
 }
-
-
-
-
-
-
