@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Sound from 'react-sound';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
@@ -51,6 +52,7 @@ export default class Draw extends React.Component {
       user2: 'Michi',
       term: {},
       terms: [],
+      status: Sound.status.PAUSED,
       error: '',
       timeRemaining: 50,
       start: false,
@@ -117,6 +119,7 @@ export default class Draw extends React.Component {
     const correct = guess.localeCompare(this.state.term.term);
     if (correct === 0) {
       // this.addPoints();
+      this.setState({ status: Sound.status.PLAYING });
       this.setState({ guessWrong: false });
     } else {
       // anzeigen dass das wort nicht stimmt!
@@ -172,6 +175,15 @@ export default class Draw extends React.Component {
                       primary={true}
                       disabled={!this.state.guessInput}
                       onTouchTap={() => this.submitGuess()}/>
+        <Sound
+            url="https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/win.mp3"
+            playStatus={this.state.status}
+            playFromPosition={0}
+            volume={100}
+            onLoading={({ bytesLoaded, bytesTotal }) => console.log(`${(bytesLoaded / bytesTotal) * 100}% loaded`)}
+            onPlaying={({ position }) => console.log(position) }
+            onFinishedPlaying={() => this.setState({ status: Sound.status.STOPPED })}
+        />
       </div>;
     }
     return <div>
