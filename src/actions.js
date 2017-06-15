@@ -26,3 +26,9 @@ export function setOpponent(user) {
     payload: user,
   };
 }
+export function addPointsToUser(payload) {
+  return {
+    type: 'ADD_POINTS',
+    payload,
+  };
+}

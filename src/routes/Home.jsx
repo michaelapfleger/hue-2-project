@@ -101,6 +101,7 @@ export default class Info extends React.Component {
     firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
         .then(() => {
           const test = firebase.auth().currentUser;
+          console.log('user', test);
 
           const currentUser = {
             email: this.state.email,

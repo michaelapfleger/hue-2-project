@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
 import { connect } from 'react-redux';
-import { setTimeStart } from '../actions';
+import { setTimeStart, addPointsToUser } from '../actions';
 
 import DrawArea from './../components/DrawArea.jsx';
 import Countdown from './../components/Countdown.jsx';
@@ -53,6 +54,9 @@ export default class Draw extends React.Component {
       error: '',
       timeRemaining: 50,
       start: false,
+      guess: '',
+      guessInput: '',
+      guessWrong: false,
     };
   }
   static propTypes = {
@@ -92,9 +96,40 @@ export default class Draw extends React.Component {
     this.props.dispatch(setTimeStart());
   }
 
+  addPoints() {
+    this.props.dispatch(addPointsToUser(5));
+    // save to database
+    // runde beenden
+  }
+
   componentDidMount() {
     this.getNewTerm();
   }
+
+  submitGuess(evt) {
+    if (evt) {
+      evt.preventDefault();
+    }
+    this.setState({ guess: this.state.guessInput });
+    this.checkGuess(this.state.guessInput);
+  }
+  checkGuess(guess) {
+    const correct = guess.localeCompare(this.state.term.term);
+    if (correct === 0) {
+      // this.addPoints();
+      this.setState({ guessWrong: false });
+    } else {
+      // anzeigen dass das wort nicht stimmt!
+      this.setState({ guessWrong: true });
+    }
+  }
+  guess(input) {
+    console.log('input', input);
+    this.setState({
+      guessInput: input.replace(/[^\w\s]/gi, '').toLowerCase(),
+    });
+  }
+
 
   render() {
     if (this.state.start) {
@@ -102,7 +137,11 @@ export default class Draw extends React.Component {
         return (<div>
             <h1>Draw-Game</h1>
             <h2>
-              { this.props.user.username }: XX points | { this.props.opponent.username }: XX points
+              { this.props.user.username ? this.props.user.username : this.props.user.email }:
+              { this.props.user ? this.props.user.points : '0'} points |
+              { this.props.opponent.username ? this.props.opponent.username :
+                  this.props.opponent.email }:
+              { this.props.opponent ? this.props.opponent.points : '0'} points
             </h2>
             <Countdown timeRemaining={this.state.timeRemaining}/>
               <h3>Sorry, time is up!</h3>
@@ -112,7 +151,11 @@ export default class Draw extends React.Component {
       return <div>
         <h1>Draw-Game</h1>
         <h2>
-          { this.props.user.username }: XX points | { this.props.opponent.username }: XX points
+          { this.props.user.username ? this.props.user.username : this.props.user.email }:
+          { this.props.user ? this.props.user.points : '0' } points | { this.props.opponent.username ?
+            this.props.opponent.username :
+            this.props.opponent.email }: { this.props.opponent ? this.props.opponent.points : '0'}
+            points
         </h2>
         <Countdown timeRemaining={this.state.timeRemaining}/>
         <Paper style={styles.container}>
@@ -120,12 +163,24 @@ export default class Draw extends React.Component {
         </Paper>
         <p style={{ ...styles.term }}>{this.state.term.term}</p>
         <p className="error">{this.state.error}</p>
+        { this.state.guessWrong && <p>Your guess is wrong!!</p> }
+        <TextField floatingLabelText="Enter your guess"
+                   fullWidth={false}
+                   value={this.state.guessInput}
+                   onChange={(e, v) => this.guess(v)}/>
+        <RaisedButton label="Guess"
+                      primary={true}
+                      disabled={!this.state.guessInput}
+                      onTouchTap={() => this.submitGuess()}/>
       </div>;
     }
     return <div>
       <h1>Draw-Game</h1>
       <h2>
-        { this.props.user.username }: XX points | { this.props.opponent.username }: XX points
+        { this.props.user.username ? this.props.user.username : this.props.user.email }:
+        { this.props.user ? this.props.user.points : '0'} points | { this.props.opponent.username ?
+          this.props.opponent.username : this.props.opponent.email }:
+        { this.props.opponent ? this.props.opponent.points : '0'}  points
       </h2>
       <RaisedButton
           label="Start"
