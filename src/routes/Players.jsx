@@ -8,7 +8,6 @@ import TextField from 'material-ui/TextField';
 
 import DataChannel from '../components/DataChannel.jsx';
 import firebase from './../firebase';
-
 import { setUser, setOpponent } from './../actions';
 
 const styles = {
@@ -45,6 +44,24 @@ export default class Players extends React.Component {
 
   componentDidMount() {
     this.getUsers();
+  }
+
+  componentWillMount() {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        firebase.database().ref(`/users/${user.uid}`).once('value')
+            .then((snapshot) => {
+              const currentUser = {
+                username: snapshot.val().username,
+                uid: snapshot.val().uid,
+                points: snapshot.val().points,
+                online: snapshot.val().online,
+              };
+              this.props.dispatch(setUser(currentUser));
+            });
+        this.setState({ loggedIn: true });
+      }
+    });
   }
 
   handleNameChange(e) {

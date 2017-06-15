@@ -23,7 +23,6 @@ import Mime from './routes/Mime.jsx';
 import Explain from './routes/Explain.jsx';
 import Info from './routes/Info.jsx';
 
-
 const styles = {
   content: {
     paddingTop: 40,

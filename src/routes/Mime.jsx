@@ -8,7 +8,7 @@ import Countdown from './../components/Countdown.jsx';
 import firebase from './../firebase';
 import Call from '../components/CallVideo.jsx';
 import { send } from '../ws';
-import { setTimeStart } from '../actions';
+import { setTimeStart, setUser } from '../actions';
 
 const styles = {
   container: {
@@ -54,6 +54,24 @@ export default class Mime extends React.Component {
   componentDidMount() {
     this.getNewTerm();
     send('join', 'all', this.props.user.uid);
+  }
+
+  componentWillMount() {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        firebase.database().ref(`/users/${user.uid}`).once('value')
+            .then((snapshot) => {
+              const currentUser = {
+                username: snapshot.val().username,
+                uid: snapshot.val().uid,
+                points: snapshot.val().points,
+                online: snapshot.val().online,
+              };
+              this.props.dispatch(setUser(currentUser));
+            });
+        this.setState({ loggedIn: true });
+      }
+    });
   }
 
   startCall(name) {
