@@ -1,13 +1,14 @@
 import React from 'react';
-import Paper from 'material-ui/Paper';
-import TextField from 'material-ui/TextField';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import RaisedButton from 'material-ui/RaisedButton';
 
 import Countdown from './../components/Countdown.jsx';
 import firebase from './../firebase';
-
 import Call from '../components/CallVideo.jsx';
 import { send } from '../ws';
+import { setTimeStart } from '../actions';
 
 const styles = {
   container: {
@@ -24,43 +25,46 @@ const styles = {
   },
 };
 
+@connect(store => ({
+  user: store.user,
+  opponent: store.opponent,
+  over: store.over,
+}))
 export default class Mime extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user1: 'tami',
-      user2: 'Michi',
       term: {},
       terms: [],
       error: '',
       timeRemaining: 20,
-      nameInput: '',
-      name: '',
+      start: false,
     };
+
+    this.start = this.start.bind(this);
   }
+
+  static propTypes = {
+    user: PropTypes.object,
+    opponent: PropTypes.object,
+    over: PropTypes.bool,
+    dispatch: PropTypes.func,
+  };
 
   componentDidMount() {
     this.getNewTerm();
-  }
-
-  nameInput(input) {
-    this.setState({
-      nameInput: input.replace(/[^\w\s]/gi, '').toLowerCase(),
-    });
-  }
-
-  setName(evt) {
-    if (evt) {
-      evt.preventDefault();
-    }
-    send('join', 'all', this.state.nameInput);
-    this.setState({
-      name: this.state.nameInput,
-    });
+    send('join', 'all', this.props.user.uid);
   }
 
   startCall(name) {
     this.Call.startCall(name);
+    // this.start();
+  }
+
+  start() {
+    console.log('start now');
+    this.setState({ start: true });
+    this.props.dispatch(setTimeStart());
   }
 
   getNewTerm() {
@@ -89,36 +93,48 @@ export default class Mime extends React.Component {
   }
 
   render() {
+    if (this.state.start) {
+      if (this.props.over) {
+        return (
+            <div>
+              <h1>Mime-Game</h1>
+              <h2>
+                {this.props.user.username}: XX points | {this.props.opponent.username}: XX points
+              </h2>
+              <Countdown timeRemaining={this.state.timeRemaining}/>
+              <h3>Sorry, time is up!</h3>
+            </div>
+        );
+      }
+      return <div>
+        <h1>Mime-Game</h1>
+        <h2>
+          { this.props.user.username }: XX points | { this.props.opponent.username }: XX points
+        </h2>
+        <Countdown timeRemaining={this.state.timeRemaining}/>
+
+        <Call ref={call => (this.Call = call)}/>
+
+        <p style={{ ...styles.term }}>{this.state.term.term}</p>
+        <p className="error">{this.state.error}</p>
+
+
+      </div>;
+    }
+
     return <div>
       <h1>Mime-Game</h1>
-      <h2>{ this.state.user1 }: XX points | { this.state.user2 }: XX points</h2>
-      <Countdown timeRemaining={this.state.timeRemaining}/>
-
-      <Paper style={styles.container}>
-        <form onSubmit={evt => this.setName(evt)}>
-          <TextField floatingLabelText="Enter a username"
-                     fullWidth={true}
-                     value={this.state.nameInput}
-                     onChange={(e, v) => this.nameInput(v)}/>
-          <RaisedButton label="Start Chat"
-                        primary={true}
-                        disabled={!this.state.nameInput}
-                        onTouchTap={() => this.setName()}/>
-        </form>
-      </Paper>
-
-      <a href="#"
-         style={styles.name}
-         onClick={() => this.startCall(this.state.user1)}>
-        {this.state.user1}
-      </a>
-
+      <h2>
+        { this.props.user.username }: XX points | { this.props.opponent.username }: XX points
+      </h2>
+      <RaisedButton
+          label="Start"
+          labelPosition="before"
+          style={styles.button}
+          containerElement="label"
+          onClick={ () => this.startCall(this.props.opponent.uid) }>
+      </RaisedButton>
       <Call ref={call => (this.Call = call)}/>
-
-      <p style={{ ...styles.term }}>{this.state.term.term}</p>
-      <p className="error">{this.state.error}</p>
-
-
     </div>;
   }
 }
