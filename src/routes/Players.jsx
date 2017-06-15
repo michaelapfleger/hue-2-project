@@ -57,17 +57,16 @@ export default class Players extends React.Component {
       displayName: value,
     })
         .then(() => {
-          const currentUser = {
-            username: user.displayName,
-            uid: user.uid,
-          };
-          this.props.dispatch(setUser(currentUser));
-
-          firebase.database().ref(`users/${user.uid}`).set({
-            online: 0,
-            uid: user.uid,
-            username: user.displayName,
+          firebase.database().ref(`users/${user.uid}`).update({
+            '/username': user.displayName,
           });
+
+          const currentUser = {
+            ...this.props.user,
+            username: user.displayName,
+          };
+
+          this.props.dispatch(setUser(currentUser));
         })
         .catch(
         (error) => {
@@ -107,8 +106,8 @@ export default class Players extends React.Component {
           currentOpponent = {
             username: snapshot.val().username,
             uid: snapshot.val().uid,
+            points: snapshot.val().points,
           };
-          console.log('test', this.props.user);
           this.props.dispatch(setOpponent(currentOpponent));
         });
   }

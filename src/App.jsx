@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Link, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
@@ -100,6 +100,7 @@ export default class App extends React.Component {
         open: false,
         docked: false,
       },
+      loggedIn: false,
     };
   }
 
@@ -151,7 +152,10 @@ export default class App extends React.Component {
               <Route exact={route.exact}
                      key={route.link}
                      path={route.link}
-                     component={route.component}/>
+                     render={ () => (
+                       this.state.loggedIn ? ({ route.component }) : <Redirect to="/"/>
+                       )}
+                     />
           ))}
         </div>
       </div>
@@ -159,3 +163,9 @@ export default class App extends React.Component {
     </MuiThemeProvider>;
   }
 }
+
+
+
+
+
+

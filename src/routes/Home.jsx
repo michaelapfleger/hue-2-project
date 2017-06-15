@@ -53,13 +53,17 @@ export default class Info extends React.Component {
     console.log('did mount', user);
 
     if (user != null) {
-      const currentUser = {
-        email: user.email,
-        username: user.displayName,
-        uid: user.uid,
-      };
+      firebase.database().ref(`/users/${user.uid}`).once('value')
+          .then((snapshot) => {
+            const currentUser = {
+              username: snapshot.val().username,
+              uid: snapshot.val().uid,
+              points: snapshot.val().points,
+              online: snapshot.val().online,
+            };
+            this.props.dispatch(setUser(currentUser));
+          });
       this.setState({ loggedIn: true });
-      this.props.dispatch(setUser(currentUser));
     }
   }
 
@@ -84,6 +88,7 @@ export default class Info extends React.Component {
             online: 0,
             uid: user.uid,
             username: user.email,
+            points: 0,
           });
         })
         .catch(
@@ -113,11 +118,7 @@ export default class Info extends React.Component {
   logoutUser() {
     firebase.auth().signOut().then(() => {
       this.setState({ loggedIn: false });
-      const currentUser = {
-        email: '',
-        uid: '',
-        username: '',
-      };
+      const currentUser = { };
       this.props.dispatch(setUser(currentUser));
     }).catch((error) => {
       this.setState({ error: error.message });

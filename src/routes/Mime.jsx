@@ -99,7 +99,8 @@ export default class Mime extends React.Component {
             <div>
               <h1>Mime-Game</h1>
               <h2>
-                {this.props.user.username}: XX points | {this.props.opponent.username}: XX points
+                {this.props.user.username}: {this.props.user.points} points <span> | </span>
+                 {this.props.opponent.username}: {this.props.opponent.points} points
               </h2>
               <Countdown timeRemaining={this.state.timeRemaining}/>
               <h3>Sorry, time is up!</h3>
@@ -109,7 +110,8 @@ export default class Mime extends React.Component {
       return <div>
         <h1>Mime-Game</h1>
         <h2>
-          { this.props.user.username }: XX points | { this.props.opponent.username }: XX points
+          {this.props.user.username}: {this.props.user.points} points <span> | </span>
+           {this.props.opponent.username}: {this.props.opponent.points} points
         </h2>
         <Countdown timeRemaining={this.state.timeRemaining}/>
 
@@ -125,7 +127,8 @@ export default class Mime extends React.Component {
     return <div>
       <h1>Mime-Game</h1>
       <h2>
-        { this.props.user.username }: XX points | { this.props.opponent.username }: XX points
+        {this.props.user.username}: {this.props.user.points} points <span> | </span>
+         {this.props.opponent.username}: {this.props.opponent.points} points
       </h2>
       <RaisedButton
           label="Start"
