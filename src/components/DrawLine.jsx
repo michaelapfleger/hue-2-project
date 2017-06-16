@@ -16,7 +16,6 @@ export default class DrawLine extends React.Component {
   };
 
   componentWillReceiveProps() {
-    console.log('drawLine ', this.props.line);
     const pathData = `M ${this.props.line
             .map(p => `${p.get('x')} ${p.get('y')}`)
             .join(' L ')}`;
