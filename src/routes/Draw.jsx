@@ -121,11 +121,11 @@ export default class Draw extends React.Component {
   }
   addPoints() {
     this.props.dispatch(addPointsToUser(
-        { ...this.props.user, points: this.props.user.points + 5 },
+        { ...this.props.user, points: this.props.user.points + this.props.term.points },
     ));
     // save to database
     firebase.database().ref(`users/${this.props.user.uid}`).update({
-      '/points': this.props.user.points + 5,
+      '/points': this.props.user.points + this.props.term.points,
     });
   }
 

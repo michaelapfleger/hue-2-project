@@ -6,7 +6,7 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import firebase from './../firebase';
 
-import { setUser, setOpponent } from './../actions';
+import { setUser, setOpponent, setTerm } from './../actions';
 
 const styles = {
   button: {
@@ -85,7 +85,7 @@ export default class Info extends React.Component {
                       this.props.dispatch(setOpponent(opponentUser));
                       firebase.database().ref(`/users/${opponentUser.uid}`).on('child_changed', (snap) => {
                         console.log('opponent changed', snap.val());
-                        if (snap.val() === 'readytrue') {
+                        if (snap.key === 'ready') {
                           this.props.dispatch(setOpponent({
                             ...this.props.opponent,
                             ready: true,
@@ -93,6 +93,11 @@ export default class Info extends React.Component {
                         }
                       });
                     });
+                firebase.database().ref(`/users/${this.props.user.uid}`).on('child_changed', (snap) => {
+                  if (snap.key === 'term') {
+                    this.props.dispatch(setTerm(snap.val()));
+                  }
+                });
               }
             });
         this.setState({ loggedIn: true });
