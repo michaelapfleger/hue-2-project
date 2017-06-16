@@ -2,6 +2,8 @@ export default function reducer(state = {
   user: {},
   opponent: {},
   over: false,
+  term: '',
+  playing: {},
   structure: [
     '/draw',
     '/mime',
@@ -35,6 +37,12 @@ export default function reducer(state = {
         opponent: {
           ...action.payload,
         },
+      };
+    }
+    case 'SET_TERM': {
+      return {
+        ...state,
+        term: action.payload,
       };
     }
     case 'ADD_POINTS': {

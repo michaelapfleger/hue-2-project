@@ -246,7 +246,7 @@ export default class CallVideo extends React.Component {
 
   render() {
     return <Card>
-      <CardTitle title="Call" subtitle="audio"/>
+      <CardTitle title="Explain" subtitle="audio"/>
       <CardText>
         <img src="./audio.png" width="400"/>
         {this.getCallContent()}

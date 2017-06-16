@@ -32,3 +32,9 @@ export function addPointsToUser(payload) {
     payload,
   };
 }
+export function setTerm(term) {
+  return {
+    type: 'SET_TERM',
+    payload: term,
+  };
+}

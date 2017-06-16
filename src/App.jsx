@@ -69,6 +69,7 @@ const routes = [
     component: <Draw/>,
     icon: <DrawIcon/>,
     loginRequired: true,
+    disabled: true,
   },
   {
     link: '/mime',
@@ -76,6 +77,7 @@ const routes = [
     component: <Mime/>,
     icon: <MimeIcon/>,
     loginRequired: true,
+    disabled: true,
   },
   {
     link: '/explain',
@@ -83,6 +85,7 @@ const routes = [
     component: <Explain/>,
     icon: <ExplainIcon/>,
     loginRequired: true,
+    disabled: true,
   },
   {
     link: '/info',
@@ -153,7 +156,8 @@ export default class App extends React.Component {
                 <MenuItem primaryText={route.title}
                           leftIcon={route.icon}
                           onTouchTap={() => this.closeDrawer()}
-                          disabled={!this.state.loggedIn && route.loginRequired}
+                          disabled={(!this.state.loggedIn && route.loginRequired) ||
+                          route.disabled}
                 />
               </Link>)}
         </Drawer>

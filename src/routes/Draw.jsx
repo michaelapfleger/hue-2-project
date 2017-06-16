@@ -6,7 +6,7 @@ import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import { connect } from 'react-redux';
-import { setTimeStart, addPointsToUser } from '../actions';
+import { setTimeStart, addPointsToUser, setTerm } from '../actions';
 
 import DrawArea from './../components/DrawArea.jsx';
 import Countdown from './../components/Countdown.jsx';
@@ -45,6 +45,7 @@ const styles = {
   user: store.user,
   opponent: store.opponent,
   structure: store.structure,
+  playing: store.playing,
 }))
 export default class Draw extends React.Component {
   constructor(props) {
@@ -68,6 +69,7 @@ export default class Draw extends React.Component {
   static propTypes = {
     over: PropTypes.bool,
     user: PropTypes.object,
+    playing: PropTypes.object,
     guessInput: PropTypes.string,
     opponent: PropTypes.object,
     structure: PropTypes.array,
@@ -98,6 +100,7 @@ export default class Draw extends React.Component {
   getOneTerm() {
     const rand = Math.floor((Math.random() * this.state.terms.length));
     this.setState({ term: this.state.terms[rand] });
+    this.props.dispatch(setTerm(this.state.terms[rand]));
   }
   start() {
     this.setState({ start: true });
@@ -116,6 +119,7 @@ export default class Draw extends React.Component {
   }
 
   componentDidMount() {
+    // nur wenns nicht der opponent ist!
     this.getNewTerm();
   }
 
@@ -161,6 +165,7 @@ export default class Draw extends React.Component {
           <Paper style={styles.container}>
             <h3>Congratulations!</h3>
             <h4>Your guess was correct!</h4>
+            <p>Now it's {this.props.playing.username}'s time to play.</p>
             <RaisedButton label="Next round"
                           primary={true}
                           onTouchTap={() => this.nextRound()}/>

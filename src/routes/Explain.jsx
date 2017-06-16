@@ -82,10 +82,12 @@ export default class Explain extends React.Component {
   start() {
     this.setState({ start: true });
     this.props.dispatch(setTimeStart());
+    this.startCall(this.props.opponent.uid);
   }
 
   startCall(name) {
     this.Call.startCall(name);
+    // this.start();
   }
 
   submitGuess(evt) {
@@ -246,8 +248,9 @@ export default class Explain extends React.Component {
           labelPosition="before"
           style={styles.button}
           containerElement="label">
-        <input type="submit" style={styles.exampleImageInput} onClick={ () => this.start() }/>
+        <input type="submit" style={styles.exampleImageInput} onClick={() => this.startCall(this.props.opponent.uid) }/>
       </RaisedButton>
+      <Call ref={call => (this.Call = call)}/>
     </div>;
   }
 }

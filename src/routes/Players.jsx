@@ -77,7 +77,6 @@ export default class Players extends React.Component {
     const tempUsers = [];
     let name = '';
     let userID = '';
-    console.log('users');
     firebase.database().ref('users').once('value')
         .then((snapshot) => {
           snapshot.forEach((childSnapshot) => {
@@ -112,17 +111,23 @@ export default class Players extends React.Component {
   }
 
   render() {
+    let index = -1;
+    if (this.state.users && this.props.opponent) {
+      index = this.state.users.findIndex(x => x.userID === this.props.opponent.userID);
+      console.log('index', index);
+    }
     return <div>
       <h1>{this.constructor.name}</h1>
       <DataChannel ref={call => (this.DataChannel = call)}/>
+      <TextField
+          defaultValue={this.props.user.username}
+          floatingLabelText="Change your Username"
+          onBlur={ this.handleNameChange }
+          errorText={ this.state.error }
+      /><br />
       <Paper style={styles.container}>
-        <TextField
-            defaultValue={this.props.user.username}
-            floatingLabelText="Change your Username"
-            onBlur={ this.handleNameChange }
-            errorText={ this.state.error }
-        /><br />
-        <RadioButtonGroup name="users" onChange={this.setOpponent}>
+        <p>Choose your opponent for your next game!</p>
+        <RadioButtonGroup name="users" onChange={this.setOpponent} defaultSelected={ index }>
           {this.state.users.map(user => <RadioButton value={user.userID}
                                                 label={user.name}
                                                 key={user.userID}
