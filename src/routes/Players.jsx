@@ -111,12 +111,14 @@ export default class Players extends React.Component {
         .then(() => {
           firebase.database().ref(`users/${value}`).update({
             '/role': 'guesser',
+            '/opponent': `${this.props.user.uid}`,
           });
           firebase.database().ref(`users/${this.props.user.uid}`).update({
             '/role': 'actor',
+            '/opponent': `${value}`,
           });
 
-          this.props.dispatch(setUser({ ...this.props.user, role: 'actor' }));
+          this.props.dispatch(setUser({ ...this.props.user, role: 'actor', opponent: `${value}` }));
         });
   }
 
@@ -131,7 +133,7 @@ export default class Players extends React.Component {
             onBlur={ this.handleNameChange }
             errorText={ this.state.error }
         /><br />
-        <RadioButtonGroup name="users" onChange={this.setOpponent}>
+        <RadioButtonGroup name="users" onChange={this.setOpponent} valueSelected={this.props.user.opponent}>
           {this.state.users.map(user => <RadioButton value={user.userID}
                                                 label={user.name}
                                                 key={user.userID}

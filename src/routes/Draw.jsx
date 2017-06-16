@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { setTimeStart, addPointsToUser } from '../actions';
 
 import NoOpponentSelected from './../components/NoOpponentSelected.jsx';
+import OverviewPoints from './../components/OverviewPoints.jsx';
 import DrawArea from './../components/DrawArea.jsx';
 import Countdown from './../components/Countdown.jsx';
 import firebase from './../firebase';
@@ -154,7 +155,7 @@ export default class Draw extends React.Component {
   }
 
   render() {
-    if (!this.props.opponent.username) {
+    if (!this.props.user.role === 'none') {
       return (<NoOpponentSelected/>);
     }
 
@@ -195,13 +196,7 @@ export default class Draw extends React.Component {
       }
       return <div>
         <h1>Draw-Game</h1>
-        <h2>
-          { this.props.user.username ? this.props.user.username : this.props.user.email }:
-          { this.props.user ? this.props.user.points : '0' } points | { this.props.opponent.username ?
-            this.props.opponent.username :
-            this.props.opponent.email }: { this.props.opponent ? this.props.opponent.points : '0'}
-          points
-        </h2>
+        <OverviewPoints/>
         <Countdown timeRemaining={this.state.timeRemaining}/>
         <Paper style={styles.container}>
           <DrawArea/>
@@ -230,12 +225,7 @@ export default class Draw extends React.Component {
     }
     return <div>
       <h1>Draw-Game</h1>
-      <h2>
-        { this.props.user.username ? this.props.user.username : this.props.user.email }:
-        { this.props.user ? this.props.user.points : '0'} points | { this.props.opponent.username ?
-          this.props.opponent.username : this.props.opponent.email }:
-        { this.props.opponent ? this.props.opponent.points : '0'}  points
-      </h2>
+      <OverviewPoints/>
       <RaisedButton
           label="Start"
           labelPosition="before"
