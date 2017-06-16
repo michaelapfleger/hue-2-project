@@ -47,6 +47,7 @@ const styles = {
   user: store.user,
   opponent: store.opponent,
   structure: store.structure,
+  term: store.term,
 }))
 export default class Draw extends React.Component {
   constructor(props) {
@@ -70,7 +71,7 @@ export default class Draw extends React.Component {
   static propTypes = {
     over: PropTypes.bool,
     user: PropTypes.object,
-    guessInput: PropTypes.string,
+    term: PropTypes.object,
     opponent: PropTypes.object,
     structure: PropTypes.array,
     dispatch: PropTypes.func,
@@ -101,10 +102,16 @@ export default class Draw extends React.Component {
     const rand = Math.floor((Math.random() * this.state.terms.length));
     this.setState({ term: this.state.terms[rand] });
     this.props.dispatch(setTerm(this.state.terms[rand]));
+    // store to database
+    firebase.database().ref('term/').update({
+      points: this.state.terms[rand].points,
+      term: this.state.terms[rand].term,
+    });
   }
   start() {
     this.setState({ start: true });
     this.props.dispatch(setTimeStart());
+    // set user to ready
   }
 
   addPoints() {
@@ -119,8 +126,15 @@ export default class Draw extends React.Component {
   }
 
   componentDidMount() {
-    // nur wenns nicht der opponent ist!
-    this.getNewTerm();
+    if (this.props.user && this.props.user.role === 'actor') {
+      this.getNewTerm();
+    }
+    if (this.props.user && this.props.user.role === 'guesser') {
+      firebase.database().ref('term/').once('value')
+        .then((snapshot) => {
+          this.props.dispatch(setTerm(snapshot.val()));
+        });
+    }
   }
 
   submitGuess(evt) {
@@ -131,7 +145,7 @@ export default class Draw extends React.Component {
     this.checkGuess(this.state.guessInput);
   }
   checkGuess(guess) {
-    const correct = guess.localeCompare(this.state.term.term);
+    const correct = guess.localeCompare(this.props.term.term);
     if (correct === 0) {
       this.addPoints();
 
@@ -151,12 +165,16 @@ export default class Draw extends React.Component {
   componentWillUnmount() {
     this.setState({ success: false });
     clearTimeout();
+    // set user to unready
+    this.props.dispatch(setTerm(null));
+    firebase.database().ref('term/').set(null);
   }
   nextRound() {
     this.setState({ redirect: this.props.structure[1] });
   }
 
   render() {
+    console.log('term ', this.props.term);
     if (!this.props.user.role === 'none') {
       return (<NoOpponentSelected/>);
     }

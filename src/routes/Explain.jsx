@@ -11,7 +11,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import NoOpponentSelected from './../components/NoOpponentSelected.jsx';
 import Term from './../components/Term.jsx';
 import OverviewPoints from './../components/OverviewPoints.jsx';
-import { setTimeStart, addPointsToUser } from '../actions';
+import { setTimeStart, addPointsToUser, setTerm } from '../actions';
 import Countdown from './../components/Countdown.jsx';
 import firebase from './../firebase';
 import Call from '../components/CallAudio.jsx';
@@ -153,6 +153,11 @@ export default class Explain extends React.Component {
   getOneTerm() {
     const rand = Math.floor((Math.random() * this.state.terms.length));
     this.setState({ term: this.state.terms[rand] });
+    this.props.dispatch(setTerm(this.state.terms[rand]));
+    firebase.database().ref('term/').update({
+      points: this.state.terms[rand].points,
+      term: this.state.terms[rand].term,
+    });
   }
 
   guess(input) {
@@ -164,6 +169,8 @@ export default class Explain extends React.Component {
   componentWillUnmount() {
     this.setState({ success: false });
     clearTimeout();
+    this.props.dispatch(setTerm(null));
+    firebase.database().ref('term/').set(null);
   }
 
   render() {
