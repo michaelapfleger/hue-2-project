@@ -8,6 +8,7 @@ import TextField from 'material-ui/TextField';
 import { connect } from 'react-redux';
 import { setTimeStart, addPointsToUser } from '../actions';
 
+import NoOpponentSelected from './../components/NoOpponentSelected.jsx';
 import DrawArea from './../components/DrawArea.jsx';
 import Countdown from './../components/Countdown.jsx';
 import firebase from './../firebase';
@@ -111,7 +112,7 @@ export default class Draw extends React.Component {
 
     // save to database
     firebase.database().ref(`users/${this.props.user.uid}`).update({
-      '/points': this.props.user.points,
+      '/points': this.props.user.points + 5,
     });
   }
 
@@ -153,6 +154,10 @@ export default class Draw extends React.Component {
   }
 
   render() {
+    if (!this.props.opponent.username) {
+      return (<NoOpponentSelected/>);
+    }
+
     if (this.state.success) {
       if (this.state.redirect) {
         return (<Redirect to={this.state.redirect} />);
