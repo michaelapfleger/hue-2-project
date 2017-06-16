@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import RaisedButton from 'material-ui/RaisedButton';
 
+import NoOpponentSelected from './../components/NoOpponentSelected.jsx';
 import Countdown from './../components/Countdown.jsx';
 import firebase from './../firebase';
 import Call from '../components/CallVideo.jsx';
@@ -111,6 +112,10 @@ export default class Mime extends React.Component {
   }
 
   render() {
+    if (!this.props.opponent.username) {
+      return (<NoOpponentSelected/>);
+    }
+
     if (this.state.start) {
       if (this.props.over) {
         return (

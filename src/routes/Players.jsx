@@ -110,6 +110,16 @@ export default class Players extends React.Component {
           this.setState({ defaultSelected:
               this.state.users.findIndex(x => x.userID === currentOpponent.uid),
           });
+        })
+        .then(() => {
+          firebase.database().ref(`users/${value}`).update({
+            '/role': 'guesser',
+          });
+          firebase.database().ref(`users/${this.props.user.uid}`).update({
+            '/role': 'actor',
+          });
+
+          this.props.dispatch(setUser({ ...this.props.user, role: 'actor' }));
         });
   }
 
@@ -117,15 +127,14 @@ export default class Players extends React.Component {
     return <div>
       <h1>{this.constructor.name}</h1>
       <DataChannel ref={call => (this.DataChannel = call)}/>
-      <TextField
-          defaultValue={this.props.user.username}
-          floatingLabelText="Change your Username"
-          onBlur={ this.handleNameChange }
-          errorText={ this.state.error }
-      /><br />
       <Paper style={styles.container}>
-        <p>Choose your opponent for your next game!</p>
-        <RadioButtonGroup name="users" onChange={this.setOpponent} defaultSelected={ this.state.defaultSelected }>
+        <TextField
+            defaultValue={this.props.user.username}
+            floatingLabelText="Change your Username"
+            onBlur={ this.handleNameChange }
+            errorText={ this.state.error }
+        /><br />
+        <RadioButtonGroup name="users" onChange={this.setOpponent}>
           {this.state.users.map(user => <RadioButton value={user.userID}
                                                 label={user.name}
                                                 key={user.userID}
