@@ -38,3 +38,4 @@ export function setTerm(term) {
     payload: term,
   };
 }
+

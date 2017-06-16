@@ -31,6 +31,7 @@ export default class Players extends React.Component {
     this.state = {
       error: '',
       users: [],
+      defaultSelected: null,
     };
     this.handleNameChange = this.handleNameChange.bind(this);
     this.setOpponent = this.setOpponent.bind(this);
@@ -106,15 +107,13 @@ export default class Players extends React.Component {
             points: snapshot.val().points,
           };
           this.props.dispatch(setOpponent(currentOpponent));
+          this.setState({ defaultSelected:
+              this.state.users.findIndex(x => x.userID === currentOpponent.uid),
+          });
         });
   }
 
   render() {
-    let index = -1;
-    if (this.state.users && this.props.opponent) {
-      index = this.state.users.findIndex(x => x.userID === this.props.opponent.userID);
-      console.log('index', index);
-    }
     return <div>
       <h1>{this.constructor.name}</h1>
       <DataChannel ref={call => (this.DataChannel = call)}/>
@@ -126,7 +125,7 @@ export default class Players extends React.Component {
       /><br />
       <Paper style={styles.container}>
         <p>Choose your opponent for your next game!</p>
-        <RadioButtonGroup name="users" onChange={this.setOpponent} defaultSelected={ index }>
+        <RadioButtonGroup name="users" onChange={this.setOpponent} defaultSelected={ this.state.defaultSelected }>
           {this.state.users.map(user => <RadioButton value={user.userID}
                                                 label={user.name}
                                                 key={user.userID}

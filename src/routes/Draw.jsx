@@ -46,7 +46,6 @@ const styles = {
   user: store.user,
   opponent: store.opponent,
   structure: store.structure,
-  playing: store.playing,
 }))
 export default class Draw extends React.Component {
   constructor(props) {
@@ -70,7 +69,6 @@ export default class Draw extends React.Component {
   static propTypes = {
     over: PropTypes.bool,
     user: PropTypes.object,
-    playing: PropTypes.object,
     guessInput: PropTypes.string,
     opponent: PropTypes.object,
     structure: PropTypes.array,
@@ -170,7 +168,7 @@ export default class Draw extends React.Component {
           <Paper style={styles.container}>
             <h3>Congratulations!</h3>
             <h4>Your guess was correct!</h4>
-            <p>Now it's {this.props.playing.username}'s time to play.</p>
+            <p>Now it's {this.props.player1.username}'s time to play.</p>
             <RaisedButton label="Next round"
                           primary={true}
                           onTouchTap={() => this.nextRound()}/>

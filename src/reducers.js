@@ -3,7 +3,6 @@ export default function reducer(state = {
   opponent: {},
   over: false,
   term: '',
-  playing: {},
   structure: [
     '/draw',
     '/mime',
