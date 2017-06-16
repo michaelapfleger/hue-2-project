@@ -2,6 +2,9 @@ export default function reducer(state = {
   user: {},
   opponent: {},
   over: false,
+  sound: {},
+  guessInput: '',
+  guess: '',
 }, action) {
   switch (action.type) {
     case 'TIME_OVER': {

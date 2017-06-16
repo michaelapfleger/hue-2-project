@@ -48,11 +48,10 @@ export default class Draw extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user1: 'Tami',
-      user2: 'Michi',
       term: {},
       terms: [],
       status: Sound.status.PAUSED,
+      statusWin: Sound.status.PAUSED,
       error: '',
       timeRemaining: 50,
       start: false,
@@ -60,11 +59,13 @@ export default class Draw extends React.Component {
       guessInput: '',
       guessWrong: false,
       sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/wrong.mp3',
+      success: false,
     };
   }
   static propTypes = {
     over: PropTypes.bool,
     user: PropTypes.object,
+    guessInput: PropTypes.string,
     opponent: PropTypes.object,
     dispatch: PropTypes.func,
   };
@@ -101,7 +102,7 @@ export default class Draw extends React.Component {
 
   addPoints() {
     this.props.dispatch(addPointsToUser(
-      { ...this.props.user, points: this.props.user.points + 5 },
+        { ...this.props.user, points: this.props.user.points + 5 },
     ));
 
     // save to database
@@ -127,8 +128,11 @@ export default class Draw extends React.Component {
     const correct = guess.localeCompare(this.state.term.term);
     if (correct === 0) {
       this.addPoints();
-      this.setState({ sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/win.mp3', status: Sound.status.PLAYING });
+
       this.setState({ guessWrong: false });
+      setTimeout(() => {
+        this.setState({ success: true, sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/win.mp3', statusWin: Sound.status.PLAYING });
+      }, 1000);
     } else {
       // anzeigen dass das wort nicht stimmt!
       this.setState({ guessWrong: true });
@@ -141,23 +145,54 @@ export default class Draw extends React.Component {
       guessInput: input.replace(/[^\w\s]/gi, '').toLowerCase(),
     });
   }
-
+  componentWillUnmount() {
+    this.setState({ success: false });
+    clearTimeout();
+  }
+  nextRound() {
+    console.log('redirect to new round');
+  }
 
   render() {
+    if (this.state.success) {
+      return (
+          <Paper style={styles.container}>
+            <h3>Congratulations!</h3>
+            <h4>Your guess was correct!</h4>
+            <RaisedButton label="Next round"
+                          primary={true}
+                          onTouchTap={() => this.nextRound()}/>
+            <Sound
+                url={this.state.sound}
+                playStatus={this.state.statusWin}
+                playFromPosition={0}
+                volume={100}
+                onLoading={({ bytesLoaded, bytesTotal }) => console.log(`${(bytesLoaded / bytesTotal) * 100}% loaded`)}
+                onPlaying={({ position }) => console.log(position) }
+                onFinishedPlaying={() => this.setState({ statusWin: Sound.status.STOPPED })}
+            />
+          </Paper>
+      );
+    }
     if (this.state.start) {
       if (this.props.over) {
         return (<div>
-            <h1>Draw-Game</h1>
-            <h2>
-              { this.props.user.username ? this.props.user.username : this.props.user.email }:
-              { this.props.user ? this.props.user.points : '0'} points |
-              { this.props.opponent.username ? this.props.opponent.username :
-                  this.props.opponent.email }:
-              { this.props.opponent ? this.props.opponent.points : '0'} points
-            </h2>
-            <Countdown timeRemaining={this.state.timeRemaining}/>
-              <h3>Sorry, time is up!</h3>
-          </div>
+              <h1>Draw-Game</h1>
+              <h2>
+                { this.props.user.username ? this.props.user.username : this.props.user.email }:
+                { this.props.user ? this.props.user.points : '0'} points |
+                { this.props.opponent.username ? this.props.opponent.username :
+                    this.props.opponent.email }:
+                { this.props.opponent ? this.props.opponent.points : '0'} points
+              </h2>
+              <Countdown timeRemaining={this.state.timeRemaining}/>
+              <Paper style={styles.container}>
+                <h3>Sorry, time is up!</h3>
+                <RaisedButton label="Next round"
+                              primary={true}
+                              onTouchTap={() => this.nextRound()}/>
+              </Paper>
+            </div>
         );
       }
       return <div>
@@ -167,7 +202,7 @@ export default class Draw extends React.Component {
           { this.props.user ? this.props.user.points : '0' } points | { this.props.opponent.username ?
             this.props.opponent.username :
             this.props.opponent.email }: { this.props.opponent ? this.props.opponent.points : '0'}
-            points
+          points
         </h2>
         <Countdown timeRemaining={this.state.timeRemaining}/>
         <Paper style={styles.container}>
@@ -209,7 +244,7 @@ export default class Draw extends React.Component {
           style={styles.button}
           containerElement="label">
         <input type="submit" style={styles.exampleImageInput} onClick={ () => this.start() }/>
-        </RaisedButton>
+      </RaisedButton>
     </div>;
   }
 }
