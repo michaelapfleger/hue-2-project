@@ -105,7 +105,7 @@ export default class Draw extends React.Component {
 
     // save to database
     firebase.database().ref(`users/${this.props.user.uid}`).update({
-      '/points': this.props.user.points + 5,
+      '/points': this.props.user.points,
     });
 
     // runde beenden

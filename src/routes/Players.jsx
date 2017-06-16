@@ -81,13 +81,12 @@ export default class Players extends React.Component {
     firebase.database().ref('users').once('value')
         .then((snapshot) => {
           snapshot.forEach((childSnapshot) => {
-            if (childSnapshot.val().online === 0) {
+            if (childSnapshot.val().online === true) {
               name = childSnapshot.val().username;
-            }
-
-            userID = childSnapshot.key;
-            if (childSnapshot.val().uid !== this.props.user.uid) {
-              tempUsers.push({ userID, name });
+              userID = childSnapshot.key;
+              if (childSnapshot.val().uid !== this.props.user.uid) {
+                tempUsers.push({ userID, name });
+              }
             }
           });
           this.setState({ users: tempUsers });
