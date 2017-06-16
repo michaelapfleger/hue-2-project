@@ -50,6 +50,7 @@ const styles = {
   opponent: store.opponent,
   over: store.over,
   structure: store.structure,
+  term: store.term,
 }))
 export default class Explain extends React.Component {
   constructor(props) {
@@ -74,15 +75,25 @@ export default class Explain extends React.Component {
   static propTypes = {
     user: PropTypes.object,
     opponent: PropTypes.object,
+    term: PropTypes.object,
     over: PropTypes.bool,
     structure: PropTypes.array,
     dispatch: PropTypes.func,
   };
 
   componentDidMount() {
-    this.getNewTerm();
     send('join', 'all', this.props.user.uid);
-    this.start();
+    if (this.props.user && this.props.user.role === 'actor') {
+      this.getNewTerm();
+      this.start();
+    }
+    if (this.props.user && this.props.user.role === 'guesser') {
+      firebase.database().ref('term/').once('value')
+          .then((snapshot) => {
+            this.props.dispatch(setTerm(snapshot.val()));
+          });
+      this.start();
+    }
   }
   start() {
     this.setState({ start: true });
@@ -138,7 +149,7 @@ export default class Explain extends React.Component {
   }
 
   checkGuess(guess) {
-    const correct = guess.localeCompare(this.state.term.term);
+    const correct = guess.localeCompare(this.props.term.term);
     if (correct === 0) {
       this.addPoints();
 

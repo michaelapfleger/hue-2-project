@@ -174,7 +174,6 @@ export default class Draw extends React.Component {
   }
 
   render() {
-    console.log('term ', this.props.term);
     if (!this.props.user.role === 'none') {
       return (<NoOpponentSelected/>);
     }
