@@ -7,6 +7,9 @@ import Sound from 'react-sound';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+
+// import NoOpponentSelected from './../components/NoOpponentSelected.jsx';
+import Term from './../components/Term.jsx';
 import { setTimeStart, addPointsToUser } from '../actions';
 import Countdown from './../components/Countdown.jsx';
 import firebase from './../firebase';
@@ -161,6 +164,10 @@ export default class Explain extends React.Component {
   }
 
   render() {
+    /* if (!this.props.opponent.username) {
+      return (<NoOpponentSelected/>);
+    } */
+
     if (this.state.success) {
       if (this.state.redirect) {
         return (<Redirect to={this.state.redirect} />);
@@ -197,40 +204,65 @@ export default class Explain extends React.Component {
             </div>
         );
       }
-      return <div>
-        <h1>Explain-Game</h1>
-        <h2>
-          { this.props.user.username ? this.props.user.username : this.props.user.email }:
-          { this.props.user ? this.props.user.points : '0'} points | { this.props.opponent.username ?
-            this.props.opponent.username : this.props.opponent.email }:
-          { this.props.opponent ? this.props.opponent.points : '0'}  points
-        </h2>
-        <Countdown timeRemaining={this.state.timeRemaining}/>
+
+      if (this.props.user.role === 'actor') {
+        return <div>
+          <h1>Explain-Game</h1>
+          <h2>
+            { this.props.user.username ? this.props.user.username : this.props.user.email }:
+            { this.props.user ? this.props.user.points : '0'} points | { this.props.opponent.username ?
+              this.props.opponent.username : this.props.opponent.email }:
+            { this.props.opponent ? this.props.opponent.points : '0'} points
+          </h2>
+          <Countdown timeRemaining={this.state.timeRemaining}/>
 
           <Call ref={call => (this.Call = call)}/>
 
+          <Term term={this.state.term.term} error={this.state.error}/>
 
-        <p style={{ ...styles.term }}>{this.state.term.term}</p>
-        <p className="error">{this.state.error}</p>
-        { this.state.guessWrong && <p>Your guess is wrong!!</p> }
-        <TextField floatingLabelText="Enter your guess"
-                   fullWidth={false}
-                   value={this.state.guessInput}
-                   onChange={(e, v) => this.guess(v)}/>
-        <RaisedButton label="Guess"
-                      primary={true}
-                      disabled={!this.state.guessInput}
-                      onTouchTap={() => this.submitGuess()}/>
-        <Sound
-            url={this.state.sound}
-            playStatus={this.state.status}
-            playFromPosition={0}
-            volume={100}
-            onLoading={({ bytesLoaded, bytesTotal }) => console.log(`${(bytesLoaded / bytesTotal) * 100}% loaded`)}
-            onPlaying={({ position }) => console.log(position) }
-            onFinishedPlaying={() => this.setState({ status: Sound.status.STOPPED })}
-        />
-      </div>;
+          <Sound
+              url={this.state.sound}
+              playStatus={this.state.status}
+              playFromPosition={0}
+              volume={100}
+              onLoading={({ bytesLoaded, bytesTotal }) => console.log(`${(bytesLoaded / bytesTotal) * 100}% loaded`)}
+              onPlaying={({ position }) => console.log(position) }
+              onFinishedPlaying={() => this.setState({ status: Sound.status.STOPPED })}
+          />
+        </div>;
+      } else if (this.props.user.role === 'guesser') {
+        return <div>
+          <h1>Explain-Game</h1>
+          <h2>
+            { this.props.user.username ? this.props.user.username : this.props.user.email }:
+            { this.props.user ? this.props.user.points : '0'} points | { this.props.opponent.username ?
+              this.props.opponent.username : this.props.opponent.email }:
+            { this.props.opponent ? this.props.opponent.points : '0'} points
+          </h2>
+          <Countdown timeRemaining={this.state.timeRemaining}/>
+
+          <Call ref={call => (this.Call = call)}/>
+
+          { this.state.guessWrong && <p>Your guess is wrong!!</p> }
+          <TextField floatingLabelText="Enter your guess"
+                     fullWidth={false}
+                     value={this.state.guessInput}
+                     onChange={(e, v) => this.guess(v)}/>
+          <RaisedButton label="Guess"
+                        primary={true}
+                        disabled={!this.state.guessInput}
+                        onTouchTap={() => this.submitGuess()}/>
+          <Sound
+              url={this.state.sound}
+              playStatus={this.state.status}
+              playFromPosition={0}
+              volume={100}
+              onLoading={({ bytesLoaded, bytesTotal }) => console.log(`${(bytesLoaded / bytesTotal) * 100}% loaded`)}
+              onPlaying={({ position }) => console.log(position) }
+              onFinishedPlaying={() => this.setState({ status: Sound.status.STOPPED })}
+          />
+        </div>;
+      }
     }
 
     return <div>

@@ -107,6 +107,16 @@ export default class Players extends React.Component {
             points: snapshot.val().points,
           };
           this.props.dispatch(setOpponent(currentOpponent));
+        })
+        .then(() => {
+          firebase.database().ref(`users/${value}`).update({
+            '/role': 'guesser',
+          });
+          firebase.database().ref(`users/${this.props.user.uid}`).update({
+            '/role': 'actor',
+          });
+
+          this.props.dispatch(setUser({ ...this.props.user, role: 'actor' }));
         });
   }
 

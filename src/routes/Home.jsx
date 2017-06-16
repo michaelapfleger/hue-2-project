@@ -58,6 +58,7 @@ export default class Info extends React.Component {
                 uid: snapshot.val().uid,
                 points: snapshot.val().points,
                 online: true,
+                role: snapshot.val().role,
               };
               this.props.dispatch(setUser(currentUser));
             });
@@ -88,6 +89,7 @@ export default class Info extends React.Component {
             uid: user.uid,
             username: user.email,
             points: 0,
+            role: 'none',
           });
         })
         .catch(
