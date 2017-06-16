@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Redirect } from 'react-router-dom';
 import Sound from 'react-sound';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -43,6 +44,7 @@ const styles = {
   over: store.over,
   user: store.user,
   opponent: store.opponent,
+  structure: store.structure,
 }))
 export default class Draw extends React.Component {
   constructor(props) {
@@ -57,6 +59,7 @@ export default class Draw extends React.Component {
       start: false,
       guess: '',
       guessInput: '',
+      redirect: '',
       guessWrong: false,
       sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/wrong.mp3',
       success: false,
@@ -67,6 +70,7 @@ export default class Draw extends React.Component {
     user: PropTypes.object,
     guessInput: PropTypes.string,
     opponent: PropTypes.object,
+    structure: PropTypes.array,
     dispatch: PropTypes.func,
   };
 
@@ -130,19 +134,16 @@ export default class Draw extends React.Component {
       this.addPoints();
 
       this.setState({ guessWrong: false });
-      setTimeout(() => {
-        this.setState({ success: true, sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/win.mp3', statusWin: Sound.status.PLAYING });
-      }, 1000);
+      this.setState({ success: true, sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/win.mp3', statusWin: Sound.status.PLAYING });
     } else {
-      // anzeigen dass das wort nicht stimmt!
       this.setState({ guessWrong: true });
       this.setState({ sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/wrong.mp3', status: Sound.status.PLAYING });
     }
   }
   guess(input) {
-    console.log('input', input);
     this.setState({
       guessInput: input.replace(/[^\w\s]/gi, '').toLowerCase(),
+      guessWrong: false,
     });
   }
   componentWillUnmount() {
@@ -150,11 +151,14 @@ export default class Draw extends React.Component {
     clearTimeout();
   }
   nextRound() {
-    console.log('redirect to new round');
+    this.setState({ redirect: this.props.structure[1] });
   }
 
   render() {
     if (this.state.success) {
+      if (this.state.redirect) {
+        return (<Redirect to={this.state.redirect} />);
+      }
       return (
           <Paper style={styles.container}>
             <h3>Congratulations!</h3>
