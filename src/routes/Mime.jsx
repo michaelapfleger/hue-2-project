@@ -53,7 +53,7 @@ export default class Mime extends React.Component {
 
   componentDidMount() {
     this.getNewTerm();
-    send('join', 'all', this.props.user.uid);
+    send('join', 'all', this.props.user.username);
   }
 
   componentWillMount() {

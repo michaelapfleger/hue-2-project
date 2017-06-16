@@ -152,7 +152,7 @@ export default class App extends React.Component {
                 <MenuItem primaryText={route.title}
                           leftIcon={route.icon}
                           onTouchTap={() => this.closeDrawer()}
-                          disabled={route.loginRequired && !this.state.loggedIn}
+                          disabled={!this.state.loggedIn && route.loginRequired}
                 />
               </Link>)}
         </Drawer>

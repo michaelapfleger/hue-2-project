@@ -99,8 +99,15 @@ export default class Draw extends React.Component {
   }
 
   addPoints() {
-    this.props.dispatch(addPointsToUser(5));
+    this.props.dispatch(addPointsToUser(
+      { ...this.props.user, points: this.props.user.points + 5 },
+    ));
+
     // save to database
+    firebase.database().ref(`users/${this.props.user.uid}`).update({
+      '/points': this.props.user.points + 5,
+    });
+
     // runde beenden
   }
 
@@ -118,7 +125,7 @@ export default class Draw extends React.Component {
   checkGuess(guess) {
     const correct = guess.localeCompare(this.state.term.term);
     if (correct === 0) {
-      // this.addPoints();
+      this.addPoints();
       this.setState({ status: Sound.status.PLAYING });
       this.setState({ guessWrong: false });
     } else {
