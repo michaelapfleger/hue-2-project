@@ -127,12 +127,6 @@ export default class App extends React.Component {
     this.toggleDrawer();
   }
 
-  componentDidMount() {
-    if (this.props.user) {
-      this.setState({ loggedIn: true });
-    }
-  }
-
   render() {
     const paddingLeft = (this.state.drawer.docked ? 256 : 0) + 16;
     // const name = (this.props.user.username ? this.props.user.username : this.props.user.email);
@@ -153,7 +147,7 @@ export default class App extends React.Component {
                 <MenuItem primaryText={route.title}
                           leftIcon={route.icon}
                           onTouchTap={() => this.closeDrawer()}
-                          disabled={!this.state.loggedIn && route.loginRequired}
+                          disabled={!this.props.user.online && route.loginRequired}
                 />
               </Link>)}
         </Drawer>
@@ -163,7 +157,7 @@ export default class App extends React.Component {
                      key={route.link}
                      path={route.link}
                      render={ () => (
-                       !this.state.loggedIn && route.loginRequired ? <Redirect to="/"/> : route.component
+                       !this.props.user.online && route.loginRequired ? <Redirect to="/"/> : route.component
                      )}
                      />
           ))}
