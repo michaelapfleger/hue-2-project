@@ -287,7 +287,8 @@ export default class Mime extends React.Component {
           containerElement="label">
         <input type="submit" style={styles.exampleImageInput} onClick={() => this.startCall(this.props.opponent.uid) }/>
       </RaisedButton>
-      <CallVideo ref={call => (this.CallVideo = call)} role={this.props.user.role}/>
+      <CallVideo ref={call => (this.CallVideo = call)}
+                 role={this.props.user.role}/>
     </div>;
   }
 }
