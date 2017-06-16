@@ -6,7 +6,8 @@ import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import { connect } from 'react-redux';
-import { setTimeStart, addPointsToUser, setTerm } from '../actions';
+import { setTimeStart, addPointsToUser, setTerm, setUser } from '../actions';
+// import { on, off, send } from '../ws';
 
 import NoOpponentSelected from './../components/NoOpponentSelected.jsx';
 import OverviewPoints from './../components/OverviewPoints.jsx';
@@ -103,38 +104,45 @@ export default class Draw extends React.Component {
     this.setState({ term: this.state.terms[rand] });
     this.props.dispatch(setTerm(this.state.terms[rand]));
     // store to database
-    firebase.database().ref('term/').update({
-      points: this.state.terms[rand].points,
-      term: this.state.terms[rand].term,
+    firebase.database().ref(`users/${this.props.user.uid}`).update({
+      '/term': this.state.terms[rand],
+    });
+    firebase.database().ref(`users/${this.props.opponent.uid}`).update({
+      '/term': this.state.terms[rand],
     });
   }
   start() {
-    this.setState({ start: true });
-    this.props.dispatch(setTimeStart());
-    // set user to ready
+    console.log('user', this.props.user);
+    console.log('opp', this.props.opponent);
+    if (this.props.user && this.props.user.ready &&
+        this.props.opponent && this.props.opponent.ready) {
+      this.setState({ start: true });
+      this.props.dispatch(setTimeStart());
+      // set users to start?
+    } else {
+      console.log('waiting for other user');
+      // show info that we are waiting for the other user
+    }
   }
 
   addPoints() {
     this.props.dispatch(addPointsToUser(
         { ...this.props.user, points: this.props.user.points + 5 },
     ));
-
     // save to database
     firebase.database().ref(`users/${this.props.user.uid}`).update({
       '/points': this.props.user.points + 5,
     });
   }
 
+
   componentDidMount() {
     if (this.props.user && this.props.user.role === 'actor') {
       this.getNewTerm();
     }
-    if (this.props.user && this.props.user.role === 'guesser') {
-      firebase.database().ref('term/').once('value')
-        .then((snapshot) => {
-          this.props.dispatch(setTerm(snapshot.val()));
-        });
-    }
+    this.props.dispatch(setUser({
+      ...this.props.user, ready: true,
+    }));
   }
 
   submitGuess(evt) {
@@ -165,9 +173,16 @@ export default class Draw extends React.Component {
   componentWillUnmount() {
     this.setState({ success: false });
     clearTimeout();
-    // set user to unready
     this.props.dispatch(setTerm(null));
-    firebase.database().ref('term/').set(null);
+    firebase.database().ref(`users/${this.props.user.uid}`).update({
+      '/term': '',
+    });
+    firebase.database().ref(`users/${this.props.opponent.uid}`).update({
+      '/term': '',
+    });
+    this.props.dispatch(setUser({
+      ...this.props.user, ready: false,
+    }));
   }
   nextRound() {
     this.setState({ redirect: this.props.structure[1] });
@@ -221,7 +236,7 @@ export default class Draw extends React.Component {
           <Paper style={styles.container}>
             <DrawArea user={this.props.user}/>
           </Paper>
-          <p style={{ ...styles.term }}>{this.state.term.term}</p>
+          <p style={{ ...styles.term }}>{this.props.term.term}</p>
           <p className="error">{this.state.error}</p>
           <Sound
               url={this.state.sound}

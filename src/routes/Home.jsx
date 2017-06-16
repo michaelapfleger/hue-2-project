@@ -58,7 +58,7 @@ export default class Info extends React.Component {
                 uid: snapshot.val().uid,
                 points: snapshot.val().points,
                 online: true,
-                ready: snapshot.val().ready,
+                term: '',
                 role: snapshot.val().role,
                 opponent: snapshot.val().opponent,
               };
@@ -72,7 +72,7 @@ export default class Info extends React.Component {
                         username: snapshot.val().username,
                         uid: snapshot.val().uid,
                         points: snapshot.val().points,
-                        ready: snapshot.val().ready,
+                        term: '',
                         online: true,
                         role: snapshot.val().role,
                         opponen: snapshot.val().opponent,
@@ -109,7 +109,7 @@ export default class Info extends React.Component {
             username: user.email,
             points: 0,
             role: 'none',
-            ready: false,
+            term: '',
           });
         })
         .catch(
@@ -129,7 +129,7 @@ export default class Info extends React.Component {
             username: test.displayName,
             uid: test.uid,
             online: true,
-            ready: test.ready,
+            term: '',
           };
           this.setState({ loggedIn: true });
           this.props.dispatch(setUser(currentUser));
