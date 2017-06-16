@@ -6,7 +6,7 @@ import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import { connect } from 'react-redux';
-import { setTimeStart, addPointsToUser, setTerm, setUser } from '../actions';
+import { setTimeStart, addPointsToUser, setTerm, setUser, setSuccess } from '../actions';
 // import { on, off, send } from '../ws';
 
 import NoOpponentSelected from './../components/NoOpponentSelected.jsx';
@@ -47,6 +47,7 @@ const styles = {
   over: store.over,
   user: store.user,
   opponent: store.opponent,
+  success: store.success,
   structure: store.structure,
   term: store.term,
 }))
@@ -71,6 +72,7 @@ export default class Draw extends React.Component {
   }
   static propTypes = {
     over: PropTypes.bool,
+    success: PropTypes.bool,
     user: PropTypes.object,
     term: PropTypes.object,
     opponent: PropTypes.object,
@@ -153,9 +155,9 @@ export default class Draw extends React.Component {
     const correct = guess.localeCompare(this.props.term.term);
     if (correct === 0) {
       this.addPoints();
-
       this.setState({ guessWrong: false });
       this.setState({ success: true, sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/win.mp3', statusWin: Sound.status.PLAYING });
+      this.props.dispatch(setSuccess(true));
     } else {
       this.setState({ guessWrong: true });
       this.setState({ sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/wrong.mp3', status: Sound.status.PLAYING });
@@ -183,6 +185,7 @@ export default class Draw extends React.Component {
     this.props.dispatch(setUser({
       ...this.props.user, ready: false,
     }));
+    this.props.dispatch(setSuccess(false));
   }
   nextRound() {
     this.setState({ redirect: this.props.structure[1] });
@@ -193,26 +196,36 @@ export default class Draw extends React.Component {
       return (<NoOpponentSelected/>);
     }
 
-    if (this.state.success) {
+    if (this.props.success) {
       if (this.state.redirect) {
         return (<Redirect to={this.state.redirect} />);
       }
+      if (this.props.user.role === 'guesser') {
+        return (
+            <Paper style={styles.container}>
+              <h3>Congratulations!</h3>
+              <h4>Your guess was correct!</h4>
+              <RaisedButton label="Next round"
+                            primary={true}
+                            onTouchTap={() => this.nextRound()}/>
+              <Sound
+                  url={this.state.sound}
+                  playStatus={this.state.statusWin}
+                  playFromPosition={0}
+                  volume={100}
+                  onLoading={({ bytesLoaded, bytesTotal }) => console.log(`${(bytesLoaded / bytesTotal) * 100}% loaded`)}
+                  onPlaying={({ position }) => console.log(position) }
+                  onFinishedPlaying={() => this.setState({ statusWin: Sound.status.STOPPED })}
+              />
+            </Paper>
+        );
+      }
       return (
           <Paper style={styles.container}>
-            <h3>Congratulations!</h3>
-            <h4>Your guess was correct!</h4>
+            <h4>Your opponent guessed correct!</h4>
             <RaisedButton label="Next round"
                           primary={true}
                           onTouchTap={() => this.nextRound()}/>
-            <Sound
-                url={this.state.sound}
-                playStatus={this.state.statusWin}
-                playFromPosition={0}
-                volume={100}
-                onLoading={({ bytesLoaded, bytesTotal }) => console.log(`${(bytesLoaded / bytesTotal) * 100}% loaded`)}
-                onPlaying={({ position }) => console.log(position) }
-                onFinishedPlaying={() => this.setState({ statusWin: Sound.status.STOPPED })}
-            />
           </Paper>
       );
     }

@@ -38,4 +38,10 @@ export function setTerm(term) {
     payload: term,
   };
 }
+export function setSuccess(payload) {
+  return {
+    type: 'SET_SUCCESS',
+    payload,
+  };
+}
 

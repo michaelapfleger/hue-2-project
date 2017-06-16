@@ -6,7 +6,7 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import firebase from './../firebase';
 
-import { setUser, setOpponent, setTerm } from './../actions';
+import { setUser, setOpponent, setTerm, setSuccess } from './../actions';
 
 const styles = {
   button: {
@@ -90,6 +90,9 @@ export default class Info extends React.Component {
                             ...this.props.opponent,
                             ready: true,
                           }));
+                        }
+                        if (snap.key === 'points') {
+                          this.props.dispatch(setSuccess(true));
                         }
                       });
                     });
