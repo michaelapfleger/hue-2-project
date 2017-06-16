@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import FlatButton from 'material-ui/FlatButton';
 import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card';
@@ -43,6 +44,10 @@ export default class CallVideo extends React.Component {
     };
     this.connection = null;
   }
+
+  static propTypes = {
+    role: PropTypes.string,
+  };
 
   componentDidMount() {
     on('offer', (from, offer) => {
@@ -235,10 +240,18 @@ export default class CallVideo extends React.Component {
     }
 
     if (this.state.callState === CALL_STATE_ACTIVE) {
-      return <div>
-        <video style={styles.localVideo} src={this.state.localVideo} autoPlay="autoPlay" muted poster="spinner.gif"/>
-        <video style={styles.remoteVideo} src={this.state.remoteVideo} autoPlay="autoPlay" poster="spinner.gif"/>
-      </div>;
+      if (this.props.role === 'actor') {
+        return <div>
+          <video style={styles.remoteVideo} src={this.state.localVideo}
+          autoPlay="autoPlay" muted poster="spinner.gif"/>
+        </div>;
+      } else if (this.props.role === 'guesser') {
+        return <div>
+          <video style={styles.remoteVideo} src={this.state.remoteVideo}
+          autoPlay="autoPlay" poster="spinner.gif"/>
+        </div>;
+      }
+      return <p>ERROR</p>;
     }
 
     return null;

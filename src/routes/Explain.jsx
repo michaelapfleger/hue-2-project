@@ -85,14 +85,14 @@ export default class Explain extends React.Component {
     send('join', 'all', this.props.user.uid);
     if (this.props.user && this.props.user.role === 'actor') {
       this.getNewTerm();
-      this.start();
+      // this.start();
     }
     if (this.props.user && this.props.user.role === 'guesser') {
       firebase.database().ref('term/').once('value')
           .then((snapshot) => {
             this.props.dispatch(setTerm(snapshot.val()));
           });
-      this.start();
+      // this.start();
     }
   }
   start() {
@@ -252,7 +252,7 @@ export default class Explain extends React.Component {
           <OverviewPoints/>
           <Countdown timeRemaining={this.state.timeRemaining}/>
 
-          <Call ref={call => (this.Call = call)}/>
+          <Call ref={call => (this.Call = call)} role={this.props.user.role}/>
 
           { this.state.guessWrong && <p>Your guess is wrong!!</p> }
           <TextField floatingLabelText="Enter your guess"
@@ -286,7 +286,7 @@ export default class Explain extends React.Component {
           containerElement="label">
         <input type="submit" style={styles.exampleImageInput} onClick={() => this.startCall(this.props.opponent.uid) }/>
       </RaisedButton>
-      <Call ref={call => (this.Call = call)}/>
+      <Call ref={call => (this.Call = call)} role={this.props.user.role}/>
     </div>;
   }
 }
