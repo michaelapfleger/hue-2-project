@@ -2,6 +2,11 @@ export default function reducer(state = {
   user: {},
   opponent: {},
   over: false,
+  structure: [
+    '/draw',
+    '/mime',
+    '/explain',
+  ],
 }, action) {
   switch (action.type) {
     case 'TIME_OVER': {

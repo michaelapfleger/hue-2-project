@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Redirect } from 'react-router-dom';
 import Sound from 'react-sound';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -43,28 +44,33 @@ const styles = {
   over: store.over,
   user: store.user,
   opponent: store.opponent,
+  structure: store.structure,
 }))
 export default class Draw extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user1: 'Tami',
-      user2: 'Michi',
       term: {},
       terms: [],
       status: Sound.status.PAUSED,
+      statusWin: Sound.status.PAUSED,
       error: '',
       timeRemaining: 50,
       start: false,
       guess: '',
       guessInput: '',
+      redirect: '',
       guessWrong: false,
+      sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/wrong.mp3',
+      success: false,
     };
   }
   static propTypes = {
     over: PropTypes.bool,
     user: PropTypes.object,
+    guessInput: PropTypes.string,
     opponent: PropTypes.object,
+    structure: PropTypes.array,
     dispatch: PropTypes.func,
   };
 
@@ -100,15 +106,13 @@ export default class Draw extends React.Component {
 
   addPoints() {
     this.props.dispatch(addPointsToUser(
-      { ...this.props.user, points: this.props.user.points + 5 },
+        { ...this.props.user, points: this.props.user.points + 5 },
     ));
 
     // save to database
     firebase.database().ref(`users/${this.props.user.uid}`).update({
       '/points': this.props.user.points,
     });
-
-    // runde beenden
   }
 
   componentDidMount() {
@@ -126,36 +130,62 @@ export default class Draw extends React.Component {
     const correct = guess.localeCompare(this.state.term.term);
     if (correct === 0) {
       this.addPoints();
-      this.setState({ status: Sound.status.PLAYING });
+
       this.setState({ guessWrong: false });
+      this.setState({ success: true, sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/win.mp3', statusWin: Sound.status.PLAYING });
     } else {
-      // anzeigen dass das wort nicht stimmt!
       this.setState({ guessWrong: true });
+      this.setState({ sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/wrong.mp3', status: Sound.status.PLAYING });
     }
   }
   guess(input) {
-    console.log('input', input);
     this.setState({
       guessInput: input.replace(/[^\w\s]/gi, '').toLowerCase(),
+      guessWrong: false,
     });
   }
-
+  componentWillUnmount() {
+    this.setState({ success: false });
+    clearTimeout();
+  }
+  nextRound() {
+    this.setState({ redirect: this.props.structure[1] });
+  }
 
   render() {
+    if (this.state.success) {
+      if (this.state.redirect) {
+        return (<Redirect to={this.state.redirect} />);
+      }
+      return (
+          <Paper style={styles.container}>
+            <h3>Congratulations!</h3>
+            <h4>Your guess was correct!</h4>
+            <RaisedButton label="Next round"
+                          primary={true}
+                          onTouchTap={() => this.nextRound()}/>
+            <Sound
+                url={this.state.sound}
+                playStatus={this.state.statusWin}
+                playFromPosition={0}
+                volume={100}
+                onLoading={({ bytesLoaded, bytesTotal }) => console.log(`${(bytesLoaded / bytesTotal) * 100}% loaded`)}
+                onPlaying={({ position }) => console.log(position) }
+                onFinishedPlaying={() => this.setState({ statusWin: Sound.status.STOPPED })}
+            />
+          </Paper>
+      );
+    }
     if (this.state.start) {
       if (this.props.over) {
         return (<div>
-            <h1>Draw-Game</h1>
-            <h2>
-              { this.props.user.username ? this.props.user.username : this.props.user.email }:
-              { this.props.user ? this.props.user.points : '0'} points |
-              { this.props.opponent.username ? this.props.opponent.username :
-                  this.props.opponent.email }:
-              { this.props.opponent ? this.props.opponent.points : '0'} points
-            </h2>
-            <Countdown timeRemaining={this.state.timeRemaining}/>
-              <h3>Sorry, time is up!</h3>
-          </div>
+              <Paper style={styles.container}>
+                <h3>Sorry, time is up!</h3>
+                <RaisedButton label="Next round"
+                              primary={true}
+                              onTouchTap={() => this.nextRound()}/>
+              </Paper>
+            </div>
         );
       }
       return <div>
@@ -165,7 +195,7 @@ export default class Draw extends React.Component {
           { this.props.user ? this.props.user.points : '0' } points | { this.props.opponent.username ?
             this.props.opponent.username :
             this.props.opponent.email }: { this.props.opponent ? this.props.opponent.points : '0'}
-            points
+          points
         </h2>
         <Countdown timeRemaining={this.state.timeRemaining}/>
         <Paper style={styles.container}>
@@ -183,7 +213,7 @@ export default class Draw extends React.Component {
                       disabled={!this.state.guessInput}
                       onTouchTap={() => this.submitGuess()}/>
         <Sound
-            url="https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/win.mp3"
+            url={this.state.sound}
             playStatus={this.state.status}
             playFromPosition={0}
             volume={100}
@@ -207,7 +237,7 @@ export default class Draw extends React.Component {
           style={styles.button}
           containerElement="label">
         <input type="submit" style={styles.exampleImageInput} onClick={ () => this.start() }/>
-        </RaisedButton>
+      </RaisedButton>
     </div>;
   }
 }

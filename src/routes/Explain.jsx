@@ -1,12 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { Redirect } from 'react-router-dom';
+import Sound from 'react-sound';
 
+import Paper from 'material-ui/Paper';
+import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-
+import { setTimeStart, addPointsToUser } from '../actions';
 import Countdown from './../components/Countdown.jsx';
 import firebase from './../firebase';
-
 import Call from '../components/CallAudio.jsx';
 import { send } from '../ws';
 
@@ -14,6 +17,9 @@ const styles = {
   container: {
     padding: 10,
     lineHeight: '1.4em',
+  },
+  button: {
+    margin: 12,
   },
   term: {
     fontSize: 25,
@@ -23,12 +29,23 @@ const styles = {
     borderBottom: '1px solid #25737c',
     margin: '40px 250px',
   },
+  exampleImageInput: {
+    cursor: 'pointer',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0,
+    width: '100%',
+    opacity: 0,
+  },
 };
 
 @connect(store => ({
   user: store.user,
   opponent: store.opponent,
   over: store.over,
+  structure: store.structure,
 }))
 export default class Explain extends React.Component {
   constructor(props) {
@@ -37,8 +54,16 @@ export default class Explain extends React.Component {
       term: {},
       terms: [],
       error: '',
-      timeRemaining: 20,
+      timeRemaining: 50,
       start: false,
+      status: Sound.status.PAUSED,
+      statusWin: Sound.status.PAUSED,
+      guess: '',
+      guessInput: '',
+      redirect: '',
+      guessWrong: false,
+      sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/wrong.mp3',
+      success: false,
     };
   }
 
@@ -46,6 +71,7 @@ export default class Explain extends React.Component {
     user: PropTypes.object,
     opponent: PropTypes.object,
     over: PropTypes.bool,
+    structure: PropTypes.array,
     dispatch: PropTypes.func,
   };
 
@@ -53,9 +79,25 @@ export default class Explain extends React.Component {
     this.getNewTerm();
     send('join', 'all', this.props.user.uid);
   }
+  start() {
+    this.setState({ start: true });
+    this.props.dispatch(setTimeStart());
+  }
 
   startCall(name) {
     this.Call.startCall(name);
+  }
+
+  submitGuess(evt) {
+    if (evt) {
+      evt.preventDefault();
+    }
+    this.setState({ guess: this.state.guessInput });
+    this.checkGuess(this.state.guessInput);
+  }
+
+  nextRound() {
+    this.setState({ redirect: this.props.structure[0] });
   }
 
   getNewTerm() {
@@ -78,54 +120,134 @@ export default class Explain extends React.Component {
         });
   }
 
+  addPoints() {
+    this.props.dispatch(addPointsToUser(
+        { ...this.props.user, points: this.props.user.points + 5 },
+    ));
+
+    // save to database
+    firebase.database().ref(`users/${this.props.user.uid}`).update({
+      '/points': this.props.user.points + 5,
+    });
+  }
+
+  checkGuess(guess) {
+    const correct = guess.localeCompare(this.state.term.term);
+    if (correct === 0) {
+      this.addPoints();
+
+      this.setState({ guessWrong: false });
+      this.setState({ success: true, sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/win.mp3', statusWin: Sound.status.PLAYING });
+    } else {
+      this.setState({ guessWrong: true });
+      this.setState({ sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/wrong.mp3', status: Sound.status.PLAYING });
+    }
+  }
+
   getOneTerm() {
     const rand = Math.floor((Math.random() * this.state.terms.length));
     this.setState({ term: this.state.terms[rand] });
   }
 
+  guess(input) {
+    this.setState({
+      guessInput: input.replace(/[^\w\s]/gi, '').toLowerCase(),
+      guessWrong: false,
+    });
+  }
+  componentWillUnmount() {
+    this.setState({ success: false });
+    clearTimeout();
+  }
+
   render() {
+    if (this.state.success) {
+      if (this.state.redirect) {
+        return (<Redirect to={this.state.redirect} />);
+      }
+      return (
+          <Paper style={styles.container}>
+            <h3>Congratulations!</h3>
+            <h4>Your guess was correct!</h4>
+            <RaisedButton label="Next round"
+                          primary={true}
+                          onTouchTap={() => this.nextRound()}/>
+            <Sound
+                url={this.state.sound}
+                playStatus={this.state.statusWin}
+                playFromPosition={0}
+                volume={100}
+                onLoading={({ bytesLoaded, bytesTotal }) => console.log(`${(bytesLoaded / bytesTotal) * 100}% loaded`)}
+                onPlaying={({ position }) => console.log(position) }
+                onFinishedPlaying={() => this.setState({ statusWin: Sound.status.STOPPED })}
+            />
+          </Paper>
+      );
+    }
     if (this.state.start) {
       if (this.props.over) {
         return (
             <div>
-              <h1>Explain-Game</h1>
-              <h2>
-                {this.props.user.username}: XX points | {this.props.opponent.username}: XX points
-              </h2>
-              <Countdown timeRemaining={this.state.timeRemaining}/>
-              <h3>Sorry, time is up!</h3>
+              <Paper style={styles.container}>
+                <h3>Sorry, time is up!</h3>
+                <RaisedButton label="Next round"
+                              primary={true}
+                              onTouchTap={() => this.nextRound()}/>
+              </Paper>
             </div>
         );
       }
       return <div>
         <h1>Explain-Game</h1>
         <h2>
-          { this.props.user.username }: XX points | { this.props.opponent.username }: XX points
+          { this.props.user.username ? this.props.user.username : this.props.user.email }:
+          { this.props.user ? this.props.user.points : '0'} points | { this.props.opponent.username ?
+            this.props.opponent.username : this.props.opponent.email }:
+          { this.props.opponent ? this.props.opponent.points : '0'}  points
         </h2>
         <Countdown timeRemaining={this.state.timeRemaining}/>
 
-        <Call ref={call => (this.Call = call)}/>
+          <Call ref={call => (this.Call = call)}/>
+
 
         <p style={{ ...styles.term }}>{this.state.term.term}</p>
         <p className="error">{this.state.error}</p>
-
-
+        { this.state.guessWrong && <p>Your guess is wrong!!</p> }
+        <TextField floatingLabelText="Enter your guess"
+                   fullWidth={false}
+                   value={this.state.guessInput}
+                   onChange={(e, v) => this.guess(v)}/>
+        <RaisedButton label="Guess"
+                      primary={true}
+                      disabled={!this.state.guessInput}
+                      onTouchTap={() => this.submitGuess()}/>
+        <Sound
+            url={this.state.sound}
+            playStatus={this.state.status}
+            playFromPosition={0}
+            volume={100}
+            onLoading={({ bytesLoaded, bytesTotal }) => console.log(`${(bytesLoaded / bytesTotal) * 100}% loaded`)}
+            onPlaying={({ position }) => console.log(position) }
+            onFinishedPlaying={() => this.setState({ status: Sound.status.STOPPED })}
+        />
       </div>;
     }
 
     return <div>
       <h1>Explain-Game</h1>
       <h2>
-        { this.props.user.username }: XX points | { this.props.opponent.username }: XX points
+        { this.props.user.username ? this.props.user.username : this.props.user.email }:
+        { this.props.user ? this.props.user.points : '0'} points | { this.props.opponent.username ?
+          this.props.opponent.username : this.props.opponent.email }:
+        { this.props.opponent ? this.props.opponent.points : '0'}  points
       </h2>
       <RaisedButton
           label="Start"
           labelPosition="before"
           style={styles.button}
-          containerElement="label"
-          onClick={ () => this.startCall(this.props.opponent.uid) }>
+          containerElement="label">
+        <input type="submit" style={styles.exampleImageInput} onClick={ () => this.start() }/>
       </RaisedButton>
-      <Call ref={call => (this.Call = call)}/>
     </div>;
   }
 }
