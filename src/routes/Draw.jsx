@@ -59,6 +59,7 @@ export default class Draw extends React.Component {
       guess: '',
       guessInput: '',
       guessWrong: false,
+      sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/wrong.mp3',
     };
   }
   static propTypes = {
@@ -126,11 +127,12 @@ export default class Draw extends React.Component {
     const correct = guess.localeCompare(this.state.term.term);
     if (correct === 0) {
       this.addPoints();
-      this.setState({ status: Sound.status.PLAYING });
+      this.setState({ sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/win.mp3', status: Sound.status.PLAYING });
       this.setState({ guessWrong: false });
     } else {
       // anzeigen dass das wort nicht stimmt!
       this.setState({ guessWrong: true });
+      this.setState({ sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/wrong.mp3', status: Sound.status.PLAYING });
     }
   }
   guess(input) {
@@ -183,7 +185,7 @@ export default class Draw extends React.Component {
                       disabled={!this.state.guessInput}
                       onTouchTap={() => this.submitGuess()}/>
         <Sound
-            url="https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/win.mp3"
+            url={this.state.sound}
             playStatus={this.state.status}
             playFromPosition={0}
             volume={100}
