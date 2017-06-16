@@ -2,6 +2,7 @@ export default function reducer(state = {
   user: {},
   opponent: {},
   over: false,
+  started: false,
   term: {},
   structure: [
     '/draw',
@@ -14,12 +15,14 @@ export default function reducer(state = {
       return {
         ...state,
         over: true,
+        started: false,
       };
     }
     case 'TIME_START': {
       return {
         ...state,
         over: false,
+        started: true,
       };
     }
     case 'SET_USER': {

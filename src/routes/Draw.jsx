@@ -112,19 +112,13 @@ export default class Draw extends React.Component {
     });
   }
   start() {
-    console.log('user', this.props.user);
-    console.log('opp', this.props.opponent);
-    if (this.props.user && this.props.user.ready &&
-        this.props.opponent && this.props.opponent.ready) {
-      this.setState({ start: true });
-      this.props.dispatch(setTimeStart());
-      // set users to start?
-    } else {
-      console.log('waiting for other user');
-      // show info that we are waiting for the other user
-    }
+    firebase.database().ref(`users/${this.props.user.uid}`).update({
+      '/ready': 'readytrue',
+    });
+    this.props.dispatch(setUser({
+      ...this.props.user, ready: true,
+    }));
   }
-
   addPoints() {
     this.props.dispatch(addPointsToUser(
         { ...this.props.user, points: this.props.user.points + 5 },
@@ -135,16 +129,19 @@ export default class Draw extends React.Component {
     });
   }
 
-
+  componentDidUpdate() {
+    if (this.props.user.ready && this.props.opponent.ready) {
+      if (!this.state.start) {
+        this.setState({ start: true });
+        this.props.dispatch(setTimeStart());
+      }
+    }
+  }
   componentDidMount() {
     if (this.props.user && this.props.user.role === 'actor') {
       this.getNewTerm();
     }
-    this.props.dispatch(setUser({
-      ...this.props.user, ready: true,
-    }));
   }
-
   submitGuess(evt) {
     if (evt) {
       evt.preventDefault();
@@ -179,6 +176,9 @@ export default class Draw extends React.Component {
     });
     firebase.database().ref(`users/${this.props.opponent.uid}`).update({
       '/term': '',
+    });
+    firebase.database().ref(`users/${this.props.user.uid}`).update({
+      '/ready': false,
     });
     this.props.dispatch(setUser({
       ...this.props.user, ready: false,
