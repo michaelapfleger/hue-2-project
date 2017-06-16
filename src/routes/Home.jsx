@@ -7,7 +7,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 import firebase from './../firebase';
 
-import { setUser } from './../actions';
+import { setUser, setOpponent } from './../actions';
 
 const styles = {
   button: {
@@ -59,8 +59,25 @@ export default class Info extends React.Component {
                 points: snapshot.val().points,
                 online: true,
                 role: snapshot.val().role,
+                opponent: snapshot.val().opponent,
               };
               this.props.dispatch(setUser(currentUser));
+            })
+            .then(() => {
+              if (this.props.user.opponent !== 'none') {
+                firebase.database().ref(`/users/${this.props.user.opponent}`).once('value')
+                    .then((snapshot) => {
+                      const opponentUser = {
+                        username: snapshot.val().username,
+                        uid: snapshot.val().uid,
+                        points: snapshot.val().points,
+                        online: true,
+                        role: snapshot.val().role,
+                        opponen: snapshot.val().opponent,
+                      };
+                      this.props.dispatch(setOpponent(opponentUser));
+                    });
+              }
             });
         this.setState({ loggedIn: true });
       }
@@ -83,7 +100,7 @@ export default class Info extends React.Component {
             displayName: user.email,
           }).then();
 
-          console.log('new uid', user.uid);
+          // console.log('new uid', user.uid);
           firebase.database().ref(`users/${user.uid}`).set({
             online: false,
             uid: user.uid,

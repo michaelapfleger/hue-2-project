@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 
 import NoOpponentSelected from './../components/NoOpponentSelected.jsx';
+import OverviewPoints from './../components/OverviewPoints.jsx';
 import Countdown from './../components/Countdown.jsx';
 import firebase from './../firebase';
 import Call from '../components/CallVideo.jsx';
@@ -112,7 +113,7 @@ export default class Mime extends React.Component {
   }
 
   render() {
-    if (!this.props.opponent.username) {
+    if (this.props.user.role === 'none') {
       return (<NoOpponentSelected/>);
     }
 
@@ -121,10 +122,7 @@ export default class Mime extends React.Component {
         return (
             <div>
               <h1>Mime-Game</h1>
-              <h2>
-                {this.props.user.username}: {this.props.user.points} points <span> | </span>
-                 {this.props.opponent.username}: {this.props.opponent.points} points
-              </h2>
+              <OverviewPoints/>
               <Countdown timeRemaining={this.state.timeRemaining}/>
               <h3>Sorry, time is up!</h3>
             </div>
@@ -132,10 +130,7 @@ export default class Mime extends React.Component {
       }
       return <div>
         <h1>Mime-Game</h1>
-        <h2>
-          {this.props.user.username}: {this.props.user.points} points <span> | </span>
-           {this.props.opponent.username}: {this.props.opponent.points} points
-        </h2>
+        <OverviewPoints/>
         <Countdown timeRemaining={this.state.timeRemaining}/>
 
         <Call ref={call => (this.Call = call)}/>

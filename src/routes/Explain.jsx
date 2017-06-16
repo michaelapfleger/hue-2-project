@@ -8,8 +8,9 @@ import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
-// import NoOpponentSelected from './../components/NoOpponentSelected.jsx';
+import NoOpponentSelected from './../components/NoOpponentSelected.jsx';
 import Term from './../components/Term.jsx';
+import OverviewPoints from './../components/OverviewPoints.jsx';
 import { setTimeStart, addPointsToUser } from '../actions';
 import Countdown from './../components/Countdown.jsx';
 import firebase from './../firebase';
@@ -166,9 +167,9 @@ export default class Explain extends React.Component {
   }
 
   render() {
-    /* if (!this.props.opponent.username) {
+    if (this.props.user.role === 'none') {
       return (<NoOpponentSelected/>);
-    } */
+    }
 
     if (this.state.success) {
       if (this.state.redirect) {
@@ -210,12 +211,7 @@ export default class Explain extends React.Component {
       if (this.props.user.role === 'actor') {
         return <div>
           <h1>Explain-Game</h1>
-          <h2>
-            { this.props.user.username ? this.props.user.username : this.props.user.email }:
-            { this.props.user ? this.props.user.points : '0'} points | { this.props.opponent.username ?
-              this.props.opponent.username : this.props.opponent.email }:
-            { this.props.opponent ? this.props.opponent.points : '0'} points
-          </h2>
+
           <Countdown timeRemaining={this.state.timeRemaining}/>
 
           <Call ref={call => (this.Call = call)}/>
@@ -235,12 +231,7 @@ export default class Explain extends React.Component {
       } else if (this.props.user.role === 'guesser') {
         return <div>
           <h1>Explain-Game</h1>
-          <h2>
-            { this.props.user.username ? this.props.user.username : this.props.user.email }:
-            { this.props.user ? this.props.user.points : '0'} points | { this.props.opponent.username ?
-              this.props.opponent.username : this.props.opponent.email }:
-            { this.props.opponent ? this.props.opponent.points : '0'} points
-          </h2>
+          <OverviewPoints/>
           <Countdown timeRemaining={this.state.timeRemaining}/>
 
           <Call ref={call => (this.Call = call)}/>
@@ -269,12 +260,7 @@ export default class Explain extends React.Component {
 
     return <div>
       <h1>Explain-Game</h1>
-      <h2>
-        { this.props.user.username ? this.props.user.username : this.props.user.email }:
-        { this.props.user ? this.props.user.points : '0'} points | { this.props.opponent.username ?
-          this.props.opponent.username : this.props.opponent.email }:
-        { this.props.opponent ? this.props.opponent.points : '0'}  points
-      </h2>
+      <OverviewPoints/>
       <RaisedButton
           label="Start"
           labelPosition="before"
