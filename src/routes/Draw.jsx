@@ -113,8 +113,6 @@ export default class Draw extends React.Component {
     firebase.database().ref(`users/${this.props.user.uid}`).update({
       '/points': this.props.user.points + 5,
     });
-
-    // runde beenden
   }
 
   componentDidMount() {
@@ -181,15 +179,6 @@ export default class Draw extends React.Component {
     if (this.state.start) {
       if (this.props.over) {
         return (<div>
-              <h1>Draw-Game</h1>
-              <h2>
-                { this.props.user.username ? this.props.user.username : this.props.user.email }:
-                { this.props.user ? this.props.user.points : '0'} points |
-                { this.props.opponent.username ? this.props.opponent.username :
-                    this.props.opponent.email }:
-                { this.props.opponent ? this.props.opponent.points : '0'} points
-              </h2>
-              <Countdown timeRemaining={this.state.timeRemaining}/>
               <Paper style={styles.container}>
                 <h3>Sorry, time is up!</h3>
                 <RaisedButton label="Next round"
