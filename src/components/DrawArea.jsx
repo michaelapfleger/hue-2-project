@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Immutable, { fromJS } from 'immutable';
 import IconButton from 'material-ui/IconButton';
 import ActionClear from 'material-ui/svg-icons/action/delete-forever';
@@ -22,6 +23,9 @@ export default class DrawArea extends React.Component {
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
   }
+  static propTypes = {
+    user: PropTypes.object,
+  };
 
   handleMouseDown(mouseEvent) {
     if (mouseEvent.button !== 0) {
@@ -63,6 +67,7 @@ export default class DrawArea extends React.Component {
 
   componentDidMount() {
     document.addEventListener('mouseup', this.handleMouseUp);
+
     const id = Math.round(Math.random() * 100000000000).toString(36);
     send('join', 'all', id);
     on('chat', (from, payload) => {
@@ -98,35 +103,49 @@ export default class DrawArea extends React.Component {
   }
 
   render() {
-    return (
-        <div>
-        <div
-            className="drawArea"
-            ref="drawArea"
-            onMouseDown={this.handleMouseDown}
-            onMouseMove={this.handleMouseMove}
-        >
-          <span className="draw-info" style={{ display: this.state.isDrawing ? 'none' : 'block' }}>draw here ...</span>
+    if (this.props.user && this.props.user.role === 'actor') {
+      return (
+          <div>
+            <div
+                className="drawArea"
+                ref="drawArea"
+                onMouseDown={this.handleMouseDown}
+                onMouseMove={this.handleMouseMove}
+            >
+              <span className="draw-info" style={{ display: this.state.isDrawing ? 'none' : 'block' }}>draw here ...</span>
 
-          <Drawing lines={this.state.lines} color={this.state.color} />
+              <Drawing lines={this.state.lines} color={this.state.color} />
 
-        </div>
-        <IconButton
-            tooltip="clear all"
-            tooltipPosition="bottom-center"
-            onTouchTap={() => this.clearCanvas()}
-        >
-          <ActionClear />
-        </IconButton>
+            </div>
+            <IconButton
+                tooltip="clear all"
+                tooltipPosition="bottom-center"
+                onTouchTap={() => this.clearCanvas()}
+            >
+              <ActionClear />
+            </IconButton>
 
-          <IconButton
-              tooltip="change color"
-              tooltipPosition="bottom-center"
-              onTouchTap={() => this.changeColor()}
-          >
-            <Yellow/>
-          </IconButton>
-        </div>
-    );
+            <IconButton
+                tooltip="change color"
+                tooltipPosition="bottom-center"
+                onTouchTap={() => this.changeColor()}
+            >
+              <Yellow/>
+            </IconButton>
+          </div>
+      );
+    }
+    if (this.props.user && this.props.user.role === 'guesser') {
+      return (
+          <div>
+            <div
+                className="drawArea"
+                ref="drawArea">
+              <Drawing lines={this.state.lines} color={this.state.color} />
+            </div>
+          </div>
+      );
+    }
+    return (<div></div>);
   }
 }

@@ -169,7 +169,6 @@ export default class Draw extends React.Component {
           <Paper style={styles.container}>
             <h3>Congratulations!</h3>
             <h4>Your guess was correct!</h4>
-            <p>Now it's {this.props.player1.username}'s time to play.</p>
             <RaisedButton label="Next round"
                           primary={true}
                           onTouchTap={() => this.nextRound()}/>
@@ -197,34 +196,55 @@ export default class Draw extends React.Component {
             </div>
         );
       }
-      return <div>
-        <h1>Draw-Game</h1>
-        <OverviewPoints/>
-        <Countdown timeRemaining={this.state.timeRemaining}/>
-        <Paper style={styles.container}>
-          <DrawArea/>
-        </Paper>
-        <p style={{ ...styles.term }}>{this.state.term.term}</p>
-        <p className="error">{this.state.error}</p>
-        { this.state.guessWrong && <p>Your guess is wrong!!</p> }
-        <TextField floatingLabelText="Enter your guess"
-                   fullWidth={false}
-                   value={this.state.guessInput}
-                   onChange={(e, v) => this.guess(v)}/>
-        <RaisedButton label="Guess"
-                      primary={true}
-                      disabled={!this.state.guessInput}
-                      onTouchTap={() => this.submitGuess()}/>
-        <Sound
-            url={this.state.sound}
-            playStatus={this.state.status}
-            playFromPosition={0}
-            volume={100}
-            onLoading={({ bytesLoaded, bytesTotal }) => console.log(`${(bytesLoaded / bytesTotal) * 100}% loaded`)}
-            onPlaying={({ position }) => console.log(position) }
-            onFinishedPlaying={() => this.setState({ status: Sound.status.STOPPED })}
-        />
-      </div>;
+      if (this.props.user.role === 'actor') {
+        return <div>
+          <h1>Draw-Game</h1>
+          <OverviewPoints/>
+          <Countdown timeRemaining={this.state.timeRemaining}/>
+          <Paper style={styles.container}>
+            <DrawArea user={this.props.user}/>
+          </Paper>
+          <p style={{ ...styles.term }}>{this.state.term.term}</p>
+          <p className="error">{this.state.error}</p>
+          <Sound
+              url={this.state.sound}
+              playStatus={this.state.status}
+              playFromPosition={0}
+              volume={100}
+              onLoading={({ bytesLoaded, bytesTotal }) => console.log(`${(bytesLoaded / bytesTotal) * 100}% loaded`)}
+              onPlaying={({ position }) => console.log(position) }
+              onFinishedPlaying={() => this.setState({ status: Sound.status.STOPPED })}
+          />
+        </div>;
+      }
+      if (this.props.user.role === 'guesser') {
+        return <div>
+          <h1>Draw-Game</h1>
+          <OverviewPoints/>
+          <Countdown timeRemaining={this.state.timeRemaining}/>
+          <Paper style={styles.container}>
+            <DrawArea user={this.props.user}/>
+          </Paper>
+          { this.state.guessWrong && <p>Your guess is wrong!!</p> }
+          <TextField floatingLabelText="Enter your guess"
+                     fullWidth={false}
+                     value={this.state.guessInput}
+                     onChange={(e, v) => this.guess(v)}/>
+          <RaisedButton label="Guess"
+                        primary={true}
+                        disabled={!this.state.guessInput}
+                        onTouchTap={() => this.submitGuess()}/>
+          <Sound
+              url={this.state.sound}
+              playStatus={this.state.status}
+              playFromPosition={0}
+              volume={100}
+              onLoading={({ bytesLoaded, bytesTotal }) => console.log(`${(bytesLoaded / bytesTotal) * 100}% loaded`)}
+              onPlaying={({ position }) => console.log(position) }
+              onFinishedPlaying={() => this.setState({ status: Sound.status.STOPPED })}
+          />
+        </div>;
+      }
     }
     return <div>
       <h1>Draw-Game</h1>

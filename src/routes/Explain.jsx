@@ -82,6 +82,7 @@ export default class Explain extends React.Component {
   componentDidMount() {
     this.getNewTerm();
     send('join', 'all', this.props.user.uid);
+    this.start();
   }
   start() {
     this.setState({ start: true });
@@ -91,7 +92,6 @@ export default class Explain extends React.Component {
 
   startCall(name) {
     this.Call.startCall(name);
-    // this.start();
   }
 
   submitGuess(evt) {
