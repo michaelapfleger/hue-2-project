@@ -48,7 +48,7 @@ export default class Info extends React.Component {
     dispatch: PropTypes.func,
   };
 
-  componentWillMount() {
+  componentDidMount() {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         firebase.database().ref(`/users/${user.uid}`).once('value')
@@ -57,7 +57,7 @@ export default class Info extends React.Component {
                 username: snapshot.val().username,
                 uid: snapshot.val().uid,
                 points: snapshot.val().points,
-                online: snapshot.val().online,
+                online: true,
               };
               this.props.dispatch(setUser(currentUser));
             });
@@ -84,7 +84,7 @@ export default class Info extends React.Component {
 
           console.log('new uid', user.uid);
           firebase.database().ref(`users/${user.uid}`).set({
-            online: 0,
+            online: false,
             uid: user.uid,
             username: user.email,
             points: 0,
@@ -106,9 +106,14 @@ export default class Info extends React.Component {
             email: this.state.email,
             username: test.displayName,
             uid: test.uid,
+            online: true,
           };
           this.setState({ loggedIn: true });
           this.props.dispatch(setUser(currentUser));
+
+          firebase.database().ref(`users/${this.props.user.uid}`).update({
+            '/online': true,
+          });
         })
         .catch((error) => {
           this.setState({ error: error.message });
@@ -116,6 +121,10 @@ export default class Info extends React.Component {
   }
 
   logoutUser() {
+    firebase.database().ref(`users/${this.props.user.uid}`).update({
+      '/online': false,
+    });
+
     firebase.auth().signOut().then(() => {
       this.setState({ loggedIn: false });
       const currentUser = { };
