@@ -217,7 +217,7 @@ export default class Mime extends React.Component {
   }
 
   nextRound() {
-    this.setState({ redirect: this.props.structure[1] });
+    this.setState({ redirect: this.props.structure[2] });
   }
 
   render() {
