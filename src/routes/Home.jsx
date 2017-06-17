@@ -157,7 +157,7 @@ export default class Info extends React.Component {
 
           // console.log('new uid', user.uid);
           firebase.database().ref(`users/${user.uid}`).set({
-            online: false,
+            online: true,
             uid: user.uid,
             username: user.email,
             points: 0,

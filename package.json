@@ -34,6 +34,7 @@
     "immutable-props": "^1.1.0",
     "material-ui": "^0.17.4",
     "morgan": "^1.8.2",
+    "now-deploy": "^0.1.1",
     "prop-types": "^15.5.10",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
