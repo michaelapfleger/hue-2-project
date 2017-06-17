@@ -17,7 +17,6 @@ ws.onmessage = function onmessage(evt) {
     return;
   }
   if (listeners[data.fn]) {
-    console.log('im ws', data.payload);
     listeners[data.fn].forEach(cb => cb(data.from, data.payload));
   }
 };

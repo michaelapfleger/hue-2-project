@@ -73,8 +73,6 @@ export default class DrawArea extends React.Component {
     on('chat', (from, payload) => {
       this.setState({
         lines: new Immutable.List(fromJS(payload)),
-      }, () => {
-        console.log('nach dem chat ', this.state.lines);
       });
     });
   }
@@ -84,7 +82,6 @@ export default class DrawArea extends React.Component {
   }
 
   sendMessage(lines) {
-    console.log('send Message before', this.state.lines);
     send('chat', 'all', lines);
 
     this.setState({

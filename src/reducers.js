@@ -2,6 +2,7 @@ export default function reducer(state = {
   user: {},
   opponent: {},
   over: false,
+  success: false,
   term: {},
   structure: [
     '/draw',
@@ -50,6 +51,12 @@ export default function reducer(state = {
         user: {
           ...action.payload,
         },
+      };
+    }
+    case 'SET_SUCCESS': {
+      return {
+        ...state,
+        success: action.payload,
       };
     }
     default: {

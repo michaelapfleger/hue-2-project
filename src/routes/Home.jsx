@@ -4,10 +4,9 @@ import PropTypes from 'prop-types';
 
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-
 import firebase from './../firebase';
 
-import { setUser, setOpponent } from './../actions';
+import { setUser, setOpponent, setTerm, setSuccess } from './../actions';
 
 const styles = {
   button: {
@@ -28,6 +27,7 @@ const styles = {
 
 @connect(store => ({
   user: store.user,
+  opponent: store.opponent,
 }))
 
 export default class Info extends React.Component {
@@ -45,6 +45,7 @@ export default class Info extends React.Component {
 
   static propTypes = {
     user: PropTypes.object,
+    opponent: PropTypes.object,
     dispatch: PropTypes.func,
   };
 
@@ -60,6 +61,8 @@ export default class Info extends React.Component {
                 online: true,
                 term: '',
                 role: snapshot.val().role,
+                ready: false,
+                start: false,
                 opponent: snapshot.val().opponent,
               };
               this.props.dispatch(setUser(currentUser));
@@ -74,11 +77,30 @@ export default class Info extends React.Component {
                         points: snapshot.val().points,
                         term: '',
                         online: true,
+                        start: false,
                         role: snapshot.val().role,
-                        opponen: snapshot.val().opponent,
+                        opponent: snapshot.val().opponent,
+                        ready: false,
                       };
                       this.props.dispatch(setOpponent(opponentUser));
+                      firebase.database().ref(`/users/${opponentUser.uid}`).on('child_changed', (snap) => {
+                        console.log('opponent changed', snap.val());
+                        if (snap.key === 'ready') {
+                          this.props.dispatch(setOpponent({
+                            ...this.props.opponent,
+                            ready: true,
+                          }));
+                        }
+                        if (snap.key === 'points') {
+                          this.props.dispatch(setSuccess(true));
+                        }
+                      });
                     });
+                firebase.database().ref(`/users/${this.props.user.uid}`).on('child_changed', (snap) => {
+                  if (snap.key === 'term') {
+                    this.props.dispatch(setTerm(snap.val()));
+                  }
+                });
               }
             });
         this.setState({ loggedIn: true });
@@ -110,6 +132,8 @@ export default class Info extends React.Component {
             points: 0,
             role: 'none',
             term: '',
+            start: false,
+            ready: false,
           });
         })
         .catch(
@@ -130,6 +154,7 @@ export default class Info extends React.Component {
             uid: test.uid,
             online: true,
             term: '',
+            ready: false,
           };
           this.setState({ loggedIn: true });
           this.props.dispatch(setUser(currentUser));
