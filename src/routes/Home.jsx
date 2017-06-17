@@ -201,13 +201,13 @@ export default class Info extends React.Component {
   logoutUser() {
     firebase.database().ref(`users/${this.props.user.uid}`).update({
       '/online': false,
-      '/role': 'none',
-      '/opponent': 'none',
+      '/role': '',
+      '/opponent': '',
       '/ready': false,
     }).then(() => {
       firebase.database().ref(`users/${this.props.user.opponent}`).update({
-        '/role': 'none',
-        '/opponent': 'none',
+        '/role': '',
+        '/opponent': '',
         '/ready': false,
       });
 

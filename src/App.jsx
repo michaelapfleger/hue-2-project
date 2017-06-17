@@ -130,7 +130,7 @@ export default class App extends React.Component {
   }
 
   render() {
-    const paddingLeft = (this.state.drawer.docked ? 256 : 0) + 16;
+    const paddingLeft = { paddingLeft: (this.state.drawer.docked ? 256 : 0) + 16 };
     // const name = (this.props.user.username ? this.props.user.username : this.props.user.email);
 
     return <MuiThemeProvider muiTheme={muiTheme}>
@@ -138,7 +138,7 @@ export default class App extends React.Component {
       <div>
         <AppBar title={this.props.user.username}
                 onLeftIconButtonTouchTap={() => this.toggleDrawer()}
-                style={{ paddingLeft }}
+                style={ paddingLeft }
                 />
         <Drawer open={this.state.drawer.open}
                 docked={this.state.drawer.docked}
