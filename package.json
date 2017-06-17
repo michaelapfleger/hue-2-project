@@ -29,6 +29,7 @@
   "dependencies": {
     "express": "^4.15.3",
     "firebase": "^4.0.0",
+    "halogen": "^0.2.0",
     "immutable": "^3.8.1",
     "immutable-props": "^1.1.0",
     "material-ui": "^0.17.4",

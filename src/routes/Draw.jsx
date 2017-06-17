@@ -13,6 +13,7 @@ import NoOpponentSelected from './../components/NoOpponentSelected.jsx';
 import OverviewPoints from './../components/OverviewPoints.jsx';
 import DrawArea from './../components/DrawArea.jsx';
 import Countdown from './../components/Countdown.jsx';
+import Loading from './../components/Loading.jsx';
 import firebase from './../firebase';
 
 const styles = {
@@ -66,6 +67,7 @@ export default class Draw extends React.Component {
       guessInput: '',
       redirect: '',
       guessWrong: false,
+      waiting: false,
       sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/wrong.mp3',
       success: false,
     };
@@ -120,6 +122,9 @@ export default class Draw extends React.Component {
     this.props.dispatch(setUser({
       ...this.props.user, ready: true,
     }));
+    if (!this.props.opponent.ready) {
+      this.setState({ waiting: true });
+    }
   }
   addPoints() {
     this.props.dispatch(addPointsToUser(
@@ -134,7 +139,7 @@ export default class Draw extends React.Component {
   componentDidUpdate() {
     if (this.props.user.ready && this.props.opponent.ready) {
       if (!this.state.start) {
-        this.setState({ start: true });
+        this.setState({ start: true, waiting: false });
         this.props.dispatch(setTimeStart());
       }
     }
@@ -307,6 +312,7 @@ export default class Draw extends React.Component {
           containerElement="label">
         <input type="submit" style={styles.exampleImageInput} onClick={ () => this.start() }/>
       </RaisedButton>
+      { this.state.waiting && <Loading text="Waiting for opponent..."/> }
     </div>;
   }
 }
