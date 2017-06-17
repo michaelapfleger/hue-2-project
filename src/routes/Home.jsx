@@ -88,7 +88,7 @@ export default class Info extends React.Component {
                         if (snap.key === 'ready') {
                           this.props.dispatch(setOpponent({
                             ...this.props.opponent,
-                            ready: true,
+                            ready: snap.val(),
                           }));
                         }
                         if (snap.key === 'points') {

@@ -54,7 +54,7 @@ export default class DrawArea extends React.Component {
     });
   }
   handleMouseUp() {
-    this.setState({ isDrawing: false });
+    this.setState({ isDrawing: true });
   }
 
   relativeCoordinates(mouseEvent) {

@@ -158,6 +158,12 @@ export default class Draw extends React.Component {
       this.setState({ guessWrong: false });
       this.setState({ success: true, sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/win.mp3', statusWin: Sound.status.PLAYING });
       this.props.dispatch(setSuccess(true));
+      firebase.database().ref(`users/${this.props.user.uid}`).update({
+        '/ready': false,
+      });
+      this.props.dispatch(setUser({
+        ...this.props.user, ready: false,
+      }));
     } else {
       this.setState({ guessWrong: true });
       this.setState({ sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/wrong.mp3', status: Sound.status.PLAYING });

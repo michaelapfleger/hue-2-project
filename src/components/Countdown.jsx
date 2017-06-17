@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import Timer from 'material-ui/svg-icons/image/timer';
 import { connect } from 'react-redux';
 import Sound from 'react-sound';
-import { setTimeOver } from '../actions';
+import { setTimeOver, setUser } from '../actions';
+import firebase from './../firebase';
 
 
 @connect(store => ({
@@ -37,10 +38,22 @@ export default class Countdown extends React.Component {
     if (this.state.timeRemaining <= 0) {
       clearInterval(this.interval);
       this.props.dispatch(setTimeOver());
+      this.props.dispatch(setUser({
+        ...this.props.user, ready: false,
+      }));
+      firebase.database().ref(`users/${this.props.user.uid}`).update({
+        '/ready': false,
+      });
     }
   }
   componentWillUnmount() {
     clearInterval(this.interval);
+    this.props.dispatch(setUser({
+      ...this.props.user, ready: false,
+    }));
+    firebase.database().ref(`users/${this.props.user.uid}`).update({
+      '/ready': false,
+    });
   }
   render() {
     return (
