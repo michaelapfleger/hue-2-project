@@ -3,6 +3,12 @@ export function setTimeOver() {
     type: 'TIME_OVER',
   };
 }
+export function setConnection() {
+  console.log('setconnection');
+  return {
+    type: 'SET_CONNECTION',
+  };
+}
 export function setTimeStart() {
   return {
     type: 'TIME_START',

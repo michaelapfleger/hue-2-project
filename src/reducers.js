@@ -9,9 +9,16 @@ export default function reducer(state = {
     '/mime',
     '/explain',
   ],
+  connection: false,
 }, action) {
   switch (action.type) {
     case 'TIME_OVER': {
+      return {
+        ...state,
+        over: true,
+      };
+    }
+    case 'SET_CONNECTION': {
       return {
         ...state,
         over: true,

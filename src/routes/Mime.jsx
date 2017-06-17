@@ -11,7 +11,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import NoOpponentSelected from './../components/NoOpponentSelected.jsx';
 import Term from './../components/Term.jsx';
 import OverviewPoints from './../components/OverviewPoints.jsx';
-import { setTimeStart, addPointsToUser, setTerm } from '../actions';
+import { setTimeStart, addPointsToUser, setTerm, setUser, setSuccess } from '../actions';
 import Countdown from './../components/Countdown.jsx';
 import firebase from './../firebase';
 import CallVideo from '../components/CallVideo.jsx';
@@ -81,46 +81,9 @@ export default class Mime extends React.Component {
     dispatch: PropTypes.func,
   };
 
-  componentDidMount() {
-    send('join', 'all', this.props.user.uid);
-    if (this.props.user && this.props.user.role === 'actor') {
-      this.getNewTerm();
-      // this.start();
-    }
-    if (this.props.user && this.props.user.role === 'guesser') {
-      firebase.database().ref('term/').once('value')
-          .then((snapshot) => {
-            this.props.dispatch(setTerm(snapshot.val()));
-          });
-      // this.start();
-    }
-  }
-  start() {
-    this.setState({ start: true });
-    this.props.dispatch(setTimeStart());
-    // this.startCall(this.props.opponent.uid);
-    console.log('start');
-  }
-
-  startCall(name) {
-    this.CallVideo.startCall(name);
-  }
-
-  submitGuess(evt) {
-    if (evt) {
-      evt.preventDefault();
-    }
-    this.setState({ guess: this.state.guessInput });
-    this.checkGuess(this.state.guessInput);
-  }
-
-  nextRound() {
-    this.setState({ redirect: this.props.structure[0] });
-  }
-
   getNewTerm() {
     const tempTerms = [];
-    firebase.database().ref('mime').once('value')
+    firebase.database().ref('draw').once('value')
         .then((snapshot) => {
           snapshot.forEach((childSnapshot) => {
             const term = childSnapshot.key;
@@ -138,51 +101,103 @@ export default class Mime extends React.Component {
         });
   }
 
+  getOneTerm() {
+    const rand = Math.floor((Math.random() * this.state.terms.length));
+    this.setState({ term: this.state.terms[rand] });
+    this.props.dispatch(setTerm(this.state.terms[rand]));
+    // store to database
+    firebase.database().ref(`users/${this.props.user.uid}`).update({
+      '/term': this.state.terms[rand],
+    });
+    firebase.database().ref(`users/${this.props.opponent.uid}`).update({
+      '/term': this.state.terms[rand],
+    });
+  }
+  start() {
+    firebase.database().ref(`users/${this.props.user.uid}`).update({
+      '/ready': 'readytrue',
+    });
+    this.props.dispatch(setUser({
+      ...this.props.user, ready: true,
+    }));
+  }
+
   addPoints() {
     this.props.dispatch(addPointsToUser(
-        { ...this.props.user, points: this.props.user.points + 5 },
+        { ...this.props.user, points: this.props.user.points + this.props.term.points },
     ));
-
     // save to database
     firebase.database().ref(`users/${this.props.user.uid}`).update({
-      '/points': this.props.user.points + 5,
+      '/points': this.props.user.points + this.props.term.points,
     });
   }
 
+  componentDidUpdate() {
+    if (this.props.user.ready && this.props.opponent.ready) {
+      if (!this.state.start) {
+        this.setState({ start: true });
+        this.props.dispatch(setTimeStart());
+      }
+    }
+  }
+  componentDidMount() {
+    send('join', 'all', this.props.user.username);
+    if (this.props.user && this.props.user.role === 'actor') {
+      this.getNewTerm();
+    }
+  }
+
+  componentWillUnmount() {
+    this.setState({ success: false });
+    clearTimeout();
+    this.props.dispatch(setTerm(null));
+    firebase.database().ref(`users/${this.props.user.uid}`).update({
+      '/term': '',
+    });
+    firebase.database().ref(`users/${this.props.opponent.uid}`).update({
+      '/term': '',
+    });
+    firebase.database().ref(`users/${this.props.user.uid}`).update({
+      '/ready': false,
+    });
+    this.props.dispatch(setUser({
+      ...this.props.user, ready: false,
+    }));
+    this.props.dispatch(setSuccess(false));
+  }
+
+  startCall(name) {
+    this.CallVideo.startCall(name);
+  }
+
+  submitGuess(evt) {
+    if (evt) {
+      evt.preventDefault();
+    }
+    this.setState({ guess: this.state.guessInput });
+    this.checkGuess(this.state.guessInput);
+  }
   checkGuess(guess) {
     const correct = guess.localeCompare(this.props.term.term);
     if (correct === 0) {
       this.addPoints();
-
       this.setState({ guessWrong: false });
       this.setState({ success: true, sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/win.mp3', statusWin: Sound.status.PLAYING });
+      this.props.dispatch(setSuccess(true));
     } else {
       this.setState({ guessWrong: true });
       this.setState({ sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/wrong.mp3', status: Sound.status.PLAYING });
     }
   }
-
-  getOneTerm() {
-    const rand = Math.floor((Math.random() * this.state.terms.length));
-    this.setState({ term: this.state.terms[rand] });
-    this.props.dispatch(setTerm(this.state.terms[rand]));
-    firebase.database().ref('term/').update({
-      points: this.state.terms[rand].points,
-      term: this.state.terms[rand].term,
-    });
-  }
-
   guess(input) {
     this.setState({
       guessInput: input.replace(/[^\w\s]/gi, '').toLowerCase(),
       guessWrong: false,
     });
   }
-  componentWillUnmount() {
-    this.setState({ success: false });
-    clearTimeout();
-    this.props.dispatch(setTerm(null));
-    firebase.database().ref('term/').set(null);
+
+  nextRound() {
+    this.setState({ redirect: this.props.structure[1] });
   }
 
   render() {
@@ -285,7 +300,7 @@ export default class Mime extends React.Component {
           labelPosition="before"
           style={styles.button}
           containerElement="label">
-        <input type="submit" style={styles.exampleImageInput} onClick={() => this.startCall(this.props.opponent.uid) }/>
+        <input type="submit" style={styles.exampleImageInput} onClick={() => this.startCall(this.props.opponent.username) }/>
       </RaisedButton>
       <CallVideo ref={call => (this.CallVideo = call)}
                  role={this.props.user.role}/>
