@@ -108,40 +108,39 @@ export default class Info extends React.Component {
                     this.props.dispatch(setTerm(snap.val()));
                   }
                 });
-                firebase.database().ref(`/users/${this.props.user.uid}`).on('child_changed', (snap) => {
-                  // listen to change in users opponent
-                  // console.log('snap val', snap.val());
-                  if (snap.key === 'opponent' && snap.val() !== 'none') {
-                    console.log('opponent changed in db', snap.val());
-                    this.props.dispatch(setUser({ ...this.props.user, opponent: snap.val() }));
-
-                    // update store opponent
-                    firebase.database().ref(`/users/${snap.val()}`).once('value')
-                        .then((snapshot) => {
-                          const opponentUser = {
-                            username: snapshot.val().username,
-                            uid: snapshot.val().uid,
-                            points: snapshot.val().points,
-                            term: '',
-                            online: true,
-                            start: false,
-                            role: snapshot.val().role,
-                            opponent: snapshot.val().opponent,
-                            ready: false,
-                          };
-                          this.props.dispatch(setOpponent(opponentUser));
-                        })
-                        .then(() => {
-                          // setnewopponent for info message
-                          this.props.dispatch(setNewOpponent(true));
-                        });
-                  } else if (snap.key === 'opponent' && snap.val() === 'none') {
-                    this.props.dispatch(setUser({ ...this.props.user, opponent: 'none' }));
-                    this.props.dispatch(setOpponent({}));
-                  }
-                });
               }
             });
+        firebase.database().ref(`/users/${this.props.user.uid}`).on('child_changed', (snap) => {
+          // listen to change in users opponent
+          console.log('snap val', snap.val());
+          if (snap.key === 'opponent' && snap.val() !== 'none') {
+            this.props.dispatch(setUser({ ...this.props.user, opponent: snap.val() }));
+
+            // update store opponent
+            firebase.database().ref(`/users/${snap.val()}`).once('value')
+                .then((snapshot) => {
+                  const opponentUser = {
+                    username: snapshot.val().username,
+                    uid: snapshot.val().uid,
+                    points: snapshot.val().points,
+                    term: '',
+                    online: true,
+                    start: false,
+                    role: snapshot.val().role,
+                    opponent: snapshot.val().opponent,
+                    ready: false,
+                  };
+                  this.props.dispatch(setOpponent(opponentUser));
+                })
+                .then(() => {
+                  // setnewopponent for info message
+                  this.props.dispatch(setNewOpponent(true));
+                });
+          } else if (snap.key === 'opponent' && snap.val() === 'none') {
+            this.props.dispatch(setUser({ ...this.props.user, opponent: 'none' }));
+            this.props.dispatch(setOpponent({}));
+          }
+        });
         this.setState({ loggedIn: true });
       }
     });
