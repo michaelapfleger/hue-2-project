@@ -16,6 +16,7 @@ export default class DrawArea extends React.Component {
       isDrawing: false,
       lines: new Immutable.List(),
       color: '#25737c',
+      hide: false,
     };
 
     this.sendMessage = this.sendMessage.bind(this);
@@ -37,6 +38,7 @@ export default class DrawArea extends React.Component {
     this.setState(prevState => ({
       lines: prevState.lines.push(new Immutable.List([point])),
       isDrawing: true,
+      hide: true,
     }));
   }
 
@@ -54,7 +56,7 @@ export default class DrawArea extends React.Component {
     });
   }
   handleMouseUp() {
-    this.setState({ isDrawing: true });
+    this.setState({ isDrawing: false });
   }
 
   relativeCoordinates(mouseEvent) {
@@ -109,7 +111,7 @@ export default class DrawArea extends React.Component {
                 onMouseDown={this.handleMouseDown}
                 onMouseMove={this.handleMouseMove}
             >
-              <span className="draw-info" style={{ display: this.state.isDrawing ? 'none' : 'block' }}>draw here ...</span>
+              <span className="draw-info" style={{ display: this.state.hide ? 'none' : 'block' }}>draw here ...</span>
 
               <Drawing lines={this.state.lines} color={this.state.color} />
 
