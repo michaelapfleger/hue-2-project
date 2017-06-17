@@ -110,7 +110,7 @@ export default class Players extends React.Component {
               uid: snapshot.val().uid,
               points: snapshot.val().points,
             };
-            this.props.dispatch(setOpponent(currentOpponent));
+            // this.props.dispatch(setOpponent(currentOpponent));
             this.setState({
               defaultSelected: this.state.users.findIndex(x => x.userID === currentOpponent.uid),
             });
@@ -124,10 +124,12 @@ export default class Players extends React.Component {
               '/role': 'actor',
               '/opponent': `${value}`,
             });
-
-            this.props.dispatch(setUser({ ...this.props.user, role: 'actor', opponent: `${value}` }));
+          })
+          .then(() => {
+            this.props.dispatch(setUser({ ...this.props.user, role: 'actor' }));
           });
     } else {
+      console.log('dont want an opponent');
       firebase.database().ref(`users/${this.props.user.opponent}`).update({
         '/role': 'none',
         '/opponent': 'none',

@@ -106,7 +106,8 @@ export default class Info extends React.Component {
                 });
                 firebase.database().ref(`/users/${this.props.user.uid}`).on('child_changed', (snap) => {
                   // listen to change in users opponent
-                  if (snap.key === 'opponent') {
+                  console.log('snap val', snap.val());
+                  if (snap.key === 'opponent' && snap.val() !== 'none') {
                     this.props.dispatch(setUser({ ...this.props.user, opponent: snap.val() }));
 
                     // update store opponent
@@ -220,6 +221,24 @@ export default class Info extends React.Component {
         this.setState({ error: error.message });
       });
     });
+    })
+        .then(() => {
+          firebase.database().ref(`users/${this.props.user.opponent}`).update({
+            '/role': 'none',
+            '/opponent': 'none',
+            '/ready': false,
+          });
+        })
+        .then(() => {
+          firebase.auth().signOut().then(() => {
+            this.setState({ loggedIn: false });
+            const currentUser = { };
+            this.props.dispatch(setUser(currentUser));
+            this.props.dispatch(setOpponent(currentUser));
+          }).catch((error) => {
+            this.setState({ error: error.message });
+          });
+        });
   }
 
   render() {
