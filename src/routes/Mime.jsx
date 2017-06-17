@@ -259,17 +259,18 @@ export default class Mime extends React.Component {
             </div>
         );
       }
+    }
 
-      if (this.props.user.role === 'actor') {
-        return <div>
-          <h1>Mime-Game</h1>
 
-          <Countdown timeRemaining={this.state.timeRemaining}/>
+    return <div>
+      <h1>Mime-Game beide</h1>
+      <OverviewPoints/>
+      { this.state.start && <Countdown timeRemaining={this.state.timeRemaining}/> }
+      <CallVideo ref={call => (this.CallVideo = call)}/>
 
-          <CallVideo ref={call => (this.CallVideo = call)} role={this.props.user.role}/>
-
+      { (this.state.start && this.props.user.role === 'actor') &&
+        <div>
           <Term term={this.state.term.term} error={this.state.error}/>
-
           <Sound
               url={this.state.sound}
               playStatus={this.state.status}
@@ -279,50 +280,32 @@ export default class Mime extends React.Component {
               onPlaying={({ position }) => console.log(position) }
               onFinishedPlaying={() => this.setState({ status: Sound.status.STOPPED })}
           />
-        </div>;
-      } else if (this.props.user.role === 'guesser') {
-        return <div>
-          <h1>Mime-Game</h1>
-          <OverviewPoints/>
-          <Countdown timeRemaining={this.state.timeRemaining}/>
+        </div>
 
-          <CallVideo ref={call => (this.CallVideo = call)} role={this.props.user.role}/>
-
-          { this.state.guessWrong && <p>Your guess is wrong!!</p> }
+      }
+      { (this.state.start && this.props.user.role === 'guesser' && this.state.guessWrong) &&
+      <p>Your guess is wrong!!</p> }
+      { (this.state.start && this.props.user.role === 'guesser') &&
+          <div>
           <TextField floatingLabelText="Enter your guess"
                      fullWidth={false}
                      value={this.state.guessInput}
                      onChange={(e, v) => this.guess(v)}/>
           <RaisedButton label="Guess"
-                        primary={true}
-                        disabled={!this.state.guessInput}
-                        onTouchTap={() => this.submitGuess()}/>
-          <Sound
-              url={this.state.sound}
-              playStatus={this.state.status}
-              playFromPosition={0}
-              volume={100}
-              onLoading={({ bytesLoaded, bytesTotal }) => console.log(`${(bytesLoaded / bytesTotal) * 100}% loaded`)}
-              onPlaying={({ position }) => console.log(position) }
-              onFinishedPlaying={() => this.setState({ status: Sound.status.STOPPED })}
-          />
-        </div>;
+            primary={true}
+            disabled={!this.state.guessInput}
+            onTouchTap={() => this.submitGuess()}/>
+            <Sound
+            url={this.state.sound}
+            playStatus={this.state.status}
+            playFromPosition={0}
+            volume={100}
+            onLoading={({ bytesLoaded, bytesTotal }) => console.log(`${(bytesLoaded / bytesTotal) * 100}% loaded`)}
+            onPlaying={({ position }) => console.log(position) }
+            onFinishedPlaying={() => this.setState({ status: Sound.status.STOPPED })}
+            />
+            </div>
       }
-    }
-
-    if (this.props.user.role === 'actor') {
-      return <div>
-        <h1>Mime-Game</h1>
-        <OverviewPoints/>
-        <CallVideo ref={call => (this.CallVideo = call)}
-                   role={this.props.user.role}/>
-      </div>;
-    }
-    return <div>
-      <h1>Mime-Game</h1>
-      <OverviewPoints/>
-      <CallVideo ref={call => (this.CallVideo = call)}
-      role={this.props.user.role}/>
       </div>;
   }
 }
