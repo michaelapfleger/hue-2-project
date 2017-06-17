@@ -6,7 +6,7 @@ import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import { connect } from 'react-redux';
-import { setTimeStart, addPointsToUser, setTerm, setUser, setSuccess, setOpponent } from '../actions';
+import { setTimeStart, addPointsToUser, setTerm, setUser, setSuccess } from '../actions';
 // import { on, off, send } from '../ws';
 
 import NoOpponentSelected from './../components/NoOpponentSelected.jsx';
@@ -200,25 +200,28 @@ export default class Draw extends React.Component {
   }
 
   switchRole() {
-    const userRole = this.props.user.role;
+    console.log('role: ', this.props.user.role);
+    let userRole = 'actor';
+    if (this.props.user.role === 'actor') {
+      userRole = 'guesser';
+      console.log('change to guesser: ', this.props.user.role);
+    }
     firebase.database().ref(`users/${this.props.user.uid}`).update({
-      '/role': `${this.props.opponent.role}`,
+      '/role': `${userRole}`,
     })
         .then(() => {
-          console.log('role 1', this.props.opponent.role);
-          firebase.database().ref(`users/${this.props.user.opponent}`).update({
-            '/role': `${this.props.user.role}`,
-          });
+          this.props.dispatch(setUser({ ...this.props.user, role: userRole }));
+          // this.props.dispatch(setOpponent({ ...this.props.opponent, role: userRole }));
+
+          console.log('role changed ######################');
         })
         .then(() => {
-          this.props.dispatch(setUser({ ...this.props.user, role: this.props.opponent.role }));
-          this.props.dispatch(setOpponent({ ...this.props.user, role: userRole }));
-
-          console.log('role changed');
+          console.log('next round');
+          this.nextRound();
         });
   }
   nextRound() {
-    this.switchRole();
+    // this.switchRole();
     this.setState({ redirect: this.props.structure[1] });
   }
 
@@ -238,7 +241,7 @@ export default class Draw extends React.Component {
               <h4>Your guess was correct!</h4>
               <RaisedButton label="Next round"
                             primary={true}
-                            onTouchTap={() => this.nextRound()}/>
+                            onTouchTap={() => this.switchRole()}/>
               <Sound
                   url={this.state.sound}
                   playStatus={this.state.statusWin}
