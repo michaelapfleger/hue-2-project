@@ -233,7 +233,7 @@ export default class CallVideo extends React.Component {
     });
   }
 
-  confirm() {u
+  confirm() {
     navigator.mediaDevices.getUserMedia({
       audio: false,
       video: true,
