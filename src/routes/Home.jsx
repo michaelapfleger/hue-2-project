@@ -134,6 +134,9 @@ export default class Info extends React.Component {
                           // setnewopponent for info message
                           this.props.dispatch(setNewOpponent(true));
                         });
+                  } else if (snap.key === 'opponent' && snap.val() === 'none'){
+                    this.props.dispatch(setUser({ ...this.props.user, opponent: 'none' }));
+                    this.props.dispatch(setOpponent({}));
                   }
                 });
               }
