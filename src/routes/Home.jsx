@@ -106,7 +106,6 @@ export default class Info extends React.Component {
                 });
                 firebase.database().ref(`/users/${this.props.user.uid}`).on('child_changed', (snap) => {
                   if (snap.key === 'opponent') {
-
                     this.props.dispatch(setUser({ ...this.props.user, opponent: snap.val() }));
 
                     firebase.database().ref(`/users/${snap.val()}`).once('value')

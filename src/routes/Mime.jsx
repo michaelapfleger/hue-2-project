@@ -314,14 +314,6 @@ export default class Mime extends React.Component {
       return <div>
         <h1>Mime-Game</h1>
         <OverviewPoints/>
-        <RaisedButton
-            label="Start Call"
-            labelPosition="before"
-            style={styles.button}
-            containerElement="label">
-          <input type="submit" style={styles.exampleImageInput}
-                 onClick={() => this.startCall(this.props.opponent.username) }/>
-        </RaisedButton>
         <CallVideo ref={call => (this.CallVideo = call)}
                    role={this.props.user.role}/>
       </div>;
