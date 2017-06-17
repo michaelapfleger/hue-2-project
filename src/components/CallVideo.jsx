@@ -8,6 +8,7 @@ import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import firebase from './../firebase';
 import { setUser, setOpponent } from '../actions';
+// import { setConnection } from '../actions';
 
 import { send, on, off } from '../ws';
 

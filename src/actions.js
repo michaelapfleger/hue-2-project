@@ -9,6 +9,13 @@ export function setConnection() {
     type: 'SET_CONNECTION',
   };
 }
+export function setNewOpponent(change) {
+  console.log('SET_NEWOPPONENT');
+  return {
+    type: 'SET_NEWOPPONENT',
+    payload: change,
+  };
+}
 export function setTimeStart() {
   return {
     type: 'TIME_START',

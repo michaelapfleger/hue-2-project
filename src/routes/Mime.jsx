@@ -113,6 +113,7 @@ export default class Mime extends React.Component {
       '/term': this.state.terms[rand],
     });
   }
+
   start() {
     firebase.database().ref(`users/${this.props.user.uid}`).update({
       '/ready': true,
@@ -146,6 +147,7 @@ export default class Mime extends React.Component {
       // this.start();
     }
   }
+
   componentDidMount() {
     send('join', 'all', this.props.user.username);
     if (this.props.user && this.props.user.role === 'actor') {
@@ -184,18 +186,27 @@ export default class Mime extends React.Component {
     this.setState({ guess: this.state.guessInput });
     this.checkGuess(this.state.guessInput);
   }
+
   checkGuess(guess) {
     const correct = guess.localeCompare(this.props.term.term);
     if (correct === 0) {
       this.addPoints();
       this.setState({ guessWrong: false });
-      this.setState({ success: true, sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/win.mp3', statusWin: Sound.status.PLAYING });
+      this.setState({
+        success: true,
+        sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/win.mp3',
+        statusWin: Sound.status.PLAYING,
+      });
       this.props.dispatch(setSuccess(true));
     } else {
       this.setState({ guessWrong: true });
-      this.setState({ sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/wrong.mp3', status: Sound.status.PLAYING });
+      this.setState({
+        sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/wrong.mp3',
+        status: Sound.status.PLAYING,
+      });
     }
   }
+
   guess(input) {
     this.setState({
       guessInput: input.replace(/[^\w\s]/gi, '').toLowerCase(),
@@ -214,7 +225,7 @@ export default class Mime extends React.Component {
 
     if (this.state.success) {
       if (this.state.redirect) {
-        return (<Redirect to={this.state.redirect} />);
+        return (<Redirect to={this.state.redirect}/>);
       }
       return (
           <Paper style={styles.container}>
@@ -299,11 +310,27 @@ export default class Mime extends React.Component {
       }
     }
 
+    if (this.props.user.role === 'actor') {
+      return <div>
+        <h1>Mime-Game</h1>
+        <OverviewPoints/>
+        <RaisedButton
+            label="Start Call"
+            labelPosition="before"
+            style={styles.button}
+            containerElement="label">
+          <input type="submit" style={styles.exampleImageInput}
+                 onClick={() => this.startCall(this.props.opponent.username) }/>
+        </RaisedButton>
+        <CallVideo ref={call => (this.CallVideo = call)}
+                   role={this.props.user.role}/>
+      </div>;
+    }
     return <div>
       <h1>Mime-Game</h1>
       <OverviewPoints/>
       <CallVideo ref={call => (this.CallVideo = call)}
-                 role={this.props.user.role}/>
-    </div>;
+      role={this.props.user.role}/>
+      </div>;
   }
 }

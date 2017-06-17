@@ -10,6 +10,7 @@ export default function reducer(state = {
     '/explain',
   ],
   connection: false,
+  newOpponent: false,
 }, action) {
   switch (action.type) {
     case 'TIME_OVER': {
@@ -23,6 +24,13 @@ export default function reducer(state = {
       return {
         ...state,
         connection: true,
+      };
+    }
+    case 'SET_NEWOPPONENT': {
+      console.log('set new opp reducer');
+      return {
+        ...state,
+        newOpponent: action.payload,
       };
     }
     case 'TIME_START': {
