@@ -202,9 +202,25 @@ export default class Info extends React.Component {
   logoutUser() {
     firebase.database().ref(`users/${this.props.user.uid}`).update({
       '/online': false,
-      '/role': 'none',
-      '/opponent': 'none',
+      '/role': '',
+      '/opponent': '',
       '/ready': false,
+    }).then(() => {
+      firebase.database().ref(`users/${this.props.user.opponent}`).update({
+        '/role': '',
+        '/opponent': '',
+        '/ready': false,
+      });
+
+      firebase.auth().signOut().then(() => {
+        this.setState({ loggedIn: false });
+        const currentUser = { };
+        this.props.dispatch(setUser(currentUser));
+        this.props.dispatch(setOpponent(currentUser));
+      }).catch((error) => {
+        this.setState({ error: error.message });
+      });
+    });
     })
         .then(() => {
           firebase.database().ref(`users/${this.props.user.opponent}`).update({
