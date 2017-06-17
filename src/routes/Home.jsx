@@ -69,6 +69,10 @@ export default class Info extends React.Component {
                 opponent: snapshot.val().opponent,
               };
               this.props.dispatch(setUser(currentUser));
+
+              firebase.database().ref(`users/${user.uid}`).update({
+                '/ready': 'false',
+              });
             })
             .then(() => {
               if (this.props.user.opponent !== 'none') {

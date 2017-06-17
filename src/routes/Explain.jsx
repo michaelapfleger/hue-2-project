@@ -14,7 +14,7 @@ import OverviewPoints from './../components/OverviewPoints.jsx';
 import { setTimeStart, addPointsToUser, setTerm, setUser, setSuccess } from '../actions';
 import Countdown from './../components/Countdown.jsx';
 import firebase from './../firebase';
-import Call from '../components/CallVideo.jsx';
+import Call from '../components/CallAudio.jsx';
 import { send } from '../ws';
 
 const styles = {
@@ -263,7 +263,7 @@ export default class Explain extends React.Component {
 
 
     return <div>
-      <h1>Explain-Game beide</h1>
+      <h1>Explain-Game</h1>
       <OverviewPoints/>
       { this.state.start && <Countdown timeRemaining={this.state.timeRemaining}/> }
       <Call ref={call => (this.Call = call)} role={this.props.user.role} />
