@@ -259,7 +259,7 @@ export default class Draw extends React.Component {
             <h4>Your opponent guessed correct!</h4>
             <RaisedButton label="Next round"
                           primary={true}
-                          onTouchTap={() => this.nextRound()}/>
+                          onTouchTap={() => this.switchRole()}/>
           </Paper>
       );
     }
@@ -270,7 +270,7 @@ export default class Draw extends React.Component {
                 <h3>Sorry, time is up!</h3>
                 <RaisedButton label="Next round"
                               primary={true}
-                              onTouchTap={() => this.nextRound()}/>
+                              onTouchTap={() => this.switchRole()}/>
               </Paper>
             </div>
         );

@@ -278,7 +278,7 @@ export default class Mime extends React.Component {
                 <h3>Sorry, time is up!</h3>
                 <RaisedButton label="Next round"
                               primary={true}
-                              onTouchTap={() => this.nextRound()}/>
+                              onTouchTap={() => this.switchRole()}/>
               </Paper>
             </div>
         );
