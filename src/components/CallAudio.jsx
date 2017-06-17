@@ -1,8 +1,15 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import FlatButton from 'material-ui/FlatButton';
 import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card';
+
+import RaisedButton from 'material-ui/RaisedButton';
+import firebase from './../firebase';
+import { setUser, setOpponent } from '../actions';
+// import { setConnection } from '../actions';
+
 import { send, on, off } from '../ws';
 
 const CALL_STATE_NONE = 'none';
@@ -25,15 +32,30 @@ const styles = {
     transform: 'scaleX(-1)',
     bottom: 0,
     left: 0,
-    display: 'none',
   },
   remoteVideo: {
     width: '100%',
     minHeight: 500,
-    display: 'none',
+  },
+  exampleImageInput: {
+    cursor: 'pointer',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0,
+    width: '100%',
+    opacity: 0,
   },
 };
-
+@connect(store => ({
+  over: store.over,
+  user: store.user,
+  opponent: store.opponent,
+  success: store.success,
+  structure: store.structure,
+  term: store.term,
+}))
 export default class CallVideo extends React.Component {
   constructor(props) {
     super(props);
@@ -44,10 +66,17 @@ export default class CallVideo extends React.Component {
       remoteName: null,
     };
     this.connection = null;
+    this.startCall = this.startCall.bind(this);
   }
 
   static propTypes = {
+    user: PropTypes.object,
+    opponent: PropTypes.object,
+    term: PropTypes.object,
+    over: PropTypes.bool,
+    structure: PropTypes.array,
     role: PropTypes.string,
+    dispatch: PropTypes.func,
   };
 
   componentDidMount() {
@@ -93,6 +122,20 @@ export default class CallVideo extends React.Component {
 
     on('accept', () => {
       this.setupConnection();
+      console.log('yeeees es geht');
+      firebase.database().ref(`users/${this.props.user.uid}`).update({
+        '/ready': true,
+      });
+      firebase.database().ref(`users/${this.props.opponent.uid}`).update({
+        '/ready': true,
+      });
+      this.props.dispatch(setUser({
+        ...this.props.user, ready: true,
+      }));
+      this.props.dispatch(setOpponent({
+        ...this.props.opponent, ready: true,
+      }));
+      // hier dann den store benachrichtigen!
     });
 
     on('hangup', () => {
@@ -111,6 +154,25 @@ export default class CallVideo extends React.Component {
     off('accept');
     off('hangup');
     this.hangup();
+    firebase.database().ref(`users/${this.props.user.uid}`).update({
+      '/ready': false,
+    });
+    firebase.database().ref(`users/${this.props.opponent.uid}`).update({
+      '/ready': false,
+    });
+    this.props.dispatch(setUser({
+      ...this.props.user, ready: false,
+    }));
+    this.props.dispatch(setOpponent({
+      ...this.props.opponent, ready: false,
+    }));
+  }
+
+  componentDidUpdate() {
+    console.log('update');
+    if (this.props.user.ready && this.props.opponent.ready) {
+      console.log('beide bereit');
+    }
   }
 
   setupConnection() {
@@ -192,6 +254,13 @@ export default class CallVideo extends React.Component {
       this.stream = stream;
       this.setupConnection();
       send('accept', this.state.remoteName);
+      // hier den user auf ready true setzen
+      this.props.dispatch(setUser({
+        ...this.props.user, ready: true,
+      }));
+      this.props.dispatch(setOpponent({
+        ...this.props.opponent, ready: true,
+      }));
     }).catch(e => console.error('error accessing cam and mic', e));
   }
 
@@ -241,6 +310,7 @@ export default class CallVideo extends React.Component {
     }
 
     if (this.state.callState === CALL_STATE_ACTIVE) {
+      // this.props.dispatch(setConnection());
       if (this.props.role === 'actor') {
         return <div>
           <video style={styles.remoteVideo} src={this.state.localVideo}
@@ -258,16 +328,33 @@ export default class CallVideo extends React.Component {
     return null;
   }
 
+  getState() {
+    if (this.state.callState === CALL_STATE_ACTIVE) {
+      return 'ready';
+    }
+    return null;
+  }
+
   render() {
-    return <Card>
-      <CardTitle title="Explain" subtitle="audio"/>
-      <CardText>
-        <img src="./audio.png" width="400"/>
-        {this.getCallContent()}
-      </CardText>
-      <CardActions>
-        {this.getCallActionButtons()}
-      </CardActions>
-    </Card>;
+    return (
+        <div>
+          { this.props.user.role === 'actor' && <RaisedButton
+              label="Start Call"
+              labelPosition="before"
+              style={styles.button}
+              containerElement="label">
+            <input type="submit" style={styles.exampleImageInput} onClick={() => this.startCall(this.props.opponent.username) }/>
+          </RaisedButton> }
+          <Card>
+            <CardTitle title="Call" subtitle="video"/>
+            <CardText>
+              {this.getCallContent()}
+            </CardText>
+            <CardActions>
+              {this.getCallActionButtons()}
+            </CardActions>
+          </Card>
+        </div>
+    );
   }
 }

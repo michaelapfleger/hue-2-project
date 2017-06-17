@@ -105,9 +105,11 @@ export default class Info extends React.Component {
                   }
                 });
                 firebase.database().ref(`/users/${this.props.user.uid}`).on('child_changed', (snap) => {
+                  // listen to change in users opponent
                   if (snap.key === 'opponent') {
                     this.props.dispatch(setUser({ ...this.props.user, opponent: snap.val() }));
 
+                    // update store opponent
                     firebase.database().ref(`/users/${snap.val()}`).once('value')
                         .then((snapshot) => {
                           const opponentUser = {
@@ -124,6 +126,7 @@ export default class Info extends React.Component {
                           this.props.dispatch(setOpponent(opponentUser));
                         })
                         .then(() => {
+                          // setnewopponent for info message
                           this.props.dispatch(setNewOpponent(true));
                         });
                   }
