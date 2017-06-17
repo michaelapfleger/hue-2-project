@@ -5,8 +5,9 @@ import PropTypes from 'prop-types';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import firebase from './../firebase';
+import NewOpponent from './../components/NewOpponent.jsx';
 
-import { setUser, setOpponent, setTerm, setSuccess } from './../actions';
+import { setUser, setOpponent, setTerm, setSuccess, setNewOpponent } from './../actions';
 
 const styles = {
   button: {
@@ -28,6 +29,7 @@ const styles = {
 @connect(store => ({
   user: store.user,
   opponent: store.opponent,
+  newOpponent: store.newOpponent,
 }))
 
 export default class Info extends React.Component {
@@ -46,6 +48,7 @@ export default class Info extends React.Component {
   static propTypes = {
     user: PropTypes.object,
     opponent: PropTypes.object,
+    newOpponent: PropTypes.bool,
     dispatch: PropTypes.func,
   };
 
@@ -99,6 +102,31 @@ export default class Info extends React.Component {
                 firebase.database().ref(`/users/${this.props.user.uid}`).on('child_changed', (snap) => {
                   if (snap.key === 'term') {
                     this.props.dispatch(setTerm(snap.val()));
+                  }
+                });
+                firebase.database().ref(`/users/${this.props.user.uid}`).on('child_changed', (snap) => {
+                  if (snap.key === 'opponent') {
+
+                    this.props.dispatch(setUser({ ...this.props.user, opponent: snap.val() }));
+
+                    firebase.database().ref(`/users/${snap.val()}`).once('value')
+                        .then((snapshot) => {
+                          const opponentUser = {
+                            username: snapshot.val().username,
+                            uid: snapshot.val().uid,
+                            points: snapshot.val().points,
+                            term: '',
+                            online: true,
+                            start: false,
+                            role: snapshot.val().role,
+                            opponent: snapshot.val().opponent,
+                            ready: false,
+                          };
+                          this.props.dispatch(setOpponent(opponentUser));
+                        })
+                        .then(() => {
+                          this.props.dispatch(setNewOpponent(true));
+                        });
                   }
                 });
               }
@@ -184,6 +212,7 @@ export default class Info extends React.Component {
 
   render() {
     return <div>
+      { this.props.newOpponent && <NewOpponent/> }
       <img src="./logo.png" width="200"/>
       <h1>Welcome</h1>
       <div style={{ display: this.state.loggedIn ? 'none' : 'block' }}>

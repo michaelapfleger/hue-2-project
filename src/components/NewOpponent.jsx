@@ -5,9 +5,13 @@ import PropTypes from 'prop-types';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 
+import { setNewOpponent } from './../actions';
+
+
 @connect(store => ({
   user: store.user,
   opponent: store.opponent,
+  newOpponent: store.newOpponent,
 }))
 export default class NewOpponent extends React.Component {
   constructor(props) {
@@ -19,6 +23,8 @@ export default class NewOpponent extends React.Component {
   static propTypes = {
     user: PropTypes.object,
     opponent: PropTypes.object,
+    newOpponent: PropTypes.bool,
+    dispatch: PropTypes.func,
   };
 
   handleOpen = () => {
@@ -27,6 +33,7 @@ export default class NewOpponent extends React.Component {
 
   handleClose = () => {
     this.setState({ open: false });
+    this.props.dispatch(setNewOpponent(false));
   };
 
   render() {
@@ -45,7 +52,7 @@ export default class NewOpponent extends React.Component {
           open={this.state.open}
           onRequestClose={this.handleClose}
       >
-        Another player selected you! Start the game now!
+        Another player selected you! Start the game now with {this.props.opponent.username} !
       </Dialog>
     </div>;
   }

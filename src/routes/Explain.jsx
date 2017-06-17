@@ -16,6 +16,8 @@ import Countdown from './../components/Countdown.jsx';
 import firebase from './../firebase';
 import Call from '../components/CallAudio.jsx';
 import { send } from '../ws';
+import NewOpponent from './../components/NewOpponent.jsx';
+
 
 const styles = {
   container: {
@@ -51,6 +53,7 @@ const styles = {
   over: store.over,
   structure: store.structure,
   term: store.term,
+  newOpponent: store.newOpponent,
 }))
 export default class Explain extends React.Component {
   constructor(props) {
@@ -79,6 +82,7 @@ export default class Explain extends React.Component {
     over: PropTypes.bool,
     structure: PropTypes.array,
     dispatch: PropTypes.func,
+    newOpponent: PropTypes.bool,
   };
 
   getNewTerm() {
@@ -293,6 +297,7 @@ export default class Explain extends React.Component {
     }
 
     return <div>
+      { this.props.newOpponent && <NewOpponent/> }
       <h1>Explain-Game</h1>
       <OverviewPoints/>
       <RaisedButton

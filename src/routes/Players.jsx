@@ -9,6 +9,7 @@ import TextField from 'material-ui/TextField';
 import DataChannel from '../components/DataChannel.jsx';
 import firebase from './../firebase';
 import { setUser, setOpponent } from './../actions';
+import NewOpponent from './../components/NewOpponent.jsx';
 
 const styles = {
   container: {
@@ -23,6 +24,7 @@ const styles = {
 @connect(store => ({
   user: store.user,
   opponent: store.opponent,
+  newOpponent: store.newOpponent,
 }))
 export default class Players extends React.Component {
 
@@ -40,6 +42,7 @@ export default class Players extends React.Component {
   static propTypes = {
     user: PropTypes.object,
     opponent: PropTypes.object,
+    newOpponent: PropTypes.bool,
     dispatch: PropTypes.func,
   };
 
@@ -127,6 +130,7 @@ export default class Players extends React.Component {
 
   render() {
     return <div>
+      { this.props.newOpponent && <NewOpponent/> }
       <h1>{this.constructor.name}</h1>
       <DataChannel ref={call => (this.DataChannel = call)}/>
       <Paper style={styles.container}>

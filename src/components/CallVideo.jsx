@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import FlatButton from 'material-ui/FlatButton';
 import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card';
 
-import { setConnection } from '../actions';
+// import { setConnection } from '../actions';
 
 import { send, on, off } from '../ws';
 
@@ -243,7 +243,7 @@ export default class CallVideo extends React.Component {
     }
 
     if (this.state.callState === CALL_STATE_ACTIVE) {
-      this.props.dispatch(setConnection());
+      // this.props.dispatch(setConnection());
       if (this.props.role === 'actor') {
         return <div>
           <video style={styles.remoteVideo} src={this.state.localVideo}

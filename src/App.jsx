@@ -23,9 +23,6 @@ import Mime from './routes/Mime.jsx';
 import Explain from './routes/Explain.jsx';
 import Info from './routes/Info.jsx';
 
-import NewOpponent from './components/NewOpponent.jsx';
-
-
 const styles = {
   content: {
     paddingTop: 40,
@@ -99,7 +96,7 @@ const routes = [
 
 @connect(store => ({
   user: store.user,
-  opponent: store.opponent,
+  newOpponent: store.newOpponent,
 }))
 export default class App extends React.Component {
   constructor(props) {
@@ -115,7 +112,7 @@ export default class App extends React.Component {
 
   static propTypes = {
     user: PropTypes.object,
-    opponent: PropTypes.object,
+    newOpponent: PropTypes.bool,
     dispatch: PropTypes.func,
   };
 
@@ -157,7 +154,6 @@ export default class App extends React.Component {
               </Link>)}
         </Drawer>
         <div style={{ ...styles.content }}>
-          <NewOpponent/>
           {routes.map(route => (
               <Route exact={route.exact}
                      key={route.link}
