@@ -233,10 +233,10 @@ export default class CallVideo extends React.Component {
     });
   }
 
-  confirm() {
+  confirm() {u
     navigator.mediaDevices.getUserMedia({
-      audio: true,
-      video: false,
+      audio: false,
+      video: true,
     }).then((stream) => {
       send('call', this.state.remoteName);
       this.setState({
@@ -248,8 +248,8 @@ export default class CallVideo extends React.Component {
 
   accept() {
     navigator.mediaDevices.getUserMedia({
-      audio: true,
-      video: false,
+      audio: false,
+      video: true,
     }).then((stream) => {
       this.stream = stream;
       this.setupConnection();

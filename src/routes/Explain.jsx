@@ -11,13 +11,11 @@ import RaisedButton from 'material-ui/RaisedButton';
 import NoOpponentSelected from './../components/NoOpponentSelected.jsx';
 import Term from './../components/Term.jsx';
 import OverviewPoints from './../components/OverviewPoints.jsx';
-import { setTimeStart, addPointsToUser, setTerm, setSuccess, setUser } from '../actions';
+import { setTimeStart, addPointsToUser, setTerm, setUser, setSuccess } from '../actions';
 import Countdown from './../components/Countdown.jsx';
 import firebase from './../firebase';
-import Call from '../components/CallAudio.jsx';
+import Call from '../components/CallVideo.jsx';
 import { send } from '../ws';
-import NewOpponent from './../components/NewOpponent.jsx';
-
 
 const styles = {
   container: {
@@ -53,7 +51,6 @@ const styles = {
   over: store.over,
   structure: store.structure,
   term: store.term,
-  newOpponent: store.newOpponent,
 }))
 export default class Explain extends React.Component {
   constructor(props) {
@@ -82,7 +79,6 @@ export default class Explain extends React.Component {
     over: PropTypes.bool,
     structure: PropTypes.array,
     dispatch: PropTypes.func,
-    newOpponent: PropTypes.bool,
   };
 
   getNewTerm() {
@@ -117,6 +113,7 @@ export default class Explain extends React.Component {
       '/term': this.state.terms[rand],
     });
   }
+
   start() {
     firebase.database().ref(`users/${this.props.user.uid}`).update({
       '/ready': true,
@@ -138,12 +135,19 @@ export default class Explain extends React.Component {
 
   componentDidUpdate() {
     if (this.props.user.ready && this.props.opponent.ready) {
+      console.log('ready');
       if (!this.state.start) {
         this.setState({ start: true });
         this.props.dispatch(setTimeStart());
       }
     }
+
+    if (!this.state.start && document.getElementsByTagName('video').length === 1) {
+      console.log('start now', this.state.start);
+      // this.start();
+    }
   }
+
   componentDidMount() {
     send('join', 'all', this.props.user.username);
     if (this.props.user && this.props.user.role === 'actor') {
@@ -171,7 +175,8 @@ export default class Explain extends React.Component {
   }
 
   startCall(name) {
-    this.Call.startCall(name);
+    console.log(name, this.state);
+    // this.CallVideo.startCall(name);
   }
 
   submitGuess(evt) {
@@ -181,18 +186,27 @@ export default class Explain extends React.Component {
     this.setState({ guess: this.state.guessInput });
     this.checkGuess(this.state.guessInput);
   }
+
   checkGuess(guess) {
     const correct = guess.localeCompare(this.props.term.term);
     if (correct === 0) {
       this.addPoints();
       this.setState({ guessWrong: false });
-      this.setState({ success: true, sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/win.mp3', statusWin: Sound.status.PLAYING });
+      this.setState({
+        success: true,
+        sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/win.mp3',
+        statusWin: Sound.status.PLAYING,
+      });
       this.props.dispatch(setSuccess(true));
     } else {
       this.setState({ guessWrong: true });
-      this.setState({ sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/wrong.mp3', status: Sound.status.PLAYING });
+      this.setState({
+        sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/wrong.mp3',
+        status: Sound.status.PLAYING,
+      });
     }
   }
+
   guess(input) {
     this.setState({
       guessInput: input.replace(/[^\w\s]/gi, '').toLowerCase(),
@@ -211,7 +225,7 @@ export default class Explain extends React.Component {
 
     if (this.state.success) {
       if (this.state.redirect) {
-        return (<Redirect to={this.state.redirect} />);
+        return (<Redirect to={this.state.redirect}/>);
       }
       return (
           <Paper style={styles.container}>
@@ -245,69 +259,53 @@ export default class Explain extends React.Component {
             </div>
         );
       }
-
-      if (this.props.user.role === 'actor') {
-        return <div>
-          <h1>Explain-Game</h1>
-
-          <Countdown timeRemaining={this.state.timeRemaining}/>
-
-          <Call ref={call => (this.Call = call)}/>
-
-          <Term term={this.state.term.term} error={this.state.error}/>
-
-          <Sound
-              url={this.state.sound}
-              playStatus={this.state.status}
-              playFromPosition={0}
-              volume={100}
-              onLoading={({ bytesLoaded, bytesTotal }) => console.log(`${(bytesLoaded / bytesTotal) * 100}% loaded`)}
-              onPlaying={({ position }) => console.log(position) }
-              onFinishedPlaying={() => this.setState({ status: Sound.status.STOPPED })}
-          />
-        </div>;
-      } else if (this.props.user.role === 'guesser') {
-        return <div>
-          <h1>Explain-Game</h1>
-          <OverviewPoints/>
-          <Countdown timeRemaining={this.state.timeRemaining}/>
-
-          <Call ref={call => (this.Call = call)} role={this.props.user.role}/>
-
-          { this.state.guessWrong && <p>Your guess is wrong!!</p> }
-          <TextField floatingLabelText="Enter your guess"
-                     fullWidth={false}
-                     value={this.state.guessInput}
-                     onChange={(e, v) => this.guess(v)}/>
-          <RaisedButton label="Guess"
-                        primary={true}
-                        disabled={!this.state.guessInput}
-                        onTouchTap={() => this.submitGuess()}/>
-          <Sound
-              url={this.state.sound}
-              playStatus={this.state.status}
-              playFromPosition={0}
-              volume={100}
-              onLoading={({ bytesLoaded, bytesTotal }) => console.log(`${(bytesLoaded / bytesTotal) * 100}% loaded`)}
-              onPlaying={({ position }) => console.log(position) }
-              onFinishedPlaying={() => this.setState({ status: Sound.status.STOPPED })}
-          />
-        </div>;
-      }
     }
 
+
     return <div>
-      { this.props.newOpponent && <NewOpponent/> }
-      <h1>Explain-Game</h1>
+      <h1>Explain-Game beide</h1>
       <OverviewPoints/>
-      <RaisedButton
-          label="Start"
-          labelPosition="before"
-          style={styles.button}
-          containerElement="label">
-        <input type="submit" style={styles.exampleImageInput} onClick={() => this.startCall(this.props.opponent.username) }/>
-      </RaisedButton>
-      <Call ref={call => (this.Call = call)} role={this.props.user.role}/>
+      { this.state.start && <Countdown timeRemaining={this.state.timeRemaining}/> }
+      <Call ref={call => (this.Call = call)} role={this.props.user.role} />
+
+      { (this.state.start && this.props.user.role === 'actor') &&
+      <div>
+        <Term term={this.state.term.term} error={this.state.error}/>
+        <Sound
+            url={this.state.sound}
+            playStatus={this.state.status}
+            playFromPosition={0}
+            volume={100}
+            onLoading={({ bytesLoaded, bytesTotal }) => console.log(`${(bytesLoaded / bytesTotal) * 100}% loaded`)}
+            onPlaying={({ position }) => console.log(position) }
+            onFinishedPlaying={() => this.setState({ status: Sound.status.STOPPED })}
+        />
+      </div>
+
+      }
+      { (this.state.start && this.props.user.role === 'guesser' && this.state.guessWrong) &&
+      <p>Your guess is wrong!!</p> }
+      { (this.state.start && this.props.user.role === 'guesser') &&
+      <div>
+        <TextField floatingLabelText="Enter your guess"
+                   fullWidth={false}
+                   value={this.state.guessInput}
+                   onChange={(e, v) => this.guess(v)}/>
+        <RaisedButton label="Guess"
+                      primary={true}
+                      disabled={!this.state.guessInput}
+                      onTouchTap={() => this.submitGuess()}/>
+        <Sound
+            url={this.state.sound}
+            playStatus={this.state.status}
+            playFromPosition={0}
+            volume={100}
+            onLoading={({ bytesLoaded, bytesTotal }) => console.log(`${(bytesLoaded / bytesTotal) * 100}% loaded`)}
+            onPlaying={({ position }) => console.log(position) }
+            onFinishedPlaying={() => this.setState({ status: Sound.status.STOPPED })}
+        />
+      </div>
+      }
     </div>;
   }
 }
