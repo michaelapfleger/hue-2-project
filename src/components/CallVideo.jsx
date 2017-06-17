@@ -64,6 +64,7 @@ export default class CallVideo extends React.Component {
       remoteVideo: null,
       callState: CALL_STATE_NONE,
       remoteName: null,
+      start: false,
     };
     this.connection = null;
     this.startCall = this.startCall.bind(this);
@@ -135,7 +136,6 @@ export default class CallVideo extends React.Component {
       this.props.dispatch(setOpponent({
         ...this.props.opponent, ready: true,
       }));
-      // hier dann den store benachrichtigen!
     });
 
     on('hangup', () => {
@@ -169,9 +169,8 @@ export default class CallVideo extends React.Component {
   }
 
   componentDidUpdate() {
-    console.log('update');
-    if (this.props.user.ready && this.props.opponent.ready) {
-      console.log('beide bereit');
+    if (this.props.user.ready && this.props.opponent.ready && !this.state.start) {
+      this.setState({ start: true });
     }
   }
 
@@ -322,7 +321,6 @@ export default class CallVideo extends React.Component {
           autoPlay="autoPlay" poster="spinner.gif"/>
         </div>;
       }
-      return <p>ERROR</p>;
     }
 
     return null;
@@ -338,7 +336,7 @@ export default class CallVideo extends React.Component {
   render() {
     return (
         <div>
-          { this.props.user.role === 'actor' && <RaisedButton
+          { (!this.state.start && this.props.user.role === 'actor') && <RaisedButton
               label="Start Call"
               labelPosition="before"
               style={styles.button}

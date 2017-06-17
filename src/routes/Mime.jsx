@@ -266,7 +266,7 @@ export default class Mime extends React.Component {
       <h1>Mime-Game beide</h1>
       <OverviewPoints/>
       { this.state.start && <Countdown timeRemaining={this.state.timeRemaining}/> }
-      <CallVideo ref={call => (this.CallVideo = call)}/>
+      <CallVideo role={this.props.user.role} ref={call => (this.CallVideo = call)}/>
 
       { (this.state.start && this.props.user.role === 'actor') &&
         <div>
