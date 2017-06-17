@@ -115,7 +115,7 @@ export default class Mime extends React.Component {
   }
   start() {
     firebase.database().ref(`users/${this.props.user.uid}`).update({
-      '/ready': 'readytrue',
+      '/ready': true,
     });
     this.props.dispatch(setUser({
       ...this.props.user, ready: true,
@@ -134,6 +134,7 @@ export default class Mime extends React.Component {
 
   componentDidUpdate() {
     if (this.props.user.ready && this.props.opponent.ready) {
+      console.log('ready');
       if (!this.state.start) {
         this.setState({ start: true });
         this.props.dispatch(setTimeStart());
@@ -172,7 +173,8 @@ export default class Mime extends React.Component {
   }
 
   startCall(name) {
-    this.CallVideo.startCall(name);
+    console.log(name, this.state);
+    // this.CallVideo.startCall(name);
   }
 
   submitGuess(evt) {
@@ -300,13 +302,6 @@ export default class Mime extends React.Component {
     return <div>
       <h1>Mime-Game</h1>
       <OverviewPoints/>
-      <RaisedButton
-          label="Start Call"
-          labelPosition="before"
-          style={styles.button}
-          containerElement="label">
-        <input type="submit" style={styles.exampleImageInput} onClick={() => this.startCall(this.props.opponent.username) }/>
-      </RaisedButton>
       <CallVideo ref={call => (this.CallVideo = call)}
                  role={this.props.user.role}/>
     </div>;

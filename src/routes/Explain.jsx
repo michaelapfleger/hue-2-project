@@ -115,7 +115,7 @@ export default class Explain extends React.Component {
   }
   start() {
     firebase.database().ref(`users/${this.props.user.uid}`).update({
-      '/ready': 'readytrue',
+      '/ready': true,
     });
     this.props.dispatch(setUser({
       ...this.props.user, ready: true,
