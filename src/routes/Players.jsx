@@ -6,7 +6,6 @@ import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 
-import DataChannel from '../components/DataChannel.jsx';
 import firebase from './../firebase';
 import { setUser, setOpponent } from './../actions';
 import NewOpponent from './../components/NewOpponent.jsx';
@@ -101,38 +100,52 @@ export default class Players extends React.Component {
 
   setOpponent(event, value) {
     let currentOpponent = {};
+    console.log('val', value);
 
-    firebase.database().ref(`/users/${value}`).once('value')
-        .then((snapshot) => {
-          currentOpponent = {
-            username: snapshot.val().username,
-            uid: snapshot.val().uid,
-            points: snapshot.val().points,
-          };
-          this.props.dispatch(setOpponent(currentOpponent));
-          this.setState({ defaultSelected:
-              this.state.users.findIndex(x => x.userID === currentOpponent.uid),
-          });
-        })
-        .then(() => {
-          firebase.database().ref(`users/${value}`).update({
-            '/role': 'guesser',
-            '/opponent': `${this.props.user.uid}`,
-          });
-          firebase.database().ref(`users/${this.props.user.uid}`).update({
-            '/role': 'actor',
-            '/opponent': `${value}`,
-          });
+    if (value !== 'none') {
+      firebase.database().ref(`/users/${value}`).once('value')
+          .then((snapshot) => {
+            currentOpponent = {
+              username: snapshot.val().username,
+              uid: snapshot.val().uid,
+              points: snapshot.val().points,
+            };
+            this.props.dispatch(setOpponent(currentOpponent));
+            this.setState({
+              defaultSelected: this.state.users.findIndex(x => x.userID === currentOpponent.uid),
+            });
+          })
+          .then(() => {
+            firebase.database().ref(`users/${value}`).update({
+              '/role': 'guesser',
+              '/opponent': `${this.props.user.uid}`,
+            });
+            firebase.database().ref(`users/${this.props.user.uid}`).update({
+              '/role': 'actor',
+              '/opponent': `${value}`,
+            });
 
-          this.props.dispatch(setUser({ ...this.props.user, role: 'actor', opponent: `${value}` }));
+            this.props.dispatch(setUser({ ...this.props.user, role: 'actor', opponent: `${value}` }));
+          });
+    } else {
+      firebase.database().ref(`users/${this.props.user.opponent}`).update({
+        '/role': 'none',
+        '/opponent': 'none',
+      }).then(() => {
+        firebase.database().ref(`users/${this.props.user.uid}`).update({
+          '/role': 'none',
+          '/opponent': 'none',
         });
+        this.props.dispatch(setOpponent({}));
+        this.props.dispatch(setUser({ ...this.props.user, opponent: 'none', role: 'none' }));
+      });
+    }
   }
 
   render() {
     return <div>
       { this.props.newOpponent && <NewOpponent/> }
-      <h1>{this.constructor.name}</h1>
-      <DataChannel ref={call => (this.DataChannel = call)}/>
+      <h1>Players</h1>
       <Paper style={styles.container}>
         <TextField
             defaultValue={this.props.user.username}
@@ -146,6 +159,11 @@ export default class Players extends React.Component {
                                                 key={user.userID}
                                                 style={styles.radioButton}
                                                 />) }
+          <RadioButton value='none'
+                       label='dont want to play with anybody'
+                       key='none'
+                       style={styles.radioButton}
+          />
         </RadioButtonGroup>
       </Paper>
     </div>;
