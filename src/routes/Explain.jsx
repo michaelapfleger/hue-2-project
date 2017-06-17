@@ -51,6 +51,7 @@ const styles = {
   over: store.over,
   structure: store.structure,
   term: store.term,
+  success: store.success,
 }))
 export default class Explain extends React.Component {
   constructor(props) {
@@ -79,6 +80,7 @@ export default class Explain extends React.Component {
     over: PropTypes.bool,
     structure: PropTypes.array,
     dispatch: PropTypes.func,
+    success: PropTypes.bool,
   };
 
   getNewTerm() {
@@ -223,7 +225,7 @@ export default class Explain extends React.Component {
       return (<NoOpponentSelected/>);
     }
 
-    if (this.state.success) {
+    if (this.props.success) {
       if (this.state.redirect) {
         return (<Redirect to={this.state.redirect}/>);
       }

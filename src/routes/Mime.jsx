@@ -51,6 +51,7 @@ const styles = {
   over: store.over,
   structure: store.structure,
   term: store.term,
+  success: store.success,
 }))
 export default class Mime extends React.Component {
   constructor(props) {
@@ -79,6 +80,7 @@ export default class Mime extends React.Component {
     over: PropTypes.bool,
     structure: PropTypes.array,
     dispatch: PropTypes.func,
+    success: PropTypes.bool,
   };
 
   getNewTerm() {
@@ -219,11 +221,11 @@ export default class Mime extends React.Component {
   }
 
   render() {
-    if (this.props.user.role === 'none') {
+    if (this.props.user.opponent === 'none') {
       return (<NoOpponentSelected/>);
     }
 
-    if (this.state.success) {
+    if (this.props.success) {
       if (this.state.redirect) {
         return (<Redirect to={this.state.redirect}/>);
       }
@@ -248,6 +250,7 @@ export default class Mime extends React.Component {
     }
     if (this.state.start) {
       if (this.props.over) {
+        console.log('time is over now');
         return (
             <div>
               <Paper style={styles.container}>
