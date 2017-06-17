@@ -84,10 +84,12 @@ export default class Players extends React.Component {
         .then((snapshot) => {
           snapshot.forEach((childSnapshot) => {
             if (childSnapshot.val().online === true) {
-              name = childSnapshot.val().username;
-              userID = childSnapshot.key;
-              if (childSnapshot.val().uid !== this.props.user.uid) {
-                tempUsers.push({ userID, name });
+              if (childSnapshot.val().opponent === 'none' || childSnapshot.val().opponent === this.props.user.uid) {
+                name = childSnapshot.val().username;
+                userID = childSnapshot.key;
+                if (childSnapshot.val().uid !== this.props.user.uid) {
+                  tempUsers.push({ userID, name });
+                }
               }
             }
           });
