@@ -19,9 +19,10 @@ export default function reducer(state = {
       };
     }
     case 'SET_CONNECTION': {
+      console.log('set connection reducer');
       return {
         ...state,
-        over: true,
+        connection: true,
       };
     }
     case 'TIME_START': {

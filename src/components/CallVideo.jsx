@@ -243,7 +243,7 @@ export default class CallVideo extends React.Component {
     }
 
     if (this.state.callState === CALL_STATE_ACTIVE) {
-      this.props.dispatch(setConnection);
+      this.props.dispatch(setConnection());
       if (this.props.role === 'actor') {
         return <div>
           <video style={styles.remoteVideo} src={this.state.localVideo}
