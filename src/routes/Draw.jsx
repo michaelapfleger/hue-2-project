@@ -206,7 +206,7 @@ export default class Draw extends React.Component {
     })
         .then(() => {
           console.log('role 1', this.props.opponent.role);
-          firebase.database().ref(`users/${this.porps.user.opponent}`).update({
+          firebase.database().ref(`users/${this.props.user.opponent}`).update({
             '/role': `${this.props.user.role}`,
           });
         })
