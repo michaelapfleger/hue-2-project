@@ -23,6 +23,8 @@ import Mime from './routes/Mime.jsx';
 import Explain from './routes/Explain.jsx';
 import Info from './routes/Info.jsx';
 
+import NewOpponent from './components/NewOpponent.jsx';
+
 
 const styles = {
   content: {
@@ -155,6 +157,7 @@ export default class App extends React.Component {
               </Link>)}
         </Drawer>
         <div style={{ ...styles.content }}>
+          <NewOpponent/>
           {routes.map(route => (
               <Route exact={route.exact}
                      key={route.link}
