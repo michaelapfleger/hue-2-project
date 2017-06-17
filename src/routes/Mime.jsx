@@ -139,6 +139,11 @@ export default class Mime extends React.Component {
         this.props.dispatch(setTimeStart());
       }
     }
+
+    if (!this.state.start && document.getElementsByTagName('video').length === 1) {
+      console.log('start now', this.state.start);
+      // this.start();
+    }
   }
   componentDidMount() {
     send('join', 'all', this.props.user.username);
