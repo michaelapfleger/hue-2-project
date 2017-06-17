@@ -101,6 +101,7 @@ export default class Players extends React.Component {
   setOpponent(event, value) {
     let currentOpponent = {};
     console.log('val', value);
+    const oldOpponent = this.props.user.opponent;
 
     if (value !== 'none') {
       firebase.database().ref(`/users/${value}`).once('value')
@@ -123,6 +124,10 @@ export default class Players extends React.Component {
             firebase.database().ref(`users/${this.props.user.uid}`).update({
               '/role': 'actor',
               '/opponent': `${value}`,
+            });
+            firebase.database().ref(`users/${oldOpponent}`).update({
+              '/role': 'none',
+              '/opponent': 'none',
             });
           })
           .then(() => {
