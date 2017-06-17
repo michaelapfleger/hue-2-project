@@ -20,14 +20,14 @@ export default function reducer(state = {
       };
     }
     case 'SET_CONNECTION': {
-      console.log('set connection reducer');
+      // console.log('set connection reducer');
       return {
         ...state,
         connection: true,
       };
     }
     case 'SET_NEWOPPONENT': {
-      console.log('set new opp reducer');
+      // console.log('set new opp reducer');
       return {
         ...state,
         newOpponent: action.payload,

@@ -4,13 +4,13 @@ export function setTimeOver() {
   };
 }
 export function setConnection() {
-  console.log('setconnection');
+  // console.log('setconnection');
   return {
     type: 'SET_CONNECTION',
   };
 }
 export function setNewOpponent(change) {
-  console.log('SET_NEWOPPONENT');
+  // console.log('SET_NEWOPPONENT');
   return {
     type: 'SET_NEWOPPONENT',
     payload: change,

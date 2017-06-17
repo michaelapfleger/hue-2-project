@@ -102,7 +102,7 @@ export default class Players extends React.Component {
 
   setOpponent(event, value) {
     let currentOpponent = {};
-    console.log('val', value);
+    // console.log('val', value);
     const oldOpponent = this.props.user.opponent;
 
     if (value !== 'none') {
@@ -113,10 +113,12 @@ export default class Players extends React.Component {
               uid: snapshot.val().uid,
               points: snapshot.val().points,
             };
+
+            console.log('eslint bla', currentOpponent);
             // this.props.dispatch(setOpponent(currentOpponent));
-            this.setState({
+            /* this.setState({
               defaultSelected: this.state.users.findIndex(x => x.userID === currentOpponent.uid),
-            });
+            }); */
           })
           .then(() => {
             firebase.database().ref(`users/${value}`).update({
@@ -135,7 +137,7 @@ export default class Players extends React.Component {
           .then(() => {
             this.props.dispatch(setUser({ ...this.props.user, role: 'actor' }));
           });
-    } else {
+    } else if (oldOpponent !== null) {
       console.log('dont want an opponent');
       firebase.database().ref(`users/${this.props.user.opponent}`).update({
         '/role': 'none',

@@ -110,7 +110,7 @@ export default class Info extends React.Component {
                 });
                 firebase.database().ref(`/users/${this.props.user.uid}`).on('child_changed', (snap) => {
                   // listen to change in users opponent
-                  console.log('snap val', snap.val());
+                  // console.log('snap val', snap.val());
                   if (snap.key === 'opponent' && snap.val() !== 'none') {
                     console.log('opponent change in db', snap.val());
                     this.props.dispatch(setUser({ ...this.props.user, opponent: snap.val() }));
@@ -136,8 +136,9 @@ export default class Info extends React.Component {
                           this.props.dispatch(setNewOpponent(true));
                         });
                   } else if (snap.key === 'opponent' && snap.val() === 'none') {
-                    this.props.dispatch(setUser({ ...this.props.user, opponent: 'none' }));
-                    this.props.dispatch(setOpponent({}));
+                    // this.props.dispatch(setUser({ ...this.props.user, opponent: 'none' }));
+                    // this.props.dispatch(setOpponent({}));
+                    console.log('val is none');
                   }
                 });
               }
@@ -194,12 +195,15 @@ export default class Info extends React.Component {
             online: true,
             term: '',
             ready: false,
+            opponent: 'none',
           };
           this.setState({ loggedIn: true });
           this.props.dispatch(setUser(currentUser));
+          this.props.dispatch(setOpponent({}));
 
           firebase.database().ref(`users/${this.props.user.uid}`).update({
             '/online': true,
+            '/opponent': 'none',
           });
         })
         .catch((error) => {
@@ -211,12 +215,12 @@ export default class Info extends React.Component {
     firebase.database().ref(`users/${this.props.user.uid}`).update({
       '/online': false,
       '/role': '',
-      '/opponent': '',
+      '/opponent': 'none',
       '/ready': false,
     }).then(() => {
       firebase.database().ref(`users/${this.props.user.opponent}`).update({
         '/role': '',
-        '/opponent': '',
+        '/opponent': 'none',
         '/ready': false,
       });
 
