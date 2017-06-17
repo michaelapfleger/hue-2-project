@@ -6,7 +6,7 @@ import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import { connect } from 'react-redux';
-import { setTimeStart, addPointsToUser, setTerm, setUser, setSuccess } from '../actions';
+import { setTimeStart, addPointsToUser, setTerm, setUser, setSuccess, setOpponent } from '../actions';
 // import { on, off, send } from '../ws';
 
 import NoOpponentSelected from './../components/NoOpponentSelected.jsx';
@@ -198,7 +198,27 @@ export default class Draw extends React.Component {
     }));
     this.props.dispatch(setSuccess(false));
   }
+
+  switchRole() {
+    const userRole = this.props.user.role;
+    firebase.database().ref(`users/${this.props.user.uid}`).update({
+      '/role': `${this.props.opponent.role}`,
+    })
+        .then(() => {
+          console.log('role 1', this.props.opponent.role);
+          firebase.database().ref(`users/${this.porps.user.opponent}`).update({
+            '/role': `${this.props.user.role}`,
+          });
+        })
+        .then(() => {
+          this.props.dispatch(setUser({ ...this.props.user, role: this.props.opponent.role }));
+          this.props.dispatch(setOpponent({ ...this.props.user, role: userRole }));
+
+          console.log('role changed');
+        });
+  }
   nextRound() {
+    this.switchRole();
     this.setState({ redirect: this.props.structure[1] });
   }
 

@@ -11,7 +11,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import NoOpponentSelected from './../components/NoOpponentSelected.jsx';
 import Term from './../components/Term.jsx';
 import OverviewPoints from './../components/OverviewPoints.jsx';
-import { setTimeStart, addPointsToUser, setTerm, setUser, setSuccess } from '../actions';
+import { setTimeStart, addPointsToUser, setTerm, setUser, setSuccess, setOpponent } from '../actions';
 import Countdown from './../components/Countdown.jsx';
 import firebase from './../firebase';
 import CallVideo from '../components/CallVideo.jsx';
@@ -215,8 +215,26 @@ export default class Mime extends React.Component {
       guessWrong: false,
     });
   }
+  switchRole() {
+    const userRole = this.props.user.role;
+    firebase.database().ref(`users/${this.props.user.uid}`).update({
+      '/role': `${this.props.opponent.role}`,
+    })
+        .then(() => {
+          console.log('role 1', this.props.opponent.role);
+          firebase.database().ref(`users/${this.porps.user.opponent}`).update({
+            '/role': `${this.props.user.role}`,
+          });
+        })
+        .then(() => {
+          this.props.dispatch(setUser({ ...this.props.user, role: this.props.opponent.role }));
+          this.props.dispatch(setOpponent({ ...this.props.user, role: userRole }));
 
+          console.log('role changed');
+        });
+  }
   nextRound() {
+    this.switchRole();
     this.setState({ redirect: this.props.structure[2] });
   }
 
