@@ -90,8 +90,8 @@ export default class Info extends React.Component {
                         ready: false,
                       };
                       this.props.dispatch(setOpponent(opponentUser));
+                      console.log('didmount opponent id', opponentUser.uid);
                       firebase.database().ref(`/users/${opponentUser.uid}`).on('child_changed', (snap) => {
-                        // console.log('opponent changed', snap.val());
                         if (snap.key === 'ready') {
                           this.props.dispatch(setOpponent({
                             ...this.props.opponent,
@@ -103,45 +103,46 @@ export default class Info extends React.Component {
                         }
                       });
                     });
-                firebase.database().ref(`/users/${this.props.user.uid}`).on('child_changed', (snap) => {
-                  if (snap.key === 'term') {
-                    this.props.dispatch(setTerm(snap.val()));
-                  }
-                });
-                firebase.database().ref(`/users/${this.props.user.uid}`).on('child_changed', (snap) => {
+              }
+              firebase.database().ref(`/users/${this.props.user.uid}`).on('child_changed', (snap) => {
+                if (snap.key === 'term') {
+                  this.props.dispatch(setTerm(snap.val()));
+                }
+              });
+              firebase.database().ref(`/users/${this.props.user.uid}`).on('child_changed', (snap) => {
                   // listen to change in users opponent
                   // console.log('snap val', snap.val());
-                  if (snap.key === 'opponent' && snap.val() !== 'none') {
-                    console.log('opponent change in db', snap.val());
-                    this.props.dispatch(setUser({ ...this.props.user, opponent: snap.val() }));
+                if (snap.key === 'opponent' && snap.val() !== 'none') {
+                  console.log('opponent change in db', snap.val());
+                  this.props.dispatch(setUser({ ...this.props.user, opponent: snap.val() }));
 
                     // update store opponent
-                    firebase.database().ref(`/users/${snap.val()}`).once('value')
-                        .then((snapshot) => {
-                          const opponentUser = {
-                            username: snapshot.val().username,
-                            uid: snapshot.val().uid,
-                            points: snapshot.val().points,
-                            term: '',
-                            online: true,
-                            start: false,
-                            role: snapshot.val().role,
-                            opponent: snapshot.val().opponent,
-                            ready: false,
-                          };
-                          this.props.dispatch(setOpponent(opponentUser));
-                        })
-                        .then(() => {
-                          // setnewopponent for info message
-                          this.props.dispatch(setNewOpponent(true));
-                        });
-                  } else if (snap.key === 'opponent' && snap.val() === 'none') {
-                    // this.props.dispatch(setUser({ ...this.props.user, opponent: 'none' }));
-                    // this.props.dispatch(setOpponent({}));
-                    console.log('val is none');
-                  }
-                });
-              }
+                  firebase.database().ref(`/users/${snap.val()}`).once('value')
+                    .then((snapshot) => {
+                      console.log('uid opponent changed', snap.val());
+                      const opponentUser = {
+                        username: snapshot.val().username,
+                        uid: snapshot.val().uid,
+                        points: snapshot.val().points,
+                        term: '',
+                        online: true,
+                        start: false,
+                        role: snapshot.val().role,
+                        opponent: snapshot.val().opponent,
+                        ready: false,
+                      };
+                      this.props.dispatch(setOpponent(opponentUser));
+                    })
+                    .then(() => {
+                      // setnewopponent for info message
+                      this.props.dispatch(setNewOpponent(true));
+                    });
+                } else if (snap.key === 'opponent' && snap.val() === 'none') {
+                  this.props.dispatch(setUser({ ...this.props.user, opponent: 'none' }));
+                  this.props.dispatch(setOpponent({}));
+                  console.log('val is none');
+                }
+              });
             });
         this.setState({ loggedIn: true });
       }
