@@ -279,47 +279,27 @@ export default class Draw extends React.Component {
       );
     }
     if (this.state.start) {
-      if (this.props.over) {
-        return (<div>
-              <Paper style={styles.container}>
-                <h3>Sorry, time is up!</h3>
-                <RaisedButton label="Next round"
-                              primary={true}
-                              onTouchTap={() => this.switchRole()}/>
-              </Paper>
-            </div>
-        );
-      }
-      if (this.props.user.role === 'actor') {
-        return <div>
-          <h1>Draw-Game</h1>
-          <OverviewPoints/>
-          <Countdown timeRemaining={this.state.timeRemaining}/>
+      return <div>
+       { !this.props.over && <div>
+        <h1>Draw-Game</h1>
+        <OverviewPoints/> </div>}
+        { this.props.over && <div>
           <Paper style={styles.container}>
-            <DrawArea user={this.props.user}/>
+            <h3>Sorry, time is up!</h3>
+            <RaisedButton label="Next round"
+                          primary={true}
+                          onTouchTap={() => this.switchRole()}/>
           </Paper>
-          <p style={{ ...styles.term }}>{this.props.term.term}</p>
-          <p className="error">{this.state.error}</p>
-          <Sound
-              url={this.state.sound}
-              playStatus={this.state.status}
-              playFromPosition={0}
-              volume={100}
-              onLoading={({ bytesLoaded, bytesTotal }) => console.log(`${(bytesLoaded / bytesTotal) * 100}% loaded`)}
-              onPlaying={({ position }) => console.log(position) }
-              onFinishedPlaying={() => this.setState({ status: Sound.status.STOPPED })}
-          />
-        </div>;
-      }
-      if (this.props.user.role === 'guesser') {
-        return <div>
-          <h1>Draw-Game</h1>
-          <OverviewPoints/>
-          <Countdown timeRemaining={this.state.timeRemaining}/>
-          <Paper style={styles.container}>
-            <DrawArea user={this.props.user}/>
-          </Paper>
-          { this.state.guessWrong && <p>Your guess is wrong!!</p> }
+        </div> }
+        <Countdown timeRemaining={this.state.timeRemaining}/>
+        { !this.props.over && <div>
+        <Paper style={styles.container}>
+          <DrawArea user={this.props.user}/>
+        </Paper>
+        { this.props.user.role === 'actor' && <div><p style={{ ...styles.term }}>{this.props.term.term}</p></div> }
+        { this.props.user.role === 'actor' && <p className="error">{this.state.error}</p> }
+        {(this.props.user.role === 'guesser' && this.state.guessWrong) && <p>Your guess is wrong!</p> }
+        { this.props.user.role === 'guesser' && <div>
           <TextField floatingLabelText="Enter your guess"
                      fullWidth={false}
                      value={this.state.guessInput}
@@ -328,17 +308,18 @@ export default class Draw extends React.Component {
                         primary={true}
                         disabled={!this.state.guessInput}
                         onTouchTap={() => this.submitGuess()}/>
-          <Sound
-              url={this.state.sound}
-              playStatus={this.state.status}
-              playFromPosition={0}
-              volume={100}
-              onLoading={({ bytesLoaded, bytesTotal }) => console.log(`${(bytesLoaded / bytesTotal) * 100}% loaded`)}
-              onPlaying={({ position }) => console.log(position) }
-              onFinishedPlaying={() => this.setState({ status: Sound.status.STOPPED })}
-          />
-        </div>;
-      }
+        </div> }
+        </div> }
+        <Sound
+            url={this.state.sound}
+            playStatus={this.state.status}
+            playFromPosition={0}
+            volume={100}
+            onLoading={({ bytesLoaded, bytesTotal }) => console.log(`${(bytesLoaded / bytesTotal) * 100}% loaded`)}
+            onPlaying={({ position }) => console.log(position) }
+            onFinishedPlaying={() => this.setState({ status: Sound.status.STOPPED })}
+        />
+      </div>;
     }
     return <div>
       <h1>Draw-Game</h1>

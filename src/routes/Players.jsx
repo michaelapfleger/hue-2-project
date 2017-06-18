@@ -136,7 +136,7 @@ export default class Players extends React.Component {
           .then(() => {
             console.log('user', this.props.user);
             console.log('value', value);
-            this.props.dispatch(setUser({ ...this.props.user, role: 'actor' }));
+            this.props.dispatch(setUser({ ...this.props.user, role: 'actor', opponent: value }));
           });
     } else if (oldOpponent !== null) {
       console.log('dont want an opponent');
