@@ -24,6 +24,16 @@ const styles = {
   button: {
     margin: 12,
   },
+  h5: {
+    marginBottom: 0,
+  },
+  ul: {
+    listStyleType: 'none',
+    padding: 0,
+  },
+  li: {
+    paddingLeft: 0,
+  },
   term: {
     fontSize: 25,
     padding: 10,
@@ -70,6 +80,7 @@ export default class Draw extends React.Component {
       waiting: false,
       sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/wrong.mp3',
       success: false,
+      wrongGuesses: [],
     };
   }
   static propTypes = {
@@ -186,6 +197,9 @@ export default class Draw extends React.Component {
       }));
     } else {
       this.setState({ guessWrong: true, guessInput: '' });
+      const wrongGuesses = this.state.wrongGuesses;
+      wrongGuesses.push(guess);
+      this.setState({ wrongGuesses });
       this.setState({ sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/wrong.mp3', status: Sound.status.PLAYING });
     }
   }
@@ -297,7 +311,10 @@ export default class Draw extends React.Component {
         </Paper>
         { this.props.user.role === 'actor' && <div><p style={{ ...styles.term }}>{this.props.term.term}</p></div> }
         { this.props.user.role === 'actor' && <p className="error">{this.state.error}</p> }
-        {(this.props.user.role === 'guesser' && this.state.guessWrong) && <p>Your guess is wrong!</p> }
+        {(this.props.user.role === 'guesser' && this.state.guessWrong) && <h4>Your guess is wrong!</h4> }
+        { (this.props.user.role === 'guesser' && this.state.wrongGuesses.length > 0) && <div><h5 style={styles.h5}>Your wrong guesses:</h5><ul style={styles.ul}>
+        { this.state.wrongGuesses.map((item, i) => <li style={styles.li} key={i}>{item}</li>) }
+        </ul></div> }
         { this.props.user.role === 'guesser' && <div>
           <TextField floatingLabelText="Enter your guess"
                      fullWidth={false}
