@@ -46,7 +46,7 @@ There is a counter which tells you how much time you have left. If you guess the
 Unfortunately there are some known bugs in our project. They appear sometimes and sometimes not. For example you the user selection is not always that stable. And for a team to be able to start a game they have to be on the same page if they clicked start. And sometimes there are no terms loaded into the database. 
 We tried to fix that, but the random appearance and lack of time made it very hard and impossible ;) Nevertheless we learned a whole lot about React and WebRTC and all the advantages.
 
-## Online: 
+## Online
 We tried to deploy it with Now. It is working, but the server is too slow to send the drawn elements in appropriate time so the guesser is not receiving the whole image before the time is over. Locally, it works just fine.
 </br>[https://mt-ooilhtogga.now.sh](https://mt-ooilhtogga.now.sh)
 
