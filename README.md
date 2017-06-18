@@ -29,8 +29,6 @@ Small game for at two teams with two players each. One player of the team gets a
 * Sounds from [http://www.freesound.org/](http://www.freesound.org/)
 
 
-
-
 ## Usage:
 ## Prerequisites
 * [Git](http://git-scm.org): [Download for Windows](https://git-for-windows.github.io)
@@ -41,10 +39,13 @@ Small game for at two teams with two players each. One player of the team gets a
 3. Build project via `npm start` followed by `npm run watch` in another command window
 5. Open your browser window at *http://localhost:3000/*
 
+## How to play
+
+
 
 ## Online: 
 We tried to deploy it with Now. It is working, but the server is too slow to send the drawn elements in appropriate time so the guesser is not receiving the whole image before the time is over. Locally, it works just fine.
-[https://mt-ooilhtogga.now.sh](https://mt-ooilhtogga.now.sh)
+</br>[https://mt-ooilhtogga.now.sh](https://mt-ooilhtogga.now.sh)
 
 
 # Authors
