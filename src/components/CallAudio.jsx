@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import Loader from 'halogen/ScaleLoader';
 
 import FlatButton from 'material-ui/FlatButton';
 import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card';
@@ -35,7 +36,7 @@ const styles = {
   },
   remoteVideo: {
     width: '100%',
-    minHeight: 500,
+    height: 1,
   },
   exampleImageInput: {
     cursor: 'pointer',
@@ -310,16 +311,23 @@ export default class CallVideo extends React.Component {
     }
 
     if (this.state.callState === CALL_STATE_ACTIVE) {
+      const style = {
+        color: '#25737c',
+        size: 50,
+      };
       // this.props.dispatch(setConnection());
       if (this.props.role === 'actor') {
         return <div>
           <video style={styles.remoteVideo} src={this.state.localVideo}
-                 autoPlay="autoPlay" muted poster="spinner.gif"/>
+                 autoPlay="autoPlay" muted />
+          <Loader style={style}/>
         </div>;
-      } else if (this.props.role === 'guesser') {
+      }
+      if (this.props.role === 'guesser') {
         return <div>
           <video style={styles.remoteVideo} src={this.state.remoteVideo}
-                 autoPlay="autoPlay" poster="spinner.gif"/>
+                 autoPlay="autoPlay" />
+          <Loader style={style}/>
         </div>;
       }
       return <p>ERROR</p>;
@@ -347,7 +355,7 @@ export default class CallVideo extends React.Component {
             <input type="submit" style={styles.exampleImageInput} onClick={() => this.startCall(this.props.opponent.username) }/>
           </RaisedButton> }
           <Card>
-            <CardTitle title="Call" subtitle="video"/>
+            <CardTitle title="Call" subtitle="audio"/>
             <CardText>
               {this.getCallContent()}
             </CardText>
