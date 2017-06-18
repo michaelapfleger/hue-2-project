@@ -99,8 +99,6 @@ export default class Info extends React.Component {
                   this.props.dispatch(setTerm(snap.val()));
                 }
                 if (snap.key === 'role' && snap.val() !== 'none') {
-                  console.log('hier der fehler user', this.props.user);
-                  console.log('user opponent');
                   this.props.dispatch(setUser({
                     ...this.props.user,
                     role: snap.val(),
@@ -138,7 +136,6 @@ export default class Info extends React.Component {
                       this.props.dispatch(setNewOpponent(true));
                     });
                 } else if (snap.key === 'opponent' && snap.val() === 'none') {
-                  console.log('am i here ???', snap.val());
                   this.props.dispatch(setUser({ ...this.props.user, opponent: 'none' }));
                   this.props.dispatch(setOpponent({}));
                 }
