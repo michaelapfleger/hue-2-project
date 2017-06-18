@@ -313,21 +313,20 @@ export default class CallVideo extends React.Component {
     if (this.state.callState === CALL_STATE_ACTIVE) {
       const style = {
         color: '#25737c',
-        size: 50,
       };
       // this.props.dispatch(setConnection());
       if (this.props.role === 'actor') {
         return <div>
           <video style={styles.remoteVideo} src={this.state.localVideo}
                  autoPlay="autoPlay" muted />
-          <Loader style={style}/>
+          <Loader color={style.color} size="50px"/>
         </div>;
       }
       if (this.props.role === 'guesser') {
         return <div>
           <video style={styles.remoteVideo} src={this.state.remoteVideo}
                  autoPlay="autoPlay" />
-          <Loader style={style}/>
+          <Loader color={style.color} size="50px"/>
         </div>;
       }
       return <p>ERROR</p>;
