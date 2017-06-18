@@ -284,27 +284,20 @@ export default class Mime extends React.Component {
           </Paper>
       );
     }
-    if (this.state.start) {
-      if (this.props.over) {
-        console.log('time is over now');
-        return (
-            <div>
-              <Paper style={styles.container}>
-                <h3>Sorry, time is up!</h3>
-                <RaisedButton label="Next round"
-                              primary={true}
-                              onTouchTap={() => this.switchRole()}/>
-              </Paper>
-            </div>
-        );
-      }
-    }
-
-
     return <div>
+      {(this.state.start && this.props.over) && <div>
+        <Paper style={styles.container}>
+          <h3>Sorry, time is up!</h3>
+          <RaisedButton label="Next round"
+                        primary={true}
+                        onTouchTap={() => this.switchRole()}/>
+        </Paper>
+      </div>}
+      { !this.props.over && <div>
       <h1>Mime-Game</h1>
-      <OverviewPoints/>
+      <OverviewPoints/> </div>}
       { this.state.start && <Countdown timeRemaining={this.state.timeRemaining}/> }
+      { !this.props.over && <div>
       <CallVideo role={this.props.user.role} ref={call => (this.CallVideo = call)}/>
 
       { (this.state.start && this.props.user.role === 'actor') &&
@@ -345,6 +338,7 @@ export default class Mime extends React.Component {
             />
             </div>
       }
+      </div> }
       </div>;
   }
 }

@@ -284,26 +284,20 @@ export default class Explain extends React.Component {
           </Paper>
       );
     }
-    if (this.state.start) {
-      if (this.props.over) {
-        return (
-            <div>
-              <Paper style={styles.container}>
-                <h3>Sorry, time is up!</h3>
-                <RaisedButton label="Next round"
-                              primary={true}
-                              onTouchTap={() => this.switchRole()}/>
-              </Paper>
-            </div>
-        );
-      }
-    }
-
-
     return <div>
+      {(this.state.start && this.props.over) && <div>
+        <Paper style={styles.container}>
+          <h3>Sorry, time is up!</h3>
+          <RaisedButton label="Next round"
+                        primary={true}
+                        onTouchTap={() => this.switchRole()}/>
+        </Paper>
+      </div>}
+      { !this.props.over && <div>
       <h1>Explain-Game</h1>
-      <OverviewPoints/>
+      <OverviewPoints/> </div>}
       { this.state.start && <Countdown timeRemaining={this.state.timeRemaining}/> }
+      { !this.props.over && <div>
       <Call ref={call => (this.Call = call)} role={this.props.user.role} />
 
       { (this.state.start && this.props.user.role === 'actor') &&
@@ -344,6 +338,7 @@ export default class Explain extends React.Component {
         />
       </div>
       }
+      </div> }
     </div>;
   }
 }
