@@ -336,9 +336,10 @@ export default class CallVideo extends React.Component {
   }
 
   render() {
+    console.log('call state', this.state.callState);
     return (
         <div>
-          { this.props.user.role === 'actor' && <RaisedButton
+          { (this.props.user.role === 'actor' && this.state.callState === CALL_STATE_NONE) && <RaisedButton
               label="Start Call"
               labelPosition="before"
               style={styles.button}
