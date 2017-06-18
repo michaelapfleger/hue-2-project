@@ -44,17 +44,20 @@ export default class NewOpponent extends React.Component {
           onTouchTap={this.handleClose}
       />];
 
-    return <div>
-      <Dialog
-          title="New Opponent ..."
-          actions={actions}
-          modal={false}
-          open={this.state.open}
-          onRequestClose={this.handleClose}
-      >
-        Another player selected you! Start the game now with {this.props.opponent.username} !
-      </Dialog>
-    </div>;
+    if (this.props.opponent.username !== '') {
+      return <div>
+        <Dialog
+            title="New Opponent ..."
+            actions={actions}
+            modal={false}
+            open={this.state.open}
+            onRequestClose={this.handleClose}
+        >
+          Another player selected you! Start the game now with {this.props.opponent.username} !
+        </Dialog>
+      </div>;
+    }
+    return <div></div>;
   }
 }
 

@@ -11,7 +11,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import NoOpponentSelected from './../components/NoOpponentSelected.jsx';
 import Term from './../components/Term.jsx';
 import OverviewPoints from './../components/OverviewPoints.jsx';
-import { setTimeStart, addPointsToUser, setTerm, setUser, setSuccess } from '../actions';
+import { setTimeStart, addPointsToUser, setTerm, setUser, setSuccess, setOpponent } from '../actions';
 import Countdown from './../components/Countdown.jsx';
 import firebase from './../firebase';
 import CallVideo from '../components/CallVideo.jsx';
@@ -155,6 +155,21 @@ export default class Mime extends React.Component {
     if (this.props.user && this.props.user.role === 'actor') {
       this.getNewTerm();
     }
+    firebase.database().ref(`/users/${this.props.opponent.uid}`).on('child_changed', (snap) => {
+      if (snap.key === 'ready') {
+        console.log('opponent changed his ready state to ', snap.val());
+        this.props.dispatch(setOpponent({
+          ...this.props.opponent,
+          ready: snap.val(),
+        }));
+      }
+      if (snap.key === 'points') {
+        this.props.dispatch(setSuccess(true));
+      }
+      if (snap.key === 'term') {
+        this.props.dispatch(setTerm(snap.val()));
+      }
+    });
   }
 
   componentWillUnmount() {

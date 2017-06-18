@@ -7,7 +7,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import firebase from './../firebase';
 import NewOpponent from './../components/NewOpponent.jsx';
 
-import { setUser, setOpponent, setTerm, setSuccess, setNewOpponent } from './../actions';
+import { setUser, setOpponent, setTerm, setNewOpponent } from './../actions';
 
 const styles = {
   button: {
@@ -72,6 +72,8 @@ export default class Info extends React.Component {
 
               firebase.database().ref(`users/${user.uid}`).update({
                 '/ready': 'false',
+                '/opponent': 'none',
+                '/role': 'none',
               });
             })
             .then(() => {
@@ -90,29 +92,26 @@ export default class Info extends React.Component {
                         ready: false,
                       };
                       this.props.dispatch(setOpponent(opponentUser));
-                      firebase.database().ref(`/users/${opponentUser.uid}`).on('child_changed', (snap) => {
-                        if (snap.key === 'ready') {
-                          this.props.dispatch(setOpponent({
-                            ...this.props.opponent,
-                            ready: snap.val(),
-                          }));
-                        }
-                        if (snap.key === 'points') {
-                          this.props.dispatch(setSuccess(true));
-                        }
-                      });
                     });
               }
               firebase.database().ref(`/users/${this.props.user.uid}`).on('child_changed', (snap) => {
                 if (snap.key === 'term') {
                   this.props.dispatch(setTerm(snap.val()));
                 }
+                if (snap.key === 'role' && snap.val() !== 'none') {
+                  this.props.dispatch(setUser({
+                    ...this.props.user,
+                    role: snap.val(),
+                  }));
+                }
               });
               firebase.database().ref(`/users/${this.props.user.uid}`).on('child_changed', (snap) => {
                   // listen to change in users opponent
                 if (snap.key === 'opponent' && snap.val() !== 'none') {
-                  this.props.dispatch(setUser({ ...this.props.user, opponent: snap.val() }));
-
+                  this.props.dispatch(setUser({
+                    ...this.props.user,
+                    opponent: snap.val(),
+                  }));
                     // update store opponent
                   firebase.database().ref(`/users/${snap.val()}`).once('value')
                     .then((snapshot) => {
@@ -127,6 +126,7 @@ export default class Info extends React.Component {
                         opponent: snapshot.val().opponent,
                         ready: false,
                       };
+                      // hier müsste die neue role gespeichert werden
                       this.props.dispatch(setOpponent(opponentUser));
                     })
                     .then(() => {

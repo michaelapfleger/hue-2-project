@@ -115,10 +115,6 @@ export default class Players extends React.Component {
             };
 
             console.log('eslint bla', currentOpponent);
-            // this.props.dispatch(setOpponent(currentOpponent));
-            /* this.setState({
-              defaultSelected: this.state.users.findIndex(x => x.userID === currentOpponent.uid),
-            }); */
           })
           .then(() => {
             firebase.database().ref(`users/${value}`).update({
@@ -138,6 +134,8 @@ export default class Players extends React.Component {
             }
           })
           .then(() => {
+            console.log('user', this.props.user);
+            console.log('value', value);
             this.props.dispatch(setUser({ ...this.props.user, role: 'actor' }));
           });
     } else if (oldOpponent !== null) {

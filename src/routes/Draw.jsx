@@ -6,7 +6,7 @@ import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import { connect } from 'react-redux';
-import { setTimeStart, addPointsToUser, setTerm, setUser, setSuccess } from '../actions';
+import { setTimeStart, addPointsToUser, setTerm, setUser, setSuccess, setOpponent } from '../actions';
 // import { on, off, send } from '../ws';
 
 import NoOpponentSelected from './../components/NoOpponentSelected.jsx';
@@ -148,6 +148,21 @@ export default class Draw extends React.Component {
     if (this.props.user && this.props.user.role === 'actor') {
       this.getNewTerm();
     }
+    firebase.database().ref(`/users/${this.props.opponent.uid}`).on('child_changed', (snap) => {
+      if (snap.key === 'ready') {
+        console.log('opponent changed his ready state to ', snap.val());
+        this.props.dispatch(setOpponent({
+          ...this.props.opponent,
+          ready: snap.val(),
+        }));
+      }
+      if (snap.key === 'points') {
+        this.props.dispatch(setSuccess(true));
+      }
+      if (snap.key === 'term') {
+        this.props.dispatch(setTerm(snap.val()));
+      }
+    });
   }
   submitGuess(evt) {
     if (evt) {
