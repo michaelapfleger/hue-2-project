@@ -216,7 +216,7 @@ export default class Mime extends React.Component {
       });
       this.props.dispatch(setSuccess(true));
     } else {
-      this.setState({ guessWrong: true });
+      this.setState({ guessWrong: true, guessInput: '' });
       this.setState({
         sound: 'https://raw.githubusercontent.com/michaelapfleger/hue-2-project/master/public/wrong.mp3',
         status: Sound.status.PLAYING,
