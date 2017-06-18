@@ -163,6 +163,22 @@ export default class Explain extends React.Component {
 
   componentDidMount() {
     send('join', 'all', this.props.user.username);
+    firebase.database().ref(`/users/${this.props.user.uid}`).once('value')
+        .then((snapshot) => {
+          const opponentUser = {
+            username: snapshot.val().username,
+            uid: snapshot.val().uid,
+            points: snapshot.val().points,
+            term: '',
+            online: true,
+            start: false,
+            role: snapshot.val().role,
+            opponent: snapshot.val().opponent,
+            ready: false,
+          };
+          console.log('hier', opponentUser);
+          this.props.dispatch(setUser(opponentUser));
+        });
     if (this.props.user && this.props.user.role === 'actor') {
       this.getNewTerm();
     }

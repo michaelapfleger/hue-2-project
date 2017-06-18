@@ -99,6 +99,8 @@ export default class Info extends React.Component {
                   this.props.dispatch(setTerm(snap.val()));
                 }
                 if (snap.key === 'role' && snap.val() !== 'none') {
+                  console.log('hier der fehler user', this.props.user);
+                  console.log('user opponent');
                   this.props.dispatch(setUser({
                     ...this.props.user,
                     role: snap.val(),
