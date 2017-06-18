@@ -104,7 +104,7 @@ export default class Players extends React.Component {
     let currentOpponent = {};
     // console.log('val', value);
     const oldOpponent = this.props.user.opponent;
-
+    console.log('oldopponent', oldOpponent);
     if (value !== 'none') {
       firebase.database().ref(`/users/${value}`).once('value')
           .then((snapshot) => {

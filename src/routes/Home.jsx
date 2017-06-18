@@ -52,7 +52,7 @@ export default class Info extends React.Component {
     dispatch: PropTypes.func,
   };
 
-  componentWillMount() {
+  componentDidMount() {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         firebase.database().ref(`/users/${user.uid}`).once('value')
@@ -108,6 +108,7 @@ export default class Info extends React.Component {
               firebase.database().ref(`/users/${this.props.user.uid}`).on('child_changed', (snap) => {
                   // listen to change in users opponent
                 if (snap.key === 'opponent' && snap.val() !== 'none') {
+                  console.log('got selected by user', snap.val());
                   this.props.dispatch(setUser({
                     ...this.props.user,
                     opponent: snap.val(),
@@ -127,6 +128,7 @@ export default class Info extends React.Component {
                         ready: false,
                       };
                       // hier müsste die neue role gespeichert werden
+                      console.log('save new opponent', opponentUser);
                       this.props.dispatch(setOpponent(opponentUser));
                     })
                     .then(() => {
@@ -134,6 +136,7 @@ export default class Info extends React.Component {
                       this.props.dispatch(setNewOpponent(true));
                     });
                 } else if (snap.key === 'opponent' && snap.val() === 'none') {
+                  console.log('am i here ???', snap.val());
                   this.props.dispatch(setUser({ ...this.props.user, opponent: 'none' }));
                   this.props.dispatch(setOpponent({}));
                 }
@@ -170,6 +173,7 @@ export default class Info extends React.Component {
             term: '',
             start: false,
             ready: false,
+            opponent: 'none',
           });
         })
         .catch(
