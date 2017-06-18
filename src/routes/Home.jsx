@@ -52,7 +52,7 @@ export default class Info extends React.Component {
     dispatch: PropTypes.func,
   };
 
-  componentDidMount() {
+  componentWillMount() {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         firebase.database().ref(`/users/${user.uid}`).once('value')
