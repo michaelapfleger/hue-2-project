@@ -96,6 +96,7 @@ export default class Info extends React.Component {
               }
               firebase.database().ref(`/users/${this.props.user.uid}`).on('child_changed', (snap) => {
                 if (snap.key === 'term') {
+                  console.log('term changed', snap.val());
                   this.props.dispatch(setTerm(snap.val()));
                 }
                 if (snap.key === 'role' && snap.val() !== 'none') {
