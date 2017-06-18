@@ -244,11 +244,10 @@ export default class Draw extends React.Component {
     if (!this.props.user.role === 'none') {
       return (<NoOpponentSelected/>);
     }
-
+    if (this.state.redirect) {
+      return (<Redirect to={this.state.redirect} />);
+    }
     if (this.props.success) {
-      if (this.state.redirect) {
-        return (<Redirect to={this.state.redirect} />);
-      }
       if (this.props.user.role === 'guesser') {
         return (
             <Paper style={styles.container}>
