@@ -93,13 +93,6 @@ export default class DrawArea extends React.Component {
   clearCanvas() {
     this.setState({ lines: new Immutable.List() });
   }
-  changeColor() {
-    if (this.state.color === '#DE0670') {
-      this.setState({ color: '#25737c' });
-    } else {
-      this.setState({ color: '#DE0670' });
-    }
-  }
 
   render() {
     if (this.props.user && this.props.user.role === 'actor') {
@@ -124,13 +117,7 @@ export default class DrawArea extends React.Component {
               <ActionClear />
             </IconButton>
 
-            <IconButton
-                tooltip="change color"
-                tooltipPosition="bottom-center"
-                onTouchTap={() => this.changeColor()}
-            >
-              <Yellow/>
-            </IconButton>
+
           </div>
       );
     }
