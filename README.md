@@ -28,8 +28,11 @@ Small game for at two teams with two players each. One player of the team gets a
 * Material Design Icons from [https://material.io/icons/](https://material.io/icons/)
 * Sounds from [http://www.freesound.org/](http://www.freesound.org/)
 
+## How to play
+First you need to create a new user and log in. After that you can go to _Players_ and select one of the listed users. You should get a popup to see if the user is able to play. Then you go to _Draw_, _Mime_ or _Explain_ and tell your team member to do the same. If you both clicked on start at the same page, the fun can begin. There is a term for one player which he has to draw, explain or mime. The other one only sees the drawing area, hears the explanation or sees the team member. 
+There is a counter which tells you how much time you have left. If you guess the correct term in time you get points added to your account. After each term the teams switch roles. 
 
-## Usage:
+
 ## Prerequisites
 * [Git](http://git-scm.org): [Download for Windows](https://git-for-windows.github.io)
 * Node.js (incl. npm): [Download](http://nodejs.org) 
@@ -39,8 +42,7 @@ Small game for at two teams with two players each. One player of the team gets a
 3. Build project via `npm start` followed by `npm run watch` in another command window
 5. Open your browser window at *http://localhost:3000/*
 
-## How to play
-
+## Known bugs
 
 
 ## Online: 
