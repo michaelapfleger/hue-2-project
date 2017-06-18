@@ -169,7 +169,6 @@ export default class Explain extends React.Component {
             username: snapshot.val().username,
             uid: snapshot.val().uid,
             points: snapshot.val().points,
-            term: '',
             online: true,
             start: false,
             role: snapshot.val().role,
@@ -177,7 +176,7 @@ export default class Explain extends React.Component {
             ready: false,
           };
           console.log('hier', opponentUser);
-          this.props.dispatch(setUser(opponentUser));
+          this.props.dispatch(setUser({ ...this.props.user, opponentUser }));
         });
     if (this.props.user && this.props.user.role === 'actor') {
       this.getNewTerm();
@@ -192,9 +191,6 @@ export default class Explain extends React.Component {
       }
       if (snap.key === 'points') {
         this.props.dispatch(setSuccess(true));
-      }
-      if (snap.key === 'term') {
-        this.props.dispatch(setTerm(snap.val()));
       }
     });
   }
