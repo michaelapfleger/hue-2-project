@@ -129,10 +129,13 @@ export default class Players extends React.Component {
               '/role': 'actor',
               '/opponent': `${value}`,
             });
-            firebase.database().ref(`users/${oldOpponent}`).update({
-              '/role': 'none',
-              '/opponent': 'none',
-            });
+
+            if (oldOpponent !== 'none') {
+              firebase.database().ref(`users/${oldOpponent}`).update({
+                '/role': 'none',
+                '/opponent': 'none',
+              });
+            }
           })
           .then(() => {
             this.props.dispatch(setUser({ ...this.props.user, role: 'actor' }));
