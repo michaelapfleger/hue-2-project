@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import Immutable, { fromJS } from 'immutable';
 import IconButton from 'material-ui/IconButton';
 import ActionClear from 'material-ui/svg-icons/action/delete-forever';
-import Yellow from 'material-ui/svg-icons/image/colorize';
 import { on, off, send } from '../ws';
 // import Line from './Line.jsx';
 import Drawing from './Drawing.jsx';
