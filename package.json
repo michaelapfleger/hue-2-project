@@ -1,7 +1,7 @@
 {
-  "name": "MT",
+  "name": "QualityCheck",
   "version": "1.0.0",
-  "description": "An awesome activity kind of party game",
+  "description": "Tool analyze web pages",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -12,40 +12,26 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/michaelapfleger/hue-2-project.git"
+    "url": "https://github.com/tamiLein/qualitycheck.git"
   },
   "keywords": [
-    "activity",
-    "party",
-    "game",
-    "webrtc"
+
   ],
-  "author": "Tamara Czakert, Michaela Pfleger",
+  "author": "Tamara Czakert",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/michaelapfleger/hue-2-project/issues"
+    "url": "https://github.com/tamiLein/qualitycheck.git/issues"
   },
-  "homepage": "https://github.com/michaelapfleger/hue-2-project#readme",
+  "homepage": "https://github.com/tamiLein/qualitycheck.git#readme",
   "dependencies": {
     "express": "^4.15.3",
-    "firebase": "^4.0.0",
-    "halogen": "^0.2.0",
-    "immutable": "^3.8.1",
-    "immutable-props": "^1.1.0",
-    "material-ui": "^0.17.4",
-    "morgan": "^1.8.2",
-    "now-deploy": "^0.1.1",
-    "prop-types": "^15.5.10",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-redux": "^5.0.5",
     "react-router-dom": "^4.1.1",
-    "react-sound": "^0.6.1",
     "react-tap-event-plugin": "^2.0.1",
     "redux": "^3.6.0",
-    "redux-logger": "^3.0.6",
-    "transit-immutable-js": "^0.7.0",
-    "ws": "^3.0.0"
+    "redux-logger": "^3.0.6"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
